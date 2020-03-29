@@ -1,4 +1,11 @@
 site_name: RUIHAN.ORG 
+site_url: https://ruihan.org
+repo_name: iurnah/iurnah.github.io
+repo_url: https://github.com/iurnah/iurnah.github.io
+edit_uri: ""
+
+copyright: 'Copyright &copy; 2020 Rui Han'
+
 theme:
   name: 'material'
   palette:
@@ -6,9 +13,6 @@ theme:
     accent: 'black'
   feature:
     tabs: true 
-font:
-  text: Roboto
-  code: Roboto Mono
 
 markdown_extensions:
   - admonition
@@ -17,6 +21,7 @@ markdown_extensions:
   - pymdownx.arithmatex
   - toc:
       permalink: true
+
 plugins:
   - search
   - minify:
