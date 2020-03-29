@@ -1,0 +1,35 @@
+site_name: RUIHAN.ORG 
+theme:
+  name: 'material'
+  palette:
+    primary: 'black'
+    accent: 'black'
+  feature:
+    tabs: true 
+font:
+  text: Roboto
+  code: Roboto Mono
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.superfences
+  - pymdownx.arithmatex
+  - toc:
+      permalink: true
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+nav:
+  - Leetcode: 
+    - Binary Search: leetcode/binary-search.md
+  - Course Notes:
+    - CS224N NLP with Deep Learning: courses/cs224n-notes.md
+    - 6.431 Probability: courses/6.431-probability-notes.md
+  - SEED Labs:
+    - Public Key Cryptography and PKI: seed/Public-Key-Cryptography-and-PKI.md
+
+extra_javascript:
+  - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
