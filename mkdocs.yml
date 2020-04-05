@@ -31,8 +31,8 @@ nav:
   - Leetcode: 
     - Binary Search: leetcode/binary-search.md
   - Course Notes:
-    - CS224N NLP with Deep Learning: courses/cs224n-notes.md
-    - 6.431 Probability: courses/6.431-probability-notes.md
+    - CS224N NLP with Deep Learning: courses/cs224n/cs224n-notes.md
+    - 6.431 Probability: courses/6.431-probability/6.431-probability-notes.md
   - SEED Labs:
     - Public Key Cryptography and PKI: seed/Public-Key-Cryptography-and-PKI.md
 
