@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
-     <loc>https://ruihan.org/leetcode/binary-search/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <loc>https://ruihan.org/leetcode/binary-search/notes/</loc>
+     <lastmod>2020-04-06</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>https://ruihan.org/courses/cs224n/cs224n-notes/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <loc>https://ruihan.org/courses/cs224n/notes/</loc>
+     <lastmod>2020-04-06</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>https://ruihan.org/courses/6.431-probability/6.431-probability-notes/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <loc>https://ruihan.org/courses/6.431-probability/notes/</loc>
+     <lastmod>2020-04-06</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>https://ruihan.org/seed/Public-Key-Cryptography-and-PKI/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <loc>https://ruihan.org/seedlabs/public-key-cryptography-and-pki/notes/</loc>
+     <lastmod>2020-04-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
