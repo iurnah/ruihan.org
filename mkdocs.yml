@@ -1,7 +1,7 @@
 site_name: RUIHAN.ORG 
 site_url: https://ruihan.org
-repo_name: iurnah/iurnah.github.io
-repo_url: https://github.com/iurnah/iurnah.github.io
+repo_name: iurnah/ruihan.org
+repo_url: https://github.com/iurnah/ruihan.org
 edit_uri: ""
 
 copyright: 'Copyright &copy; 2020 Rui Han'
@@ -29,12 +29,12 @@ plugins:
 
 nav:
   - Leetcode: 
-    - Binary Search: leetcode/binary-search.md
+    - Binary Search: leetcode/binary-search/notes.md
   - Course Notes:
-    - CS224N NLP with Deep Learning: courses/cs224n/cs224n-notes.md
-    - 6.431 Probability: courses/6.431-probability/6.431-probability-notes.md
+    - CS224N NLP with Deep Learning: courses/cs224n/notes.md
+    - 6.431 Probability: courses/6.431-probability/notes.md
   - SEED Labs:
-    - Public Key Cryptography and PKI: seed/Public-Key-Cryptography-and-PKI.md
+    - Public Key Cryptography and PKI: seedlabs/public-key-cryptography-and-pki/notes.md
 
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
