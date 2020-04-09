@@ -29,6 +29,7 @@ plugins:
 
 nav:
   - Leetcode: 
+    - Array: leetcode/array/notes.md
     - Binary Search: leetcode/binary-search/notes.md
   - Course Notes:
     - CS224N NLP with Deep Learning: courses/cs224n/notes.md
