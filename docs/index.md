@@ -7,10 +7,12 @@
 ## Course Notes
 
 * [ ] [Machine Learning](./courses/machine-learning/notes.md)
-* [x] [CS224N NLP with Deep Learning](./courses/cs224n/notes.md)
+* [x] [CS224N Lecture Notes](./courses/cs224n/lec-notes.md)
+* [x] [CS224N Write-up](./courses/cs224n/write-up.md)
 * [x] [6.431 Probability](./courses/6.431-probability/notes.md)
 * [ ] [Learning From Data](./courses/learning-from-data/notes.md)
 * [ ] [6.828 Operating System Engineering](./courses/6.828-os/notes.md)
+* [x] [Functional Programming Principles in Scala](./courses/func-prog-in-scala/notes.md)
 
 ## Leetcode
 

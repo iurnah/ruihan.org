@@ -33,8 +33,10 @@ nav:
   - Books:
     - Accelerated C++: books/accelerated-cpp/notes.md
   - Course Notes:
-    - CS224N NLP with Deep Learning: courses/cs224n/notes.md
+    - CS224N Lecture Notes: courses/cs224n/lec-notes.md
+    - CS224N Write-up: courses/cs224n/write-up.md
     - 6.431 Probability: courses/6.431-probability/notes.md
+    - Func Prog Principles in Scala: courses/func-prog-in-scala/notes.md
   - Leetcode: 
     - Array: leetcode/array/notes.md
     - Binary Search: leetcode/binary-search/notes.md
