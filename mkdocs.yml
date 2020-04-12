@@ -42,6 +42,9 @@ nav:
     - Binary Search: leetcode/binary-search/notes.md
     - Backtracking: leetcode/backtracking/notes.md
     - Union Find: leetcode/union-find/notes.md
+  - Research:
+    - Coalition Game: research/coalition-game/notes.md
+    - Contextual Multi-Armed Bandit: research/contextual-bandit/notes.md
   - SEED Labs:
     - Public Key Cryptography and PKI: seedlabs/public-key-cryptography-and-pki/notes.md
 

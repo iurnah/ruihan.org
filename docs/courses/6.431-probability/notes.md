@@ -189,7 +189,7 @@ But independence doesn't imply conditional independence.
 
 ### Independence of a collection of events
 
-Ituition "definition": Information on some of the events doesn't change probability related to the remaining events.
+Intuition "definition": Information on some of the events doesn't change probability related to the remaining events.
 
 !!! Note "Formal definition"
     ![independent-of-events](fig/independent-of-events.png)
@@ -220,15 +220,56 @@ The king's sibling puzzle
 * A function of one or several random variables is also another random variable.
 * A concrete example to understand the concept of a random variable is take a class of students, selecting students and measuring their body mass or height will give us the random variable $W$ and $H$. The "Body mass index" is another random variable that is a function of the random variable $W$ and $H$.
 
+!!! note "meaning of $X + Y$"
+    random variable $X+Y$ takes the value $x+y$, when $X$ takes the value $x$,
+    and $Y$ takes the value $y$.
+
+### Probability mass function
+
+![Probability mass function](fig/pmf.png)
+
 ### Bernoulli and indicator random variables
 
 * Bernoulli random variable $X$:
+$X =
+\begin{cases}
+  1, & \textrm{w.p. } p \\
+  0, & \textrm{w.p. } 1-p
+\end{cases}$
 * models a trial that results in success/failure, heads/tails, etc.
 * indicator random variables of event $A$: $I_A = 1$ if $A$ occurs.
 * connection between events and random variables. $P(A) = P(I_A = 1) = P_{I_A}(1)$,
-* $P(A)$: probability of event A happens
-* $P(I_A = 1)$: probablistic notition of indication R.V. when $I_A$ equal to $1$
-* $P_{I_A}(1)$: PMF notation.
+    * $P(A)$: probability of event A happens
+    * $P(I_A = 1)$: probablistic notition of indication R.V. when $I_A$ equal to $1$
+    * $P_{I_A}(1)$: PMF notation.
+
+### Discrete uniform random variables
+
+![discrete uniform random variable](fig/discrete-uniform.png)
+
+### Binomial random variables
+
+![binormal random variable](fig/binomial.png)
+
+Experiment: toss a biased coin ($P(\textrm{Head})=p$) $n$ times and observe the result (number of heads)
+
+![binormal random variable coin](fig/binomial-coin-toss.png)
+
+### Geometric random variables
+
+![geometric random variable](fig/geometric.png)
+
+### Expectation
+
+![expectation of rv](fig/expectation.png)
+
+### The expected value rule
+
+![expected value rule](fig/expected-value-rule.png)
+
+### Linearity of expectations
+
+![linearity of expectations](fig/linearity-of-expectations.png)
 
 ## Lecture 6
 

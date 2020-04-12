@@ -48,6 +48,11 @@
 * [ ] [Two Pointers](./leetcode/two-pointers/notes.md)
 * [x] [Union Find](./leetcode/union-find/notes.md)
 
+## Research
+
+* [x] [Coalition Game](./research/coalition-game/notes.md)
+* [x] [Contextual Multi-Armed Bandit](./research/contextual-bandit/notes.md)
+
 ## SEED Labs
 
-* [Public-Key Cryptography and PKI](./seedlabs/public-key-cryptography-and-pki/notes.md)
+* [x] [Public-Key Cryptography and PKI](./seedlabs/public-key-cryptography-and-pki/notes.md)
