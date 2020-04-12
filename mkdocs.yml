@@ -19,6 +19,8 @@ markdown_extensions:
   - codehilite
   - pymdownx.superfences
   - pymdownx.arithmatex
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - toc:
       permalink: true
 
@@ -28,12 +30,16 @@ plugins:
       minify_html: true
 
 nav:
-  - Leetcode: 
-    - Array: leetcode/array/notes.md
-    - Binary Search: leetcode/binary-search/notes.md
+  - Books:
+    - Accelerated C++: books/accelerated-cpp/notes.md
   - Course Notes:
     - CS224N NLP with Deep Learning: courses/cs224n/notes.md
     - 6.431 Probability: courses/6.431-probability/notes.md
+  - Leetcode: 
+    - Array: leetcode/array/notes.md
+    - Binary Search: leetcode/binary-search/notes.md
+    - Backtracking: leetcode/backtracking/notes.md
+    - Union Find: leetcode/union-find/notes.md
   - SEED Labs:
     - Public Key Cryptography and PKI: seedlabs/public-key-cryptography-and-pki/notes.md
 

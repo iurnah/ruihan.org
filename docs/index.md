@@ -1,63 +1,51 @@
-# Welcome to MkDocs
+# Welcome to RUIHAN.ORG
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+## Books
 
-## Commands
+* [ ] [Accelerated C++](./books/accelerated-cpp/notes.md)
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+## Course Notes
 
-## Project layout
+* [ ] [Machine Learning](./courses/machine-learning/notes.md)
+* [x] [CS224N NLP with Deep Learning](./courses/cs224n/notes.md)
+* [x] [6.431 Probability](./courses/6.431-probability/notes.md)
+* [ ] [Learning From Data](./courses/learning-from-data/notes.md)
+* [ ] [6.828 Operating System Engineering](./courses/6.828-os/notes.md)
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+## Leetcode
 
-```python
-import tensorflow as tf
-```
+* [x] [Array](./leetcode/array/notes.md)
+* [x] [Binary Search](./leetcode/binary-search/notes.md)
+* [ ] [Binary Search Tree](./leetcode/binary-search-tree/notes.md)
+* [ ] [Binary Indexed Tree](./leetcode/binary-indexed-tree/notes.md)
+* [x] [Backtracking](./leetcode/backtracking/notes.md)
+* [ ] [Bread First Search](./leetcode/bread-first-search/notes.md)
+* [ ] [Bit Manipulation](./leetcode/bit-manipulation/notes.md)
+* [ ] [Depth First Search](./leetcode/depth-first-search/notes.md)
+* [ ] [Design](./leetcode/design/notes.md)
+* [ ] [Divide And Conquer](./leetcode/divide-and-conquer/notes.md)
+* [ ] [Dynamic Programming](./leetcode/dynamic-programming/notes.md)
+* [ ] [Geometry](./leetcode/geometry/notes.md)
+* [ ] [Graph](./leetcode/graph/notes.md)
+* [ ] [Greedy](./leetcode/greedy/notes.md)
+* [ ] [Hash](./leetcode/hash/notes.md)
+* [ ] [Heap](/leetcode/heap/notes.md)
+* [ ] [Interval](./leetcode/interval/notes.md)
+* [ ] [List](./leetcode/list/notes.md)
+* [ ] [Math](./leetcode/math/notes.md)
+* [ ] [Queue](./leetcode/queue/notes.md)
+* [ ] [Recursion](./leetcode/recursion/notes.md)
+* [ ] [Reservoir Sampling](./leetcode/reservior-sampling/notes.md)
+* [ ] [Segment Tree](./leetcode/segment-tree/notes.md)
+* [ ] [Sort](./leetcode/sort/notes.md)
+* [ ] [Stack](./leetcode/stack/notes.md)
+* [ ] [String](./leetcode/string/notes.md)
+* [ ] [Topological Sort](./leetcode/topological-sort/notes.md)
+* [ ] [Tree](./leetcode/tree/notes.md)
+* [ ] [Trie](./leetcode/trie/notes.md)
+* [ ] [Two Pointers](./leetcode/two-pointers/notes.md)
+* [x] [Union Find](./leetcode/union-find/notes.md)
 
-``` python hl_lines="3 4"
-""" Bubble sort """
-def bubble_sort(items):
-    for i in range(len(items)):
-        for j in range(len(items) - 1 - i):
-            if items[j] > items[j + 1]:
-                items[j], items[j + 1] = items[j + 1], items[j]
-```
+## SEED Labs
 
-``` bash tab="Bash"
-#!/bin/bash
-
-echo "Hello world!"
-```
-
-``` c tab="C"
-#include <stdio.h>
-
-int main(void) {
-  printf("Hello world!\n");
-}
-```
-
-``` c++ tab="C++"
-#include <iostream>
-
-int main() {
-  std::cout << "Hello world!" << std::endl;
-  return 0;
-}
-```
-
-``` c# tab="C#"
-using System;
-
-class Program {
-  static void Main(string[] args) {
-    Console.WriteLine("Hello world!");
-  }
-}
-```
+* [Public-Key Cryptography and PKI](./seedlabs/public-key-cryptography-and-pki/notes.md)
