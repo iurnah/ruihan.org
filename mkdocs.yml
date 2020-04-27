@@ -37,10 +37,12 @@ nav:
     - CS224N Write-up: courses/cs224n/write-up.md
     - 6.431 Probability: courses/6.431-probability/notes.md
     - Func Prog Principles in Scala: courses/func-prog-in-scala/notes.md
+    - Nine Chapter Dynamic Prog: courses/9chap-dynamic-prog/notes.md
   - Leetcode: 
     - Array: leetcode/array/notes.md
     - Binary Search: leetcode/binary-search/notes.md
     - Backtracking: leetcode/backtracking/notes.md
+    - Dynamic Programming: leetcode/dynamic-programming/notes.md
     - Union Find: leetcode/union-find/notes.md
   - Research:
     - Coalition Game: research/coalition-game/notes.md
