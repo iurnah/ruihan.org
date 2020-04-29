@@ -43,6 +43,8 @@ nav:
     - Binary Search: leetcode/binary-search/notes.md
     - Backtracking: leetcode/backtracking/notes.md
     - Dynamic Programming: leetcode/dynamic-programming/notes.md
+    - Heap: leetcode/heap/notes.md
+    - String: leetcode/string/notes.md
     - Union Find: leetcode/union-find/notes.md
   - Research:
     - Coalition Game: research/coalition-game/notes.md
