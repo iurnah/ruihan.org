@@ -3,21 +3,33 @@
 ## Category 1 Remove/Contains Duplidate
 
 ### Contains Duplicate
+
 ### Contains Duplicate II
+
 ### Contains Duplicate III
+
 ### Find the Duplicate Number
+
 ### Remove Duplicates from Sorted Array
+
 ### Remove Duplicates from Sorted Array II
+
 ### Remove Duplicates from Sorted List II
+
 ### Remove Duplicates from Sorted List
+
 ### Move Zeroes
 
 ## Category 2 Matrix problems
 
 ### Spiral Matrix
+
 ### Spiral Matrix II
+
 ### Search a 2D Matrix
+
 ### Search a 2D Matrix II
+
 ### Rotate Image
 
 ### Range Sum Query 2D - Mutable
@@ -1279,9 +1291,9 @@ DP solution
 Notice the edge case: `[1, INT_MAX]`, use `double` will can avoid integer overflow.
 
 ```C++ tab="C++ DP"
-/** 
+/**
  * equivalent to the lintcode copy books problem
- * 
+ *
  * last step: mth subarray A[j], ..., A[i - 1].
  * State: f[m][n]: minmax sum of m subarrays that include n elements
  * Equation: f[m][n] = min_{0<=j<n}(max(f[m - 1][j], sum(A[j], ..., A[n - 1])))
@@ -2140,6 +2152,103 @@ public:
 Solution 3 BST
 
 Solution 4 BIT
+
+### Maximum Sum of Two Non-Overlapping Subarrays
+
+```C++ tab="Brute Force Iterate"
+class Solution {
+public:
+    int maxSumTwoNoOverlap(vector<int>& A, int L, int M) {
+        int n = A.size();
+        if (L == 0 || M == 0) {
+            return 0;
+        }
+
+        vector<int> preSum(n, 0);
+        preSum[0] = A[0];
+        for (int i = 1; i < n; i++) {
+            preSum[i] = preSum[i - 1] + A[i];
+        }
+
+        int res = 0;
+        // iterate the L using index i
+        for (int i = 0; i < n - L + 1; i++) {
+            int Lsum = 0;
+            if (i == 0) {
+                Lsum = preSum[i + L - 1];
+            } else {
+                Lsum = preSum[i + L - 1] - preSum[i - 1];
+            }
+
+            int Msum = 0;
+            // iterate the left M array using index j
+            for (int j = 0; j < i - M; j++) {
+                int tmp = 0;
+                if (j == 0) {
+                    tmp = preSum[j + M - 1];
+                } else {
+                    tmp = preSum[j + M - 1] - preSum[j - 1];
+                }
+                Msum = max(Msum, tmp);
+            }
+            // iterate the right M array using index j
+            for (int j = i + L; j < n - M + 1; j++) {
+                Msum = max(Msum, preSum[j + M - 1] - preSum[j - 1]);
+            }
+
+            res = max(res, Msum + Lsum);
+        }
+
+        return res;
+    }
+};
+```
+
+```C++ tab="One pass"
+class Solution {
+public:
+    int maxSumTwoNoOverlap(vector<int>& A, int L, int M) {
+        int n = A.size();
+        if (L == 0 || M == 0) {
+            return 0;
+        }
+
+        vector<int> preSum(n, 0);
+        preSum[0] = A[0];
+        for (int i = 1; i < n; i++) {
+            preSum[i] = preSum[i - 1] + A[i];
+        }
+
+        int res = INT_MIN;
+        int Lmax = INT_MIN;
+        int Mmax = INT_MIN;
+        //
+        for (int i = L + M; i <= n; i++) {
+            // L is front, M is back
+            if (i == L + M) {
+                Lmax = preSum[L - 1];
+            } else {
+                Lmax = max(Lmax, preSum[i - M - 1] - preSum[i - L - M - 1]);
+            }
+            // M is front, L is back
+            if (i == L + M) {
+                Mmax = preSum[M - 1];
+            } else {
+                Mmax = max(Mmax, preSum(i - L - 1) - preSum[i - M - L - 1]);
+            }
+
+            res = max({res,
+                       Lmax + preSum[i - 1] - preSum[i - M - 1],
+                       Mmax + preSum[i - 1] - preSum[i - L - 1]})
+        }
+        return res;
+    }
+};
+```
+
+```C++ tab="DP solution"
+//TODO
+```
 
 ### Maximum Sum of 3 Non-Overlapping Subarrays
 
