@@ -17,127 +17,267 @@
 
 ## Chapter 1
 
-1. `>>`  begins by discarding whitespace chars (space, tab, backspace, or the end of line) from the input, then reads chars into a virable until it encounters another whitespace character or end-of-file.
-2. input-output library saves its output in an internal data structure called a buffer, which it uses to optimize output operations. it use the buffer to accumulate the characters to be written, and flushes the buffer, only when necessary.
+1. `>>`  begins by discarding whitespace chars (space, tab, backspace, or the
+   end of line) from the input, then reads chars into a virable until it
+   encounters another whitespace character or end-of-file.
+2. input-output library saves its output in an internal data structure called a
+   buffer, which it uses to optimize output operations. it use the buffer to
+   accumulate the characters to be written, and flushes the buffer, only when
+   necessary.
 3. 3 events cause the flush:
     1. when it is full;
     2. when it is asked to read from the std input;
     3. when we explicitly say to do so;
 4. How to print a framed string?
-5. std::string constructor: `const std::string greeting(greeting.size(), ' ')` will generate a whitespace string with length of greeting.size().
-6. character literal should be enclosed by `' '`, string literal should be enclosed by `" "`.
-7. Built-in type `char` and `wchar_t`, which is big enough for holding characters for languages such as Chinese.
+5. std::string constructor: `const std::string greeting(greeting.size(), ' ')`
+   will generate a whitespace string with length of greeting.size().
+6. character literal should be enclosed by `' '`, string literal should be
+   enclosed by `" "`.
+7. Built-in type `char` and `wchar_t`, which is big enough for holding characters
+   for languages such as Chinese.
 
 ## Chapter 2
 
-1. `while` statement, __loop invariant__: which is a property that we assert will be
-true about a while each time it is about to test its condition. i.e. _write r line so far_
+1. `while` statement, __loop invariant__: which is a property that we assert
+   will be true about a while each time it is about to test its condition.
+   i.e. _write r line so far_
 
-```C++
-// invariant: we have written r rows so far
-int r = 0;
-// setting r to 0 makes the invariant true
-while (r != rows) {
-    // we can assume that the invariant is true here
-    // writing a row of output makes the invariant false
-    std::cout << std::endl;
-    // incrementing r makes the invariant true again
-    ++r;
-}
-// we can conclude that the invariant is true here The
-```
+    ```C++
+    // invariant: we have written r rows so far
+    int r = 0;
+    // setting r to 0 makes the invariant true
+    while (r != rows) {
+        // we can assume that the invariant is true here
+        // writing a row of output makes the invariant false
+        std::cout << std::endl;
+        // incrementing r makes the invariant true again
+        ++r;
+    }
+    // we can conclude that the invariant is true here The
+    ```
 
-1. `std::string::size_type` type for strings length or . This is to protect the
-int from being overflow if we have an arbitrary long input.
-2. Asymmetric range [n, m) is better then a symmetric range [n, m]. always start the range with 0 such as [0, n)
+2. `std::string::size_type` type for strings length or . This is to protect the
+   int from being overflow if we have an arbitrary long input.
+3. Asymmetric range [n, m) is better then a symmetric range [n, m]. always start
+   the range with 0 such as [0, n)
     1. `[n, m)` have `m-n` elements, `[n, m]` have `m-n+1` elements.
     2. empty range i.e. `[n,n)`.
-3. modulo operation equivalent : `x % y <==> x - ((x/y) * y)`
-4. pay attention to the problem 2-4, adding code to ensure the invariant for outer while.
+4. modulo operation equivalent : `x % y <==> x - ((x/y) * y)`
+5. pay attention to the problem 2-4, adding code to ensure the invariant for
+   outer while.
 
 ## Chapter 3
 
-1. double is even faster than float, double has at least 15 significant digits. float  has at least 6 digits.
-2. `while(cin >> x)` is equal to `cin >> x; while(cin)`, because `>>` operator return its left operand
-3. `streamsize prec = cout.pecision();` and manipulator `setprecision(3)` ==> 56.5 or 5.65
-4. `std::vector<double>::size_type` is analogous to the one in `string::size_type`
-5. sort function in `<algorithm>` header prototype: `sort(homework.begin(), homework.end())`, __sort in place__
-6. vector class provide two member functions: `begin()` and `end()`
-7. calculate the median of a sorted vector homework:
+1. double is even faster than float, double has at least 15 significant digits.
+   float  has at least 6 digits.
+2. `while(cin >> x)` is equal to `cin >> x; while(cin)`, because `>>` operator
+   return its left operand. `cin` is `istream` type, using `cin` as a condition
+   is equivalent to testing whether the last attempt to read from `cin` was successful.
+3. unsuccessful read by `cin`:
+   1. We might have reached the end of the input file.
+   2. We might have encountered input that is incompatible with the type of the
+      variable that we are trying to read, such as might happen if we try to
+      read an `int` and find something that isn't a number.
+   3. The system might have detected a hardware failure on the input device.
+4. save previous precision (for later reset) and set precision to 4:
+   `streamsize prec = cout.pecision(4);`. precision manipulator `setprecision(3)`
+   which means keep 3 significant digits (i.e. 56.5 or 5.65).
+5. `std::vector<double>::size_type` is analogous to the one in `string::size_type`,
+   its the type used to declare size type variable such as array size or string
+   size. It usually `typedef std::size_t string::size_type`. It is guaranteed to
+   be able to hold the number of elements in the largest possible `vector` or
+   `string`.
+6. sort function in `<algorithm>` header prototype:
+  `sort(homework.begin(), homework.end())`, __sort in place__
+7. vector class provide two member functions: `begin()` and `end()`.
+8. calculate the median of a sorted vector homework:
+
     ```C++
     vec_sz mid = size/2;
     double median;
     median = size % 2 == 0 ? (homework[mid] + homework[mid-1]) / 2 : homework[mid];
     ```
-8. `vec.end()` return a value that denotes one past the last elelment in v.
-9. `streamsize` The type of the value expected by `setprecision()` and returned by `precision()`. Defined in  `<ios>`.
-10. The return value of the `vector<int>::type_size` is unsigned integral number. Doing operation with it could not possibly generate negative value, i.e. if `vec.size()` is 5, `vec.size() - 6` is not negative, it will be positive.
+
+9. `vec.end()` return a value that denotes one past the last elelment in v.
+10. `streamsize` The type of the value expected by `setprecision()` and returned
+   by `precision()`. Defined in  `<ios>`.
+11. The return value of the `vector<int>::type_size` is unsigned integral number.
+   Doing operation with it could not possibly generate negative value, i.e. if
+   `vec.size()` is 5, `vec.size() - 6` is not negative, it will be positive.
 
 ## Chapter 4 (organize program `.h` and `.cc` files, iostream as a argument, exception handling basics)
 
-1. When a program throws an exception, the program stop at the part of the program in which the `throw` appears. appears, and passes to another part of the program, along with an __exception object__, which contains information that the caller can use to act on the exception.
-2. Domain error: `throw domain_error("median of an empty vector")`; Defined in `<stdexcept>`, it is used in reporting that a function's argument is outside the set of values that the function can accept.
-    1. domain error is one of logic_error in <stdexcept>, there are other type of exception: runtime_error, which includes `overflow_error`, `underflow_error`, etc. [ref:runtime_error](http://www.cplusplus.com/reference/stdexcept/runtime_error/).
-3. const means we will promise not modify the variable. `&` means a reference or an alias. i.e.
-```C++
-vector<doubel> homework;
-const vector<doubel>& chw = homework; //chw is a synonym for homework
-```
-4. reference to reference is the same as reference to the original variable.
-5. when define non const reference, we have to make sure the original variable or reference isn't a const. otherwise, it will be illigel. i.e. with above definition, we cannot do this `vector<doubel>& hw2=chw;`
-6. a const argument could take a const parameter.
-7. iostream as a parameter to a function: (alwasy keep in mind that a iostream is a type, it has other properties such as vector or int have.)
-```c++
-istream& read_hw(istream& in, vector<double>& hw){}
-```
-8. __lvalue: __We must pass an lvalue argument to a reference parameter. An lvalue is a value that denotes a nontemporary object. For example, a variable is an lvalue, as is a reference, or the result of calling a function that returns a reference. An expression that generates an arithmetic value, such as sum / count, is not an lvalue.
-9. `clear()` member functions for istream. This is to ensure the eof or non-valid input data will not effect reading the next data. __Alwasy run cin.clear(), before we try to read again.
-10. pass by value: `vector<double> vec`: this will copy the argument, the original will not be modified.
-11. pass by reference: `vector<double>& vec`: this will __not__ copy the argument, but will modify the original argument. This is good convention for object as a parameter, because copying will introduce overhead.
-12. pass by const reference: `const vector<double>& vec`: this will __not__ copy the argument as well as _promise_ not to modify the passed argument. 
-13. `try {} catch {}` clause, we normally break down to multiple statements in the try clause, because we want to avoid multiple side effect. For example,
-```C++
-try {
-        double final_grade = grade(midterm, final, homework);
-        streamsize prec = cout.precision();
-        cout << "Your final grade is " << setprecision(3)
-            << final_grade << setprecision(prec) << endl;
-} catch (domain_error) {
-        cout << endl << "You must enter your grades. "
-        "Please try again." << endl;
-        return 1;
-}
-```
-is better then written as
-```C++
-try {
-        streamsize prec = cout.precision();
-        cout << "Your final grade is " << setprecision(3)
-                << grade(midterm, final, homework) << setprecision(prec);
-}
-```
-because the later can generate ambigious error message that not easy to debug.
+1. When a program throws an exception, the program stop at the part of the
+   program in which the `throw` appears. appears, and passes to another part of
+   the program, along with an __exception object__, which contains information
+   that the caller can use to act on the exception.
+2. Domain error: `throw domain_error("median of an empty vector")`; Defined in
+   `<stdexcept>`, it is used in reporting that a function's argument is outside
+   the set of values that the function can accept.
+    1. domain error is one of `logic_error` in `<stdexcept>`, there are other
+       type of exception: `runtime_error`, which includes `overflow_error`,
+       `underflow_error`, etc. [`runtime_error`](http://www.cplusplus.com/reference/stdexcept/runtime_error/).
+3. `&` means a reference or an alias. `const` when define a reference means we
+   will promise not modify the variable. For example,
 
-12. sort object `Student_info`, we have to use another form of `sort(student.begin(), students.end())` with a extra parameter, which is a predicate to compare the two object. i.e.
-```c++
-bool compare(const Student_info& x, cosnt Student_info& y)
-{
-    return x.name < y.name;
-}
-sort(students.begin(),students.end(), compare);
-```
-13. Formatting the output, if we want to do the following
-```
-Bob         88
-Christopher 90
-```
-we could do this:
-```c++
-maxlen = max(maxlen, record.name.size());
-cout << students[i].name << string(maxlen + 1 - students[i].name.size(), ' ');
-```
-Notice the string(num, ' '); instantiate a string has num of spaces.
-14. The example program from this chapter is worth of keeping here for references. There is a lot information included in it.
+    ```C++
+    vector<doubel> homework;
+    const vector<doubel>& chw = homework; //chw is a READ ONLY synonym for homework
+    ```
+
+4. A reference to reference is the same as reference to the original variable.
+5. when define non `const` reference, we have to make sure the original variable
+   or reference isn't declared `const`. Otherwise, it will be illigel. i.e. with
+   above definition, we cannot do this `vector<doubel>& hw2=chw;` because `chw`
+   is `const` when defined.
+6. a `const` argument could take a const parameter.
+7. `iostream` as a parameter to a function: (alwasy keep in mind that a iostream
+   is a __type__, it has other properties such as a `vector` or `int` have.).
+   Notice the returned value is `in`, which is passed in as a reference parameter.
+
+    ```c++
+    istream& read_hw(istream& in, vector<double>& hw) {
+
+        // statement that modify the input parameters
+
+        return in;
+    }
+    // the return of istream allow us to do the following
+    if (read_hw(in, homework)) { }
+    // othewise, we have to
+    read_hw(in, homework);
+    if (in) {
+
+    }
+    ```
+
+8. The __"lvalue"__ We must pass an lvalue argument to a reference parameter. An
+   "lvalue" is a value that denotes a __nontemporary__ object. For example, a
+   variable is an `lvalue`, as is a reference, or the result of calling a function
+   that returns a reference. An expression that generates an arithmetic value,
+   such as `sum / count`, is __not__ an lvalue.
+9. member functions `istream.clear()`. This is to ensure the eof or non-valid
+   input data will not effect reading the next data. __Alwasy run `cin.clear()`,
+   before we try to read again__.
+10. pass by value: `vector<double> vec`: this will copy the argument, the
+   original will not be modified.
+11. pass by reference: `vector<double>& vec`: this will __not__ copy the argument,
+   but will modify the original argument. This is good convention for object as
+   a parameter, because copy a object have overhead.
+12. pass by const reference: `const vector<double>& vec`: this will __not__ copy
+   the argument as well as _promise_ not to modify the passed argument.
+13. `try {} catch {}` clause, we normally break down to multiple statements in
+   the `try` clause, because we want to avoid multiple side effect. For example,
+
+    ```C++
+    try {
+            double final_grade = grade(midterm, final, homework);
+            streamsize prec = cout.precision();
+            cout << "Your final grade is " << setprecision(3)
+                << final_grade << setprecision(prec) << endl;
+    } catch (domain_error) {
+            cout << endl << "You must enter your grades. "
+            "Please try again." << endl;
+            return 1;
+    }
+    ```
+
+    is better then written as
+
+    ```C++
+    try {
+            streamsize prec = cout.precision();
+            cout << "Your final grade is " << setprecision(3)
+                 << grade(midterm, final, homework) << setprecision(prec);
+    }
+    ```
+
+    because the later can generate ambigious error message that not easy to debug.
+
+14. sort object `Student_info`, we have to use another form of
+   `sort(student.begin(), students.end())` with a extra parameter, which is a
+   predicate to compare the two object. i.e.
+
+    ```c++
+    bool compare(const Student_info& x, cosnt Student_info& y)
+    {
+        return x.name < y.name;
+    }
+    sort(students.begin(),students.end(), compare);
+    ```
+
+15. Formatting the output, if we want to do the following
+
+    ```text
+    Bob         88
+    Christopher 90
+    ```
+
+    we could do this:
+
+    ```c++
+    maxlen = max(maxlen, record.name.size());
+    cout << students[i].name << string(maxlen + 1 - students[i].name.size(), ' ');
+    ```
+
+    Notice the `string(num, ' ')` instantiate a string has `num` of spaces.
+
+16. hearder file should declare only the names that are necessary. Header files
+   should use fully qualified names rather than using-declarations. (Avoid
+   `using namespace std`;)
+
+    ```c++
+    #include <vector>
+    double median(std::vector<double>);
+    ```
+
+17. Avoid multiple inclusion
+
+    ```C++
+    #ifndef __THIS_HEADER_H__
+    #define __THIS_HEADER_H__
+    //your program
+    #endif
+    ```
+
+18. type of exceptions
+
+    |   logic_error   |  domain_error  |
+    |-----------------|----------------|
+    |length_error     | out_of_range   |
+    |invalid_argument | runtime_error  |
+    |range_error      | overflow_error |
+    |underflow_error  | |
+
+19. exceptional handling
+
+    ```C++
+    try {
+            // code Initiates a block that might throw an exception.
+    } catch(t) {
+            // code
+    }
+    //real use case.
+    try {
+            double final_grade = grade(students[i]);
+            streamsize prec = cout.precision();
+            cout << setprecision(3) << final_grade
+                << setprecision(prec);
+    } catch (domain_error e) {
+            cout << e.what();
+    }
+    ```
+
+    Concludes the `try` block and handles exceptions that match the type `t`.
+    The code following the `catch` performs whatever action is appropriate to
+    handle the exception reported in `t`.
+
+20. `throw e`; Terminates the current function; throws the value `e` back to the caller.
+21. `e.what()`: return a value that report on what happened to cause the error.
+22. `str.width([n])` and `std::setw(n)` both used to set the output width.
+23. The example program from this chapter is worth of keeping here for
+   references. There is a lot information included in it.
+
 ```C++
 //Calculate the grade for many students, including reading the data in, 
 //how to sort according there name and how to format the out put in a nice printing, ect.
@@ -249,53 +389,10 @@ int main() {
     return 0;
 }
 ```
-15. hearder file should declare only the names that are necessary. Header files should use fully qualified names rather than using-declarations. (Avoid `using namespace std`;)
-```c++
-#include <vector>
-double median(std::vector<double>);
-```
-16. Avoid multiple inclusion
-```C++
-#ifndef __THIS_HEADER_H__
-#define __THIS_HEADER_H__
-//your program
-#endif
-```
-17. type of exceptions
-
-    |   logic_error   |  domain_error  |
-    |-----------------|----------------|
-    |length_error     | out_of_range   |
-    |invalid_argument | runtime_error  |
-    |range_error      | overflow_error |
-    |underflow_error  | |
-
-18. exceptional handling
-```C++
-try {
-        // code Initiates a block that might throw an exception.
-} catch(t) {
-        // code
-}
-
-//real use case.
-try {
-        double final_grade = grade(students[i]);
-        streamsize prec = cout.precision();
-        cout << setprecision(3) << final_grade
-            << setprecision(prec);
-} catch (domain_error e) {
-        cout << e.what();
-}
-```
-Concludes the `try` block and handles exceptions that match the type `t`. The code following the `catch` performs whatever action is appropriate to handle the exception reported in `t`.
-19. `throw e`; Terminates the current function; throws the value e back to the caller.
-18. `e.what()`: return a value that report on what happened to cause the error.
-21. `str.width([n])` and `std::setw(n)` both used to set the output width.
 
 ## Chapter 5 (sequential containers (vector, list) and analyzing strings)
 
-### 5.1 
+### 5.1
 
 write a function `extract_fails()` to seperate the students that failed the course.
 The ideas is to use two seperate vector to hold the ones that passed and the
