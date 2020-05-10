@@ -48,3 +48,27 @@ Representing a graph with adjacency lists combines adjacency matrices with edge 
 * If the graph is weighted, then each item in each adjacency list is either a two-item array or an object, giving the vertex number and the edge weight.
 
 [Representing graphs](https://www.khanacademy.org/computing/computer-science/algorithms/graph-representation/a/representing-graphs)
+
+## Algorithms
+
+### Bipartise
+
+### Directed graph strongly connected components
+
+### Kosaraju's Two-pass algorithm
+
+1. Reverse each arc of the original graph.
+2. First run of the  `DFS-Loop` to computer the "finish" time of each node in
+   the reversed graph. Book keeping:
+       - The "source node of a node". A source node is the first node in the DFS tree.
+       - The "finish time of a node".
+3. Second run of the `DFS-Loop` to computer the strongly connected components (SCC).
+   The SCC is represented by the source ndoe.
+
+### Minimum spanning tree
+
+## Problems
+
+### Critical Connections in a Network
+
+### [Critical Routers](https://leetcode.com/discuss/interview-question/436073/)

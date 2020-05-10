@@ -4,28 +4,198 @@
 
 1. sweep line technique
 2. iterval tree using a STL map
+3. binary search to locate an interval in the list
 
-## Special cases need to consider in disjoint interval set problems
+## Special cases in disjoint interval set problems
 
 1. Special case that the interval may have duplicates. i.e. Problem
    [Number of Airplanes in the Sky](#number-of-airplanes-in-the-sky)
 2. Notice the search result in `::begin()` and `::end()` in interval query.
 
-## Disjoint interval operations
-
-1. Pay attention to the interval representation, whether it is open end or close end. The code is slitly different.
-
-* insertInterval (addInterval, mergeInterval)
-* queryInterval
-* deleteInterval
-
 ## Data structure of disjoint interval set
 
-1. Two container `vector` and `map` that can store disjoint intervals.
+1. Two containers `vector` and `map` can store disjoint intervals.
+
+## Disjoint interval operations
+
+* Pay attention to the interval representation, whether it is open end or close
+  end. The code is slitly different.
+
+[Range Module](#range-module) is a design problem asking you to implement the
+following all three operations.
+
+### insertInterval (addInterval, mergeInterval)
+
+```C++ tab="C++ vector"
+void addRange(int left, int right) {
+    vector<pair<int, int>> tmp;
+    int pos = 0;
+    for (int i = 0; i < intervals.size(); i++) {
+        if (left > intervals[i].second) {
+            tmp.push_back(intervals[i]);
+            pos++;
+        } else if (right < intervals[i].first) {
+            tmp.push_back(intervals[i]);
+        } else {
+            left = min(intervals[i].first, left);
+            right = max(intervals[i].second, right);
+        }
+    }
+
+    tmp.insert(tmp.begin() + pos, {left, right});
+    swap(intervals, tmp);
+}
+```
+
+```C++ tab="C++ map"
+void addRange(int left, int right) {
+    auto l = m.upper_bound(left);
+    auto r = m.upper_bound(right);
+    // rule out the case that l overlap with previous
+    if (l != m.begin()) {
+        if((--l)->second < left) {
+            ++l;
+        }
+    }
+
+    // sure left is non-overlap, check the right
+    if (l != r) {
+        int lmin = min(l->first, left);
+        int rmax = max(right, (--r)->second);
+        m.erase(l, ++r); // remove iterator
+        m[lmin] = rmax;
+    } else { // both no overlap
+        m[left] = right;
+    }
+}
+```
+
+### queryInterval
+
+* Since we can use a sorted vector list or a map to store the interval. We could
+  have two different implementation.
+* The key to do the query is how to search the position, we use `upper_bound`.
+
+```C++ tab="C++ vector"
+bool queryRange(int left, int right) {
+    int n = invals.size(), l = 0, r = n;
+    while (l < r) {
+        int m = l + (r - l) / 2;
+        if (invals[m].first <= left) {
+            l = m + 1;
+        } else {
+            r = m;
+        }
+    }
+
+    if (l == 0 || invals[--l].second < right) {
+        return false;
+    }
+
+    return true;
+}
+```
+
+```C++ tab="C++ map"
+bool queryRange(int left, int right) {
+    auto l = m.upper_bound(left);
+
+    if (l == m.begin() || (--l)->second < right) {
+        return false;
+    }
+
+    return true;
+}
+```
+
+### deleteInterval
+
+```C++ tab="C++ vector"
+void removeRange(int left, int right) {
+    int n = invals.size();
+    vector<pair<int, int>> tmp;
+    for (int i = 0; i < n; i++) {
+        if (invals[i].second <= left || invals[i].first >= right)
+            tmp.push_back(invals[i]);
+        else {
+            if (invals[i].first < left)  tmp.push_back({invals[i].first, left});
+            if (invals[i].second > right) tmp.push_back({right, invals[i].second});
+        }
+    }
+
+    swap(invals, tmp);
+}
+```
+
+```C++ tab="C++ map"
+void removeRange(int left, int right) {
+    auto l = m.upper_bound(left);
+    auto r = m.upper_bound(right);
+
+    if (l != m.begin()) {
+        --l;
+        if(l->second < left) {
+            ++l;
+        }
+    }
+
+    // nothing need to be removed
+    if (l == r) {
+        return;
+    }
+
+    int l1 = min(left, l->first);
+    int r1 = max(right, (--r)->second);
+
+    m.erase(l, ++r);
+
+    if (l1 != left) {
+        m[l1] = left;
+    }
+
+    if (r1 != right) {
+        m[right] = r1;
+    }
+}
+```
 
 ## Problems
 
-### Insert Interval
+### 56.Merge intervals
+
+* Merge interval need first sort the interval then put the first interval to the
+  result vector, iteratively compare the end of the vector to `interval[i]`,
+  either update the `end` of the `res.back().end` or directly push the
+  `interval[i]` to the end of the vector.
+
+!!! Note
+    You cannot use index to refer to the neighboring elements. because the vector is being modified.
+
+```C++ tab=""
+class Solution {
+public:
+    vector<Interval> merge(vector<Interval>& intervals) {
+        if (intervals.empty()) return vector<Interval>();
+        sort(intervals.begin(), intervals.end(), [](const Interval& a, const Interval& b){
+            return a.start < b.start;
+        });
+
+        vector<Interval> res;
+        res.push_back(intervals[0]);
+        for (int i = 1; i < intervals.size(); ++i) {
+            if (res.back().end >= intervals[i].start) {
+                res.back().end = max(res.back().end, intervals[i].end);
+            } else {
+                res.push_back(intervals[i]);
+            }
+        }
+
+        return res;
+    }
+};
+```
+
+### 57. Insert Interval
 
 * Given the new interval `[a, b]`, consider each interval in the input `[x, y]`.
     1. Completely disjoint to the left `(b < x)`.
@@ -87,137 +257,6 @@ public:
 };
 ```
 
-### Merge intervals
-
-* Merge interval need first sort the interval then put the first interval to the
-  result vector, iteratively compare the end of the vector to `interval[i]`,
-  either update the `end` of the `res.back().end` or directly push the
-  `interval[i]` to the end of the vector.
-
-!!! Note
-    You cannot use index to refer to the neighboring elements. because the vector is being modified.
-
-```C++ tab=""
-class Solution {
-public:
-    vector<Interval> merge(vector<Interval>& intervals) {
-        if (intervals.empty()) return vector<Interval>();
-        sort(intervals.begin(), intervals.end(), [](const Interval& a, const Interval& b){
-            return a.start < b.start;
-        });
-
-        vector<Interval> res;
-        res.push_back(intervals[0]);
-        for (int i = 1; i < intervals.size(); ++i) {
-            if (res.back().end >= intervals[i].start) {
-                res.back().end = max(res.back().end, intervals[i].end);
-            } else {
-                res.push_back(intervals[i]);
-            }
-        }
-
-        return res;
-    }
-};
-```
-
-### Range Module
-
-* Since we can use a sorted vector list or a map to store the interval. We could
-  have two different implementation.
-* The key to do the query is how to search the position, we use `upper_bound`.
-
-#### Implementation, vector as the container
-
-```c++
-bool queryRange(int left, int right) {
-    int n = invals.size(), l = 0, r = n;
-    while (l < r) {
-        int m = l + (r - l) / 2;
-        if (invals[m].first <= left) {
-            l = m + 1;
-        } else {
-            r = m;
-        }
-    }
-
-    if (l == 0 || invals[--l].second < right) {
-        return false;
-    }
-
-    return true;
-}
-```
-
-#### Implementation, map as the container
-
-```c++
-bool queryRange(int left, int right) {
-    auto l = m.upper_bound(left);
-
-    if (l == m.begin() || (--l)->second < right) {
-        return false;
-    }
-
-    return true;
-}
-```
-
-### Delete an interval
-
-#### Implementation, vector as the container
-
-```C++
-void removeRange(int left, int right) {
-    int n = invals.size();
-    vector<pair<int, int>> tmp;
-    for (int i = 0; i < n; i++) {
-        if (invals[i].second <= left || invals[i].first >= right)
-            tmp.push_back(invals[i]);
-        else {
-            if (invals[i].first < left)  tmp.push_back({invals[i].first, left});
-            if (invals[i].second > right) tmp.push_back({right, invals[i].second});
-        }
-    }
-
-    swap(invals, tmp);
-}
-```
-
-#### Implementation, map as the container
-
-```C++
-void removeRange(int left, int right) {
-    auto l = m.upper_bound(left);
-    auto r = m.upper_bound(right);
-
-    if (l != m.begin()) {
-        --l;
-        if(l->second < left) {
-            ++l;
-        }
-    }
-
-    // nothing need to be removed
-    if (l == r) {
-        return;
-    }
-
-    int l1 = min(left, l->first);
-    int r1 = max(right, (--r)->second);
-
-    m.erase(l, ++r);
-
-    if (l1 != left) {
-        m[l1] = left;
-    }
-
-    if (r1 != right) {
-        m[right] = r1;
-    }
-}
-```
-
 ### Number of Airplanes in the Sky
 
 1. We can use a map to record each coordinate, add all coordinates up for each interval
@@ -270,16 +309,16 @@ public:
 };
 ```
 
-### Minimum Number of Arrows to Burst Balloons
+### 452. Minimum Number of Arrows to Burst Balloons
 
 Solution 1 Sweep line, using map.
 
 ```C++
 ```
 
-### Meeting Rooms I
+### 252. Meeting Rooms
 
-### Meeting Rooms II
+### 253. Meeting Rooms II
 
 Solution 1 Sweep line, split the start and end, put them into a vector.
 
@@ -348,7 +387,7 @@ public:
 };
 ```
 
-### My Calendar I
+### 729. My Calendar I
 
 Solution 1 Check intervals (vector) overlapping
 
@@ -396,7 +435,7 @@ public:
 };
 ```
 
-### My Calendar II
+### 731. My Calendar II
 
 Solution 1 reuse object and keep a copy of the intervals in it
 
@@ -488,7 +527,7 @@ public:
 };
 ```
 
-### My Calendar III
+### 732. My Calendar III
 
 Solution 1 Sweep line solution
 
@@ -550,7 +589,7 @@ public:
 };
 ```
 
-### Range Module
+### 715. Range Module
 
 Solution 1 Using vector to stroe the disjoint intervals
 
@@ -578,7 +617,6 @@ public:
 
         tmp.insert(tmp.begin() + pos, {left, right});
         swap(intervals, tmp);
-
     }
 
     bool queryRange(int left, int right) {
@@ -716,7 +754,7 @@ private:
 };
 ```
 
-### Find Right Interval
+### 436. Find Right Interval
 
 Solution 1 using map
 
@@ -745,7 +783,7 @@ public:
 };
 ```
 
-### Non-overlapping Intervals
+### 435. Non-overlapping Intervals
 
 Solution 1 Greedy
 
@@ -808,7 +846,7 @@ public:
 };
 ```
 
-### Data Stream as Disjoint Intervals
+### 352. Data Stream as Disjoint Intervals
 
 Solution 1 Use vector as the container
 
@@ -896,7 +934,9 @@ Solution 3 Use the insert interval subroutine.
 ```C++
 ```
 
-### Missing Ranges
+### 915. Partition Array into Disjoint Intervals
+
+### 163. Missing Ranges
 
 Solution 1
 
@@ -933,7 +973,7 @@ public:
 };
 ```
 
-### Summary Ranges
+### 228. Summary Ranges
 
 * Pay attention to the integer overflow when you test whether one number is
   greater that another. `[-2147483648,-2147483647,2147483647]`
@@ -968,6 +1008,8 @@ public:
 };
 ```
 
-### Range Addition
+### 938. Range Sum of BST
 
-### Range Addition II
+### 370. Range Addition
+
+### 597. Range Addition II
