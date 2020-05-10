@@ -61,7 +61,7 @@ complexity. Among all the binary search implementation you have seen, the
 following one is the most powerful version and it equivalent to C++ STL
 `lower_bound` algorithm.
 
-```
+```C++
 /**
  * return index to an element no less than x. Be more specifically, if there is
  * an element in the given array equal to x, it returns the index of first such
@@ -300,7 +300,7 @@ How to locate the sorted half?
 
 ```C++ tab=
 /**
-t = 1       t = 3        t = 5       t = 4       t = -1 
+t = 1       t = 3        t = 5       t = 4       t = -1
 5 1 2 3 4   5 1 2 3 4    5 1 2 3 4   5 1 2 3 4   5 1 2 3 4
 5 1               3 4    5 1               3 4   5 1
   1               3      5                   4     1 <--need check
@@ -618,7 +618,7 @@ public:
         while (l < r) {
             int m = l + (r - l) / 2;
             if (!isBadVersion(m)) {
-                l = m + 1; 
+                l = m + 1;
             } else {
                 r = m;
             }
@@ -1202,7 +1202,7 @@ public:
         int n = m ? matrix[0].size() : 0;
         int res = INT_MIN;
         vector<long long> sums(m + 1, 0);
-        
+
         for (int l = 0; l < n; ++l) {
             vector<long long>sumInRow(m, 0);
             for (int r = l; r < n; ++r) {
@@ -1498,9 +1498,9 @@ public:
 
 Solution 2 Binary search and Two pointers
 
-1. We first use binary search to locate the x value then expand to left and right
+* We first use binary search to locate the x value then expand to left and right
   looking for the k closest elements
-2. Notice the `i < 0` in the if condition, it is very important to be there.
+* Notice the `i < 0` in the if condition, it is very important to be there.
   otherwise the array index will be out of bound.
 
 ```C++ tab=
@@ -1522,16 +1522,16 @@ public:
 };
 ```
 
-### 611. Valid Triangle Number 
+### 611. Valid Triangle Number
 
-1. The main idea comes from the triangle lateral property, in which the triple
-   should fullfil: `a + b > c`, `a + c > b`, and `b + c > a`. Once we sort it. We
-   are able to gain some advantages that we don't have to check all these 3
-   relations. Instead, we should only take care of `A[i] + A[j] > A[k]`, in which
-   `i < j < k`.
-2. Because we sorted the array, we can also fix the `i` and `j`, using binary
-   search to find the `k` in the ragne of `A[j + 1] ~ A[n - 1]`. We can use our
-   classic binary search template to achieve the goal.
+* The main idea comes from the triangle lateral property, in which the triple
+  should fullfil: `a + b > c`, `a + c > b`, and `b + c > a`. Once we sort it. We
+  are able to gain some advantages that we don't have to check all these 3
+  relations. Instead, we should only take care of `A[i] + A[j] > A[k]`, in which
+  `i < j < k`.
+* Because we sorted the array, we can also fix the `i` and `j`, using binary
+  search to find the `k` in the ragne of `A[j + 1] ~ A[n - 1]`. We can use our
+  classic binary search template to achieve the goal.
 
 ```C++ tab="C++"
 class Solution {
@@ -1570,10 +1570,16 @@ public:
 
 Solution 1 Binary search
 
-1. The problem asking for better than `O(n^2)` we could check to see whether binary search will work.
-2. If you count how many value `<=` the mid elements of `[1, ..., n-1]`, it will give you enough information to discard part of the array elements.
-3. Here you should distinguish what will be halfed and what will be searched. The answer to that is the `[1, ..., n-1]` sequence, not the given array. The simple proof of why it works can be put in this the following way.
-4. if the count of elements that `<=mid` in the array is less than `mid`, we can learn that the duplicate is in the higher end. If the count is greater, we can know that the duplicate element is in the lower end of the sequence `[1, ..., n-1]`.
+* The problem asking for better than `O(n^2)` we could check to see whether
+  binary search will work.
+* If you count how many value `<=` the mid elements of `[1, ..., n-1]`, it will
+  give you enough information to discard part of the array elements.
+* Here you should distinguish what will be halfed and what will be searched. The
+  answer to that is the `[1, ..., n-1]` sequence, not the given array. The
+  simple proof of why it works can be put in this the following way.
+* If the count of elements that `<=mid` in the array is less than `mid`, we can
+  learn that the duplicate is in the higher end. If the count is greater, we can
+  know that the duplicate element is in the lower end of the sequence `[1, ..., n-1]`.
 
 ```C++ tab=
 class Solution {
@@ -1590,7 +1596,7 @@ public:
 
             if (count <= mid) // "=" for [1,2,2]
                 begin = mid + 1;
-            else 
+            else
                 end = mid;
         }
 
@@ -1601,9 +1607,15 @@ public:
 
 Solution 2 tortoise and hare algorithm
 
-1. This problem is very similar to the the find circle in linked list. Generally, if you repeate `A[A[i]]`, the out put will show some periodic patterns. In fact you can imagine a rho shaped sequence.
-2. Image there is a function `f(i) = A[i]`, it mapping from `1, 2, 3, ... n` to `1, 2, 3, ... n`. Try to traverse `A[i]`, you will finally get circle through some same sequence of elements again and again, thus you obtain a rho shaped sequency like a circle in a linked list. The reason of it being a rho shape is becuase at least one element you will not come back to it if you leave it.
-3. http://www.keithschwarz.com/interesting/code/find-duplicate/FindDuplicate.python.html
+* This problem is very similar to the the find circle in linked list. Generally,
+  if you repeate `A[A[i]]`, the out put will show some periodic patterns. In
+  fact you can imagine a rho shaped sequence.
+* Image there is a function `f(i) = A[i]`, it mapping from `1, 2, 3, ... n` to
+  `1, 2, 3, ... n`. Try to traverse `A[i]`, you will finally get circle through
+  some same sequence of elements again and again, thus you obtain a rho shaped
+  sequency like a circle in a linked list. The reason of it being a rho shape is
+  becuase at least one element you will not come back to it if you leave it.
+* [Find Duplicate](http://www.keithschwarz.com/interesting/code/find-duplicate/FindDuplicate.python.html)
 
 ```C++ tab=
 class Solution {
@@ -1637,11 +1649,26 @@ public:
 
 ### 183. Wood cut (lintcode)
 
+Description
+Given n pieces of wood with length L[i] (integer array). Cut them into small
+pieces to guarantee you could have equal or more than k pieces with the same
+length. What is the longest length you can get from the n pieces of wood? Given
+L & k, return the maximum length of the small pieces. You couldn't cut wood into
+float length. If you couldn't get >= k pieces, return 0.
+
 Solution 1 Binary search
 
-1. It requires to get equal or more than k pieces of wood with same length. So you have to cut the wood to fulfill the requirement. However, you need to promise that each of the k wood is the longest that is possible.
-2. Imagine that you are given bunch of wood to cut. How would you do it? You probably want to try to make one cut and see whether you can make it or not.  If not, you may want to try make two cuts, and so on. But how could you program such a solution. It is very hard.
-3. Start thinking about the length seems a good option. Suppose you know your final maximum length. You would be able to make the cut accordingly. Now given a length out of guessing, can you verify whether it going to work or not? Yes, you can! That's the core idea of this solution.
+* It requires to get equal or more than k pieces of wood with same length. So
+  you have to cut the wood to fulfill the requirement. However, you need to
+  promise that each of the k wood is the longest that is possible.
+* Imagine that you are given bunch of wood to cut. How would you do it? You
+  probably want to try to make one cut and see whether you can make it or not.
+  If not, you may want to try make two cuts, and so on. But how could you
+  program such a solution. It is very hard.
+* Start thinking about the length seems a good option. Suppose you know your
+  final maximum length. You would be able to make the cut accordingly. Now given
+  a length out of guessing, can you verify whether it going to work or not? Yes,
+  you can! That's the core idea of this solution.
 
 ```C++ tab=
 class Solution {
@@ -1651,6 +1678,7 @@ public:
         int maxlen = *max_element(L.begin(), L.end());
         if(k == 0) return maxlen;
         int start = max(1, maxlen/k), end = maxlen;
+
         while(start < end) {
             int mid = start + (end - start) / 2;
 
@@ -1676,11 +1704,11 @@ public:
 
 Solution 1 Binary search
 
-1. It is very similar to the problem Wood cut. You just need to take care of the
-   accuracy of the results, namely also the int/double casts. It is also the hard
-   part of the problem.
-2. Notice the `count` variable is int type, you should test your solution expecially
-   for the line `count += dist[i] / mid;
+* It is very similar to the problem [Wood cut](#wood-cut). You just need to
+  take care of the accuracy of the results, namely also the int/double casts.
+  It is also the hard part of the problem.
+* Notice the `count` variable is int type, you should test your solution
+  expecially for the line `count += dist[i] / mid`;
 
 ```C++
 class Solution {
@@ -1718,13 +1746,13 @@ public:
 
 ### 644. Maximum Average Subarray II
 
-1. Notice the great trick you used to test whether there is a subarray of length
-   greater than `k` whose average is larger than current `mid`.
-2. The trick is calculate the `diff[i] = nums[i] - mid`,  and then calculate the
-   prefix sum of the `diff` array, and compare to another prefix sum of the same
-   array `diff`, the two prefix sum are calculated at two position at least `k`
-   distant apart. We actually compare the prefix sum to the smallest prefix sum
-   k distant apart.
+* Notice the great trick you used to test whether there is a subarray of length
+  greater than `k` whose average is larger than current `mid`.
+* The trick is calculate the `diff[i] = nums[i] - mid`,  and then calculate the
+  prefix sum of the `diff` array, and compare to another prefix sum of the same
+  array `diff`, the two prefix sum are calculated at two position at least `k`
+  distant apart. We actually compare the prefix sum to the smallest prefix sum
+  k distant apart.
 
 ```C++ tab=
 class Solution {
@@ -1785,10 +1813,10 @@ public:
 
 ### 778. Swim in Rising Water
 
-1. In This problem we are trying to find a path, in which the maximum element in
-   the path among all paths is minimum. Meaning we look for a target value in
+* In This problem we are trying to find a path, in which the maximum element in
+  the path among all paths is minimum. Meaning we look for a target value in
   the grid, such that there exist a path from `grid[0][0]` to `grid[n-1][n-1]`
-  which includes this value and it is the maximum value in the path. 
+  which includes this value and it is the maximum value in the path.
 
 ```C++ tab=
 class Solution {
@@ -1817,7 +1845,7 @@ public:
         return dfs_helper(grid, visited, n, mid, 0, 0);
     }
 
-    bool dfs_helper(vector<vector<int>> & grid, vector<vector<int>>& visited, 
+    bool dfs_helper(vector<vector<int>> & grid, vector<vector<int>>& visited,
                     int n, int mid, int i, int j) {
         visited[i][j] = 1;
         for (int k = 0; k < 4; ++k) {
@@ -1825,7 +1853,7 @@ public:
             int b = j + y[k];
             if (a < 0 || a >= n || b < 0 || b >= n || visited[a][b] == 1 || grid[a][b] > mid) continue;
             if (a == n - 1 && b == n - 1) return true;
-            if (dfs_helper(grid, visited, n, mid, a, b)) return true; 
+            if (dfs_helper(grid, visited, n, mid, a, b)) return true;
         }
 
         return false;
@@ -1857,7 +1885,7 @@ public:
     string smallestGoodBase(string n) {
         long long num = stoll(n);
         /* for each lenght of the potentional representation,
-         * n = 1 + k + ... + k^{i-1} = (k^i-1)/(k-1), lower bound k is 2, 
+         * n = 1 + k + ... + k^{i-1} = (k^i-1)/(k-1), lower bound k is 2,
          * we have 2^i-1 = n ==> upper bound i = log2(n+1). */
         for (int i = log2(num + 1); i >= 2; --i) {
             /* upper bound is obtained by n = 1 + k + k^2 ... + k^(i-1) > k^(i-1),
@@ -1888,28 +1916,7 @@ public:
 };
 ```
 
-### 658. Find K Closest Elements
-
-Solution 1 Binary Search
-
-```C++ tab=
-class Solution {
-public:
-    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
-        int start = 0, end = arr.size() - k;
-        while (start < end) {
-            int mid = start + (end - start) / 2;
-            if (x - arr[mid] > arr[mid + k] - x) {
-                start = mid + 1;
-            } else {
-                end = mid;
-            }
-        }
-
-        return vector<int>(arr.begin() + start, arr.begin() + start + k);
-    }
-};
-```
+### 658. [Find K Closest Elements](#find-k-closest-elements)
 
 ### 378. Kth Smallest Element in a Sorted Matrix
 
@@ -2186,7 +2193,8 @@ Solution 2 Using binary search
    each length of LIS (`f` value), we use binary search to find the last value in
    `b` that smaller that current value `A[i]`. If we found such a value in `b`,
    we use `A[i]` to replace the value next to the found value in `b`).
-    ```
+
+    ```text
     i  0 1 2 3 4 5 6  7
     A  5 1 3 7 6 4 2 10
     f  1 1 2 3 3 3 2  4

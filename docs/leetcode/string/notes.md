@@ -98,6 +98,38 @@ public:
 
 ### Longest Absolute File Path
 
+### Remove Sub-Folders from the Filesystem
+
+```C++
+class Solution {
+public:
+    vector<string> removeSubfolders(vector<string>& folder) {
+        int n = folder.size();
+        vector<string> res;
+        if (n == 0) {
+            return res;
+        }
+
+        // sort
+        sort(folder.begin(), folder.end(), less<string>());
+
+        // remove
+        string root = folder[0];
+        res.push_back(folder[0]);
+        for (int i = 1; i < n; i++) {
+            // need to consider both "/a/b", "/a/bc"
+            if (folder[i].substr(0, root.length()) != root ||
+                folder[i][root.length()] != '/') {
+                res.push_back(folder[i]);
+                root = folder[i];
+            }
+        }
+
+        return res;
+    }
+};;
+```
+
 ### [Maximum Score After Splitting a String](https://leetcode.com/problems/maximum-score-after-splitting-a-string/)
 
 * The steps to solve this type of problem is

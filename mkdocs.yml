@@ -31,27 +31,45 @@ plugins:
 
 nav:
   - Books:
+    - Index: books/index.md
     - Accelerated C++: books/accelerated-cpp/notes.md
-  - Course Notes:
+  - Courses:
+    - Index: courses/index.md
+    - Stanford Machine Learning: courses/stanford-machine-learning/notes.md
     - CS224N Lecture Notes: courses/cs224n/lec-notes.md
     - CS224N Write-up: courses/cs224n/write-up.md
     - 6.431 Probability: courses/6.431-probability/notes.md
-    - Func Prog Principles in Scala: courses/func-prog-in-scala/notes.md
+    - Learning From Data: courses/learning-from-data/notes.md
+    - Functional Programming Principles in Scala: courses/func-prog-in-scala/notes.md
     - Nine Chapter Dynamic Prog: courses/9chap-dynamic-prog/notes.md
   - Leetcode: 
+    - Index: leetcode/index.md
     - Array: leetcode/array/notes.md
-    - Binary Search: leetcode/binary-search/notes.md
     - Backtracking: leetcode/backtracking/notes.md
+    - Binary Search: leetcode/binary-search/notes.md
+    - Breadth-First Search (BFS): leetcode/breadth-first-search/notes.md
+    - Depth-First Search (DFS): leetcode/depth-first-search/notes.md
     - Dynamic Programming: leetcode/dynamic-programming/notes.md
+    - Graph: leetcode/graph/notes.md
     - Heap: leetcode/heap/notes.md
+    - Interval: leetcode/interval/notes.md
     - String: leetcode/string/notes.md
     - Union Find: leetcode/union-find/notes.md
   - Research:
+    - Index: research/index.md
     - Coalition Game: research/coalition-game/notes.md
     - Contextual Multi-Armed Bandit: research/contextual-bandit/notes.md
     - TF-IDF for Information Retrieval: research/tfidf-score/notes.md
   - SEED Labs:
+    - Index: seedlabs/index.md
+    - Applied Cryptograph Notes: seedlabs/applied-crypto/notes.md
     - Public Key Cryptography and PKI: seedlabs/public-key-cryptography-and-pki/notes.md
+  - System Design:
+    - Index: system-design/index.md
+    - Distributed System Concepts: system-design/concepts/notes.md
+    - Design Patterns: system-design/patterns/notes.md
+    - How to Design TinyUrl: system-design/problems/tinyurl/notes.md
+    - How to Design Twitter: system-design/problems/twitter/notes.md
 
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'

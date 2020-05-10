@@ -32,13 +32,9 @@
 
 ### Rotate Image
 
-### Range Sum Query 2D - Mutable
+### [Range Sum Query 2D - Mutable](#range-sum-query-2d-mutable)
 
-See [Range Sum Query 2D - Mutable](./#range-sum-query-2d-mutable_1)
-
-### Range Sum Query 2D - Immutable
-
-See [Range Sum Query 2D - Immutable](./#range-sum-query-2d-immutable_1)
+### [Range Sum Query 2D - Immutable](#range-sum-query-2d-immutable)
 
 ### Maximal Square
 
@@ -48,8 +44,20 @@ See [Range Sum Query 2D - Immutable](./#range-sum-query-2d-immutable_1)
 
 ### Type of subarray problem
 
-* Find a subarray fulfill certain propertie, i.e maximum size.
+* Find a subarray fulfill certain propertie, i.e maximum size subarray, [Longest Substring with At Most Two Distinct Characters](#longest-substring-with-at-most-two-distinct-characters)
+    1. Use map or two pointer to solve the problem.
 * Split into subarrays that fulfill certain properties, i.e. sum greater than k.
+
+!!! Note "Fixed length subarray indexing"
+    To correctly index an array in solving subarray problems are critical. Here is some tips:
+    1. To iterate through a subarray of certain size, alwasy using the __"one-of-the-end"__ pattern.
+       Namely, the iteration index `i` point to the __"one-off-the-end"__ of the subarray.
+       The subarray of size K before the index is started at index `i - k`.
+    2. The above convention is especially useful in subarray problems given constrains,
+       such as "the subarray size greater than `k`", "maximum sum of non-overlapping subarray", etc.
+    3. Example problems
+        - [Maximum Average Subarray II](#maximum-average-subarray-ii)
+        - [Maximum Sum of Two Non-Overlapping Subarrays](#maximum-sum-of-two-non-overlapping-subarrays)
 
 ### Two types of prefix sum
 
@@ -348,7 +356,7 @@ public:
                 }
             }
         }
-        
+
         return global[n][k];
     }
 };
@@ -449,8 +457,8 @@ public:
 
 DP solution
 
-It is similar to the problem [Maximum Subarray](./#maximum-subarray). Notice the
-negative number, min multiply a minus number could become the largest product.
+* It is similar to the problem [Maximum Subarray](./#maximum-subarray). Notice
+  the negative number, min multiply a minus number could become the largest product.
 
 ```C++ tab=
 class Solution {
@@ -538,7 +546,7 @@ class Solution {
 public:
     /**
      * @param nums: A list of integers
-     * @return: A list of integers includes the index of the first number 
+     * @return: A list of integers includes the index of the first number
      *          and the index of the last number
      */
     vector<int> subarraySum(vector<int> nums){
@@ -744,7 +752,7 @@ public:
     int subarraySum(vector<int>& nums, int k) {
         int n = nums.size();
         // key=prefix sum, val=appearance
-        unordered_map<int, int> map; 
+        unordered_map<int, int> map;
 
         int cnt = 0;
         int sum = 0;
@@ -768,6 +776,80 @@ public:
     Notice you have to initialize the `map[0] = 1`; this is because for cases such
     as `[1, 1, 1]`, when `i = 1`, `sum = 2`, `[1,1]` should be counted as one subarray.
     Without setting `map[0] = 1` at first hand, it will give incorrect results.
+
+### Subarray Sums Divisible by K
+
+* preSum is the basis of continuous subarray profblem.
+* One pass solution should explore a property of modulo `(preSum[j] - preSum[i]) % K == 0`
+  indicate the when removing `K` from the larger value `preSum[j]` `n` times, we
+  get the smaller value, then `preSum[j] % K == preSum[i] % K`. This property
+  makes the one pass solution possible.
+* Once the modulo property is found, we can use Hash map to assist our counting.
+  The ideas is to keep counting the remainder, once we have seen the same
+  remainder in the map, the new index and all the found indexes can be used to
+  retrive one solution. The count keep in the map show how many of those can be.
+  
+```C++ tab="One pass solution"  
+class Solution {
+public:
+    int subarraysDivByK(vector<int>& A, int K) {
+        int n = A.size();
+        if (n == 0 || K == 0) {
+            return 0;
+        }
+
+        int preSum = 0;
+        unordered_map<int, int> mp;
+        mp[0] = 1;
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+            preSum += A[i];
+
+            int reminder = preSum % K;
+            // deal with negative values
+            if (reminder < 0)
+                reminder += K;
+
+            if (mp.find(reminder) != mp.end()) {
+                count += mp[reminder];
+            }
+
+            mp[reminder] += 1;
+        }
+
+        return count;
+    }
+};
+```
+
+```C++ tab="Naive solution O(n^2)"
+class Solution {
+public:
+    int subarraysDivByK(vector<int>& A, int K) {
+        int n = A.size();
+        if (n == 0 || K == 0) {
+            return 0;
+        }
+
+        vector<long> preSum(n + 1, 0);
+        preSum[0] = 0;
+        for (int i = 0; i < n; i++) {
+            preSum[i + 1] = preSum[i] + A[i];
+        }
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j <= n; j++) {
+                if ((preSum[j] - preSum[i]) % K == 0) {
+                    cnt++;
+                }
+            }
+        }
+
+        return cnt;
+    }
+};
+```
 
 ### Max Sum of Subarry No Larger Than K*
 
@@ -1001,7 +1083,7 @@ long long merge_and_count(int A[], int start, int end) {
 }
 ```
 
-### 315. Count of Smaller Numbers After Self
+### Count of Smaller Numbers After Self
 
 Solution 1 Merge sort
 
@@ -1288,7 +1370,7 @@ Similar problems:
 
 DP solution
 
-Notice the edge case: `[1, INT_MAX]`, use `double` will can avoid integer overflow.
+Notice the edge case: `[1, INT_MAX]`, use `double` can avoid integer overflow.
 
 ```C++ tab="C++ DP"
 /**
@@ -1462,10 +1544,10 @@ public:
 
 Space optimized solution
 
-We could avoid using the prefix sum array and only use two variables to record
-the prefix sum at any particular instance. One for record prefix sum of first `i`
-elements. Another for the inner loop to check whether removing an element from
-the beginning will make a new maximum value or not.
+* We could avoid using the prefix sum array and only use two variables to record
+  the prefix sum at any particular instance. One for record prefix sum of exact
+  `k` elements. Another for the inner loop to check whether removing an element
+  from the beginning will make a new maximum value or not.
 
 ```C++ tab="C++ space optimized"
 class Solution {
@@ -1786,7 +1868,7 @@ public:
 Binary Indexed Tree solution II
 
 Similar to the above solution, We have combined the `init` and `update`. To make
-it consistant with the solution with problem [Range Sum Query 2D - Mutable]
+it consistant with the solution with problem [Range Sum Query 2D - Mutable](#range-sum-query-2d-mutable)
 
 ```C++
 class NumArray {
@@ -1999,7 +2081,7 @@ public:
     }
 
     int sumRegion(int row1, int col1, int row2, int col2) {
-        if (m == 0 || n == 0) 
+        if (m == 0 || n == 0)
             return 0;
 
         return getSum(row2 + 1, col2 + 1) - getSum(row1, col2 + 1) - getSum(row2 + 1, col1) + getSum(row1, col1);
@@ -2252,52 +2334,296 @@ public:
 
 ### Maximum Sum of 3 Non-Overlapping Subarrays
 
+### Longest Substring Without Repeating Characters
+
+```C++ tab="One pass iteration"
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        vector<int> dict(256, -1);
+        int maxLen = 0, start = -1;
+
+        for (int i = 0; i < s.length(); ++i) {
+            if (dict[s[i]] > start)
+                start = dict[s[i]];
+
+            dict[s[i]] = i;
+            maxLen = max(maxLen, i - start);
+        }
+
+        return maxLen;
+    }
+};
+```
+
+```C++ tab="Two pointer loop invariant"
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        unordered_map<char, int> mp;
+
+        int left = 0;
+        int count = 0;
+        int res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            m[s[i]]++;
+            if (m[s[i]] > 1) count++;
+
+            while (count > 0) {
+                m[s[left]]--;
+                if (m[s[left]] == 1) {
+                    count--;
+                }
+                left++;
+            }
+
+            res = max(res, i - left + 1);
+        }
+
+        return res;
+    }
+}
+```
+
+```C++ tab="Two pointer loop invariant II"
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        if (s.length() == 0) return 0;
+
+        int map[256] = {0};
+        int res = INT_MIN;
+        int j = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            while (j < s.length() && map[s[j]] == 0) {
+                map[s[j]]++;
+                res = max(res, j - i + 1);
+                j++;
+            }
+
+            map[s[i]]--;
+        }
+
+        return res;
+    }
+};
+```
+
+### Longest Substring with At Most Two Distinct Characters
+
+* We can use a __hash table__ to record the chars we have seen, the key is the
+  char, the value is the count of the char seen so far.
+* Once we have more than two hash entries, we should stop looking further and
+  think about removing the third char. So that we can count the desired length.
+* We use a pointer `left` to keep the left boundary of the interested chars.
+
+```C++ tab="C++ loop invariant with map"
+class Solution {
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+        int max_len = 0;
+        int left = 0;
+        unordered_map<char, int> m;
+
+        for (int i = 0; i < s.length(); i++) }{
+            m[s[i]]++;
+            while (m.size() > 2) {
+                if (--m[s[left]] == 0) m.erase(s[left]);
+                left++;
+            }
+
+            max_len = max(max_len, i - left + 1);
+        }
+
+        return max_len;
+    }
+};
+```
+
+```C++ tab="C++ using char array as map"
+class Solution {
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+        int max_len = 0;
+        int left = 0;
+        int cnt = 0;
+        int m[128] = {0};
+
+        for (int i = 0; i < s.length(); i++) {
+            if (m[s[i]]++ == 0) cnt++;
+            while (cnt > 2) {
+                if (--m[s[left++]] == 0) cnt--;
+            }
+            max_len = max(max_len, i - left + 1);
+        }
+
+        return max_len;
+    }
+};
+```
+
+```C++ tab="C++ Two pointers"
+class Solution {
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+        int max_len = 0;
+        int cnt = 0;
+        int m[128] = {0};
+
+        for (int i = 0, j = 0; i < s.length(); i++) {
+            while (j < s.length()) {
+                if (m[s[j]] == 0) {
+                    cnt++;
+                }
+                m[s[j]]++;
+                /* loop invariance: maintain the hash only have 2 distinct chars */
+                while (cnt > 2) {
+                    if (--m[s[i++]] == 0)
+                        cnt--;
+                }
+                max_len = max(max_len, j - i + 1);
+                j++;
+            }
+        }
+
+        return max_len;
+    }
+};
+```
+
+### Longest Substring with At Most K Distinct Characters
+
+* This problem is essentially equivalent to the
+  [Longest Substring with At Most Two Distinct Characters](#longest-substring-with-at-most-two-distinct-characters) problem.
+
+```C++ tab=""
+class Solution {
+public:
+    int lengthOfLongestSubstringKDistinct(string s, int k) {
+        int max_len = 0;
+        int left = 0;
+        int cnt = 0;
+        int map[128] = {0};
+
+        for (int i = 0; i < s.length(); i++) {
+            if (map[s[i]] == 0)
+                cnt++;
+            map[s[i]]++;
+            while (cnt > k) {
+                if (--map[s[left++]] == 0)
+                    cnt--;
+            }
+            max_len = max(max_len, i - left + 1);
+        }
+
+        return max_len;
+    }
+};
+```
+
+### Subarrays with K Different Integers
+
+* If you use sliding window to solve this problem, there are lots of corner cases.
+* for example: `[1, 1, 2, 1, 2, 1, 3, 1], K = 2`, how can you ensure you count all the
+  subarray?
+* Remember this trick that you can use the `atMostKDistinct(A, K) - atMostKDistinct(A, K - 1)`.
+
+```C++
+class Solution {
+public:
+    int subarraysWithKDistinct(vector<int>& A, int K) {
+        return subarrayWithAtMostKDistinct(A, K)
+                 - subarrayWithAtMostKDistinct(A, K - 1);
+    }
+    int subarrayWithAtMostKDistinct(vector<int>& A, int K) {
+        unordered_map<int, int> count;
+
+        int i = 0;
+        int res = 0;
+        for (int j = 0; j < A.size(); ++j) {
+            if (!count[A[j]]++) K--;
+            while (k < 0) {
+                if (!--count[A[j]]) K++;
+                i++;
+            }
+            res += j - i + 1;
+        }
+
+        return res;
+    }
+};
+```
+
+### Number of Substrings Containing All Three Characters
+
+### Count Number of Nice Subarrays
+
+### Replace the Substring for Balanced String
+
+### Binary Subarrays With Sum
+
+### Fruit Into Baskets
+
+### Shortest Subarray with Sum at Least K
+
+### [Minimum Size Subarray Sum](#minimum-size-subarray-sum)
+
+### Substring with Concatenation of All Words
+
+### Max Consecutive Ones II
+
+### Max Consecutive Ones III
+
 ## Category 4 K Sum problems
 
 ### Two Sum
+
 ### Two Sum II - Input array is sorted
+
 ### Two Sum III - Data structure design
+
 ### Two Sum IV - Input is a BST
+
 ### 3Sum
+
 ### 3Sum Closest
+
 ### 3Sum Smaller
+
 ### 4Sum
+
 ### 4Sum II
+
 ### K Sum
+
 ### Target Sum
 
-## Category 5 Array partition problems
-
-## Category 6 Interval and range problems
-
-### Summary Ranges
-### Missing Ranges
-### Insert Interval
-### Merge Intervals
-### Range Addition
-### Range Addition II
-### My Calendar I
-### My Calendar II
-### My Calendar III
-### Meeting Rooms I
-### Meeting Rooms II
-### Number of Airplanes in the Sky
-
-## Cagegory 7 2D arry (matrix, grid) problems
+## Cagegory 5 2D arry (matrix, grid) problems
 
 ### Perfect Rectangle
-### Trapping Rain Water
-### Trapping Rain Water II
-### Container With Most Water
-### Largest Rectangle in Histogram
-### Maximal Rectangle
-### Maximal Square
-### The Skyline Problem
-### Smallest Rectangle Enclosing Black Pixels
-### Rectangle Area
-### Max Sum of Rectangle No Larger Than K
 
-## Category 8 stock buying problems
+### Trapping Rain Water
+
+### Trapping Rain Water II
+
+### Container With Most Water
+
+### Largest Rectangle in Histogram
+
+### Maximal Rectangle
+
+### Maximal Square
+
+### The Skyline Problem
+
+### Smallest Rectangle Enclosing Black Pixels
+
+### Rectangle Area
+
+### [Max Sum of Rectangle No Larger Than K](#max-sum-of-rectangle-no-larger-than-k)
+
+## Category 6 stock buying problems
 
 [Most consistent ways of dealing with the series of stock problems](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems)
 
@@ -2410,10 +2736,12 @@ Use `T[i][k][j]` to represent the maximum profit of first i days if we allow at
 most k transactions and the current number of stocks at hand is `j` (`j == 0, 1`
 because hold two stocks at the same time is not allowed). So we have:
 
-    T[i][2][0] = max(T[i - 1][2][0], T[i - 1][2][1] + prices[i - 1]);
-    T[i][2][1] = max(T[i - 1][2][1], T[i - 1][1][0] - prices[i - 1]);
-    T[i][1][0] = max(T[i - 1][1][0], T[i - 1][1][1] + prices[i - 1]);
-    T[i][1][1] = max(T[i - 1][1][1], T[i - 1][0][0] - prices[i - 1]);
+```text
+T[i][2][0] = max(T[i - 1][2][0], T[i - 1][2][1] + prices[i - 1]);
+T[i][2][1] = max(T[i - 1][2][1], T[i - 1][1][0] - prices[i - 1]);
+T[i][1][0] = max(T[i - 1][1][0], T[i - 1][1][1] + prices[i - 1]);
+T[i][1][1] = max(T[i - 1][1][1], T[i - 1][0][0] - prices[i - 1]);
+```
 
 Think: How to ensure you fourmular cover all the possible values?
 
