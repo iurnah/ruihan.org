@@ -17,7 +17,7 @@
 * [ ] [Hash](./hash/notes.md)
 * [x] [Heap](./heap/notes.md)
 * [x] [Interval](./interval/notes.md)
-* [ ] [List](./list/notes.md)
+* [x] [Linked List](./linked-list/notes.md)
 * [ ] [Math](./math/notes.md)
 * [ ] [Queue](./queue/notes.md)
 * [ ] [Recursion](./recursion/notes.md)

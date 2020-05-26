@@ -26,15 +26,15 @@
 
 !!! Note "Four Ingredients for DP"
     1. What's the state?
-        * start with the last step for the optimal solution
-        * decompose into subproblems
+        - start with the last step for the optimal solution
+        - decompose into subproblems
     2. Write the state transition?
-        * find the transition from subproblem relations
+        - find the transition from subproblem relations
     3. Initial value and boundary conditions
-        * need to think careful in this step
+        - need to think careful in this step
     4. How can you compute the states?
-        * iteration directio
-        * forward computing
+        - iteration directio
+        - forward computing
 
 ### Coin Change
 
@@ -397,8 +397,10 @@ public:
 
 1. Last step:
 
-        A_0, A_1, A_2, ..., A_n-3, [A_n-2, A_n-1]
-        A_0, A_1, A_2, ..., A_n-3, A_n-2, [A_n-1]
+    ```text
+    A_0, A_1, A_2, ..., A_n-3, [A_n-2, A_n-1]
+    A_0, A_1, A_2, ..., A_n-3, A_n-2, [A_n-1]
+    ```
 
 2. State: `f[n]`: decode ways of first `n` letters.
 3. Smaller problem: `f[n] = f[n - 1] + f[n - 2] | A_n-2,A_n-1` decodable.
@@ -816,10 +818,12 @@ public:
   cost of painting all previous `i - 1` houses and the `i-1`th house cannot be
   painted as color `k`.
 
-        f[i][1] = min{f[i-1][2] + cost[i-1][1], f[i-1][3] + cost[i-1][1], ..., f[i-1][K] + cost[i-1][1]}
-        f[i][2] = min{f[i-1][1] + cost[i-1][2], f[i-1][3] + cost[i-1][2], ..., f[i-1][K] + cost[i-1][2]}
-        ...
-        f[i][K] = min{f[i-1][1] + cost[i-1][K], f[i-1][2] + cost[i-1][K], ..., f[i-1][K-1] + cost[i-1][K]}
+    ```C++
+    f[i][1] = min{f[i-1][2] + cost[i-1][1], f[i-1][3] + cost[i-1][1], ..., f[i-1][K] + cost[i-1][1]}
+    f[i][2] = min{f[i-1][1] + cost[i-1][2], f[i-1][3] + cost[i-1][2], ..., f[i-1][K] + cost[i-1][2]}
+    ...
+    f[i][K] = min{f[i-1][1] + cost[i-1][K], f[i-1][2] + cost[i-1][K], ..., f[i-1][K-1] + cost[i-1][K]}
+    ```
 
 * We could optimize the solution upon this. Basically, we can maintain the first
   two minimum value of the set `f[i-1][1], f[i-1][2], f[i-1][3], ..., f[i-1][K]`,
@@ -945,6 +949,7 @@ public:
     1. `f[i][0]` represent "the maximum money for robbing the first `i` houses and the last house __hasn't__ been robbed."
     2. `f[i][1]` represent "the maximum money for robbing the first `i` houses and the last house __has__ been robbed."
 * state transition equations:
+
     ```text
     f[i][0] = max(f[i-1][0], f[i-1][1])
     f[i][1] = f[i-1][0] + a[i-1]
@@ -1395,4 +1400,42 @@ public:
 
 ```C++
 
+```
+
+## Lecture 7
+
+### 403. Frog Jump
+
+* You could use naive solution to iterate all the possible cases and use
+  memoization to speed up.
+* In that case, you can also use binary search to located a stone in the array
+  which help to improve the complexity.
+* But the best solution is to use a map to keep all the possible steps for a stone.
+
+```C++ tab="C++ map to set"
+class Solution {
+public:
+    bool canCross(vector<int>& stones) {
+        int n = stones.size();
+        unordered_map<int, unordered_set<int>> hmap;
+
+        for (int i = 0; i < stones.size(); i++) {
+            hmap[stones[i]] = unordered_set<int>();
+        }
+
+        hmap[stones[0]].insert(0);
+
+        for (int i = 0; i < stones.size(); i++) {
+            for (int k: hmap[stones[i]]) {
+                for (int s = k - 1; s <= k + 1; s++) {
+                    if (s > 0 && hmap.find(stones[i] + s) != hmap.end()) {
+                        hmap[stones[i] + s].insert(s);
+                    }
+                }
+            }
+        }
+
+        return hmap[stones[n - 1]].size() > 0;
+    }
+};
 ```

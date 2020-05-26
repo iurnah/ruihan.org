@@ -188,3 +188,233 @@ public:
     }
 };
 ```
+
+## Substring search and substring window problem
+
+This type of problems asking for a substring that fulfill certain properties.
+The idea of a general solution is to keep a substring window by moving two
+"pointers" and keep a loop invariance. This algorithm is linear. Remember the
+following principles while solving the problem.
+
+1. Using `while` loop is better.
+2. Identify when to move the `left` pointer. Be clear about how the map is modified meanwhile.
+3. Maintain the invariance: the map keeps the info about chars in `[left, i)`.
+
+### Longest Substring Without Repeating Characters
+
+```C++ tab="One pass iteration"
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        vector<int> dict(256, -1);
+        int maxLen = 0, start = -1;
+
+        for (int i = 0; i < s.length(); ++i) {
+            if (dict[s[i]] > start)
+                start = dict[s[i]];
+
+            dict[s[i]] = i;
+            maxLen = max(maxLen, i - start);
+        }
+
+        return maxLen;
+    }
+};
+```
+
+```C++ tab="Two pointer loop invariant"
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        unordered_map<char, int> mp;
+
+        int left = 0;
+        int count = 0;
+        int res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            m[s[i]]++;
+            if (m[s[i]] > 1) count++;
+
+            while (count > 0) {
+                m[s[left]]--;
+                if (m[s[left]] == 1) {
+                    count--;
+                }
+                left++;
+            }
+
+            res = max(res, i - left + 1);
+        }
+
+        return res;
+    }
+}
+```
+
+```C++ tab="Two pointer loop invariant II"
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        if (s.length() == 0) return 0;
+
+        int map[256] = {0};
+        int res = INT_MIN;
+        int j = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            while (j < s.length() && map[s[j]] == 0) {
+                map[s[j]]++;
+                res = max(res, j - i + 1);
+                j++;
+            }
+
+            map[s[i]]--;
+        }
+
+        return res;
+    }
+};
+```
+
+Solution 2 Loop invariance
+
+* This solution is very neat that it uniformly take care of two cases: 1) first
+  time discovered a char. 2) discovered a preated char, by cleverly set the
+  initial value of the `dict` value to `-1` and `start = -1`;
+* The idea can be described as follows: set the start points to current position
+  if you found a duplicate(notice whe a char is first discovered, because we set
+  `start = -1`, start will also update). Otherwise just record the current
+  position in the dictionary and update the length.
+* The `start = dict[s[i]]` maintained the invariance so that `i - start` will never be wrong.
+
+```C++ tab=""
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        vector<int> dict(256, -1);
+        int maxLen = 0, start = -1;
+
+        for (int i = 0; i < s.length(); ++i) {
+            if (dict[s[i]] > start) // if repeat find
+                start = dict[s[i]]; // update start
+
+            dict[s[i]] = i; // we just mark the position in the dict.
+            maxLen = max(maxLen, i - start);
+        }
+
+        return maxLen;
+    }
+};
+```
+
+### Longest Substring with At Most Two Distinct Characters
+
+* We can use a __hash table__ to record the chars we have seen, the key is the
+  char, the value is the count of the char seen so far.
+* Once we have more than two hash entries, we should stop looking further and
+  think about removing the third char. So that we can count the desired length.
+* We use a pointer `left` to keep the left boundary of the interested chars.
+
+```C++ tab="C++ loop invariant with map"
+class Solution {
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+        int max_len = 0;
+        int left = 0;
+        unordered_map<char, int> m;
+
+        for (int i = 0; i < s.length(); i++) }{
+            m[s[i]]++;
+            while (m.size() > 2) {
+                if (--m[s[left]] == 0) m.erase(s[left]);
+                left++;
+            }
+
+            max_len = max(max_len, i - left + 1);
+        }
+
+        return max_len;
+    }
+};
+```
+
+```C++ tab="C++ using char array as map"
+class Solution {
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+        int max_len = 0;
+        int left = 0;
+        int cnt = 0;
+        int m[128] = {0};
+
+        for (int i = 0; i < s.length(); i++) {
+            if (m[s[i]]++ == 0) cnt++;
+            while (cnt > 2) {
+                if (--m[s[left++]] == 0) cnt--;
+            }
+            max_len = max(max_len, i - left + 1);
+        }
+
+        return max_len;
+    }
+};
+```
+
+```C++ tab="C++ Two pointers"
+class Solution {
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+        int max_len = 0;
+        int cnt = 0;
+        int m[128] = {0};
+
+        for (int i = 0, j = 0; i < s.length(); i++) {
+            while (j < s.length()) {
+                if (m[s[j]] == 0) {
+                    cnt++;
+                }
+                m[s[j]]++;
+                /* loop invariance: maintain the hash only have 2 distinct chars */
+                while (cnt > 2) {
+                    if (--m[s[i++]] == 0)
+                        cnt--;
+                }
+                max_len = max(max_len, j - i + 1);
+                j++;
+            }
+        }
+
+        return max_len;
+    }
+};
+```
+
+### Longest Substring with At Most K Distinct Characters
+
+* This problem is essentially equivalent to the
+  [Longest Substring with At Most Two Distinct Characters](#longest-substring-with-at-most-two-distinct-characters) problem.
+
+```C++ tab=""
+class Solution {
+public:
+    int lengthOfLongestSubstringKDistinct(string s, int k) {
+        int max_len = 0;
+        int left = 0;
+        int cnt = 0;
+        int map[128] = {0};
+
+        for (int i = 0; i < s.length(); i++) {
+            if (map[s[i]] == 0)
+                cnt++;
+            map[s[i]]++;
+            while (cnt > k) {
+                if (--map[s[left++]] == 0)
+                    cnt--;
+            }
+            max_len = max(max_len, i - left + 1);
+        }
+
+        return max_len;
+    }
+};
+```

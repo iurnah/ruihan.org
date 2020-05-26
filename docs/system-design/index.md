@@ -1,9 +1,11 @@
 # System Design
 
-## [Design Pattern](./patterns/notes.md)
-
 ## [Distributed System Concepts](./concepts/notes.md)
 
-## [How to Design TinyUrl](./tinyurl/notes.md)
+## [Design Patterns](./patterns/notes.md)
 
-## [How to Design Twitter](./twitter/notes.md)
+## [How to Design TinyUrl](./problems/tinyurl/notes.md)
+
+## [How to Design Twitter](./problems/twitter/notes.md)
+
+## [How to Design Ticketmaster](./problems/ticketmaster/notes.md)

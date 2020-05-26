@@ -21,10 +21,12 @@ now implement the following operations.
 
 - integer array `id[N]`
 - interpretation: `p` and `q` are connected iff they have the same id.
-```
-i = 0  1  2  3  4  5  6  7  8  9
-id=[0, 1, 1, 8, 8, 0, 0, 1, 8, 8]
-```
+
+    ```text
+    i = 0  1  2  3  4  5  6  7  8  9
+    id=[0, 1, 1, 8, 8, 0, 0, 1, 8, 8]
+    ```
+
 - Find. Check if `p` and `q` have the same id.
 - Union. Change the id of nodes have same id as `p` to the id of `q`.
 
@@ -75,10 +77,11 @@ public class QuickFindUF
 - Integer array `id[N]`
 - Interpretation: `id[i]` is parent of `i`.
 - Root of i is `id[id[id[...id[i]...]]]`. (the root’s parent is itself).
-```
-i = 0  1  2  3  4  5  6  7  8  9
-id=[0, 1, 9, 4, 9, 6, 6, 7, 8, 9]
-```
+
+    ```text
+    i = 0  1  2  3  4  5  6  7  8  9
+    id=[0, 1, 9, 4, 9, 6, 6, 7, 8, 9]
+    ```
 
 - Find. Check if `p` and `q` have the same root.
 - Union. set the id of `p`’s root to the id of `q`’s root.
@@ -235,3 +238,19 @@ In practice, WQUPC is linear.
 |            weighted quick union            |   \(N+MlgN\)    |
 |     quick union with path compression      |   \(N+MlgN\)    |
 | weighted quick union with path compression |  \(N+Mlg^*N\)   |
+
+## Problems
+
+### Number of Islands
+
+### Longest Consecutive Sequence
+
+### Surrounded Regions
+
+### Number of Islands II
+
+### Graph Valid Tree
+
+### Number of Connected Components in an Undirected Graph
+
+### Friend Circles

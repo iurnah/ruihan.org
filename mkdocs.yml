@@ -40,8 +40,9 @@ nav:
     - CS224N Write-up: courses/cs224n/write-up.md
     - 6.431 Probability: courses/6.431-probability/notes.md
     - Learning From Data: courses/learning-from-data/notes.md
+    - Nine Chapter System Design: courses/9chap-system-design/notes.md
+    - Nine Chapter Dynamic Programming: courses/9chap-dynamic-prog/notes.md
     - Functional Programming Principles in Scala: courses/func-prog-in-scala/notes.md
-    - Nine Chapter Dynamic Prog: courses/9chap-dynamic-prog/notes.md
   - Leetcode: 
     - Index: leetcode/index.md
     - Array: leetcode/array/notes.md
@@ -53,7 +54,9 @@ nav:
     - Graph: leetcode/graph/notes.md
     - Heap: leetcode/heap/notes.md
     - Interval: leetcode/interval/notes.md
+    - Linked List: leetcode/linked-list/notes.md
     - String: leetcode/string/notes.md
+    - Trie: leetcode/trie/notes.md
     - Union Find: leetcode/union-find/notes.md
   - Research:
     - Index: research/index.md
@@ -69,7 +72,8 @@ nav:
     - Distributed System Concepts: system-design/concepts/notes.md
     - Design Patterns: system-design/patterns/notes.md
     - How to Design TinyUrl: system-design/problems/tinyurl/notes.md
-    - How to Design Twitter: system-design/problems/twitter/notes.md
+    - How to Design Twitter: system-design/problems/twitter/notes.md 
+    - How to Design Ticketmaster: system-design/problems/ticketmaster/notes.md
 
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'

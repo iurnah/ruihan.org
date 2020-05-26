@@ -14,7 +14,9 @@
 
 ## Distributed Systems
 
+* [ ] [Nine Chapter System Design](./9chap-system-design/notes.md)
+
 ## Algorithm and Languages
 
-* [x] [Nine Chapter Dynamic Prog](./9chap-dynamic-prog/notes.md)
+* [x] [Nine Chapter Dynamic Programming](./9chap-dynamic-prog/notes.md)
 * [x] [Functional Programming Principles in Scala](./func-prog-in-scala/notes.md)

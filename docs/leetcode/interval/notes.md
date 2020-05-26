@@ -318,6 +318,10 @@ Solution 1 Sweep line, using map.
 
 ### 252. Meeting Rooms
 
+```C++
+
+```
+
 ### 253. Meeting Rooms II
 
 Solution 1 Sweep line, split the start and end, put them into a vector.
@@ -351,6 +355,38 @@ public:
         }
 
         return rooms;
+    }
+};
+```
+
+```C++ tab="lamda sorting"
+class Solution {
+public:
+    int minMeetingRooms(vector<vector<int>>& intervals) {
+        int n = intervals.size();
+        if (n == 0) return 0;
+
+        vector<vector<int>> points;
+        for (auto &interval: intervals) {
+            points.push_back({interval[0], 1});
+            points.push_back({interval[1], -1});
+        }
+        sort(points.begin(), points.end(), [](vector<int> &a, vector<int> &b){
+            if (a[0] == b[0]) {
+                return a[1] < b[1];
+            } else {
+                return a[0] < b[0];
+            }
+        });
+
+        int res = 0;
+        int rooms = 0;
+        for (auto &p : points) {
+            rooms += p[1];
+            res = max(res, rooms);
+        }
+
+        return res;
     }
 };
 ```

@@ -704,7 +704,7 @@ DFS solution
 
 * we can also use DFS for this problem, it turns out DFS is the simpliest solution.
 
-```C++ "DFS solution"
+```C++ tab="DFS solution"
 class Solution {
 public:
     int longestIncreasingPath(vector<vector<int>>& matrix) {
