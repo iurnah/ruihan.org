@@ -68,6 +68,10 @@ BASE database may be a better choice.
 
 * [分布式系统的事务处理](https://coolshell.cn/articles/10910.html)
 
+* Master-Slave
+* Master-Master
+* 2/3 Phase Commit
+
 ### Eventually Consistent
 
 ## Consistent hashing
@@ -92,6 +96,10 @@ BASE database may be a better choice.
 
 ## Redis
 
+[Cassandra vs MongoDB vs CouchDB vs Redis vs Riak vs HBase vs Couchbase vs OrientDB vs Aerospike vs Neo4j vs Hypertable vs ElasticSearch vs Accumulo vs VoltDB vs Scalaris vs RethinkDB comparison](https://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis)
+
+![DB Systems CAP comparison](./fig/DB-CAP-comparison.png)
+
 ## Kafka
 
 * [The Log: What every software engineer should know about real-time data's unifying abstraction](https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying)
@@ -108,3 +116,10 @@ BASE database may be a better choice.
 ## A* search
 
 ## Minmax Algorithm
+
+## Distributed System Design Process
+
+0. scalability (vertical sharding, horizontal sharding)
+1. fault tolerance (replication, auto failover)
+2. consistency (choose consistency models, ACID v.s BASE)
+3. performance (distributed cache system)

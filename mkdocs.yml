@@ -55,7 +55,9 @@ nav:
     - Heap: leetcode/heap/notes.md
     - Interval: leetcode/interval/notes.md
     - Linked List: leetcode/linked-list/notes.md
+    - Stack: leetcode/stack/notes.md
     - String: leetcode/string/notes.md
+    - Tree: leetcode/tree/notes.md
     - Trie: leetcode/trie/notes.md
     - Union Find: leetcode/union-find/notes.md
   - Research:
