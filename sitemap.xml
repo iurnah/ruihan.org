@@ -1,155 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://ruihan.org/books/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/books/accelerated-cpp/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/courses/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/courses/cs224n/lec-notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/courses/cs224n/write-up/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/courses/6.431-probability/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/courses/9chap-system-design/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/courses/9chap-dynamic-prog/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/courses/func-prog-in-scala/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://ruihan.org/courses/applied-scrum-for-agile/notes/</loc>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/array/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/backtracking/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/binary-search/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/breadth-first-search/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/depth-first-search/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/dynamic-programming/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/graph/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/heap/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/interval/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/linked-list/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/stack/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/string/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/tree/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/trie/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/leetcode/union-find/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/research/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/research/coalition-game/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/research/contextual-bandit/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/research/tfidf-score/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/seedlabs/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/seedlabs/applied-crypto/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/seedlabs/public-key-cryptography-and-pki/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/system-design/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/system-design/concepts/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/system-design/patterns/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/system-design/problems/tinyurl/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/system-design/problems/twitter/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://ruihan.org/system-design/problems/ticketmaster/notes/</loc>
-     <lastmod>2020-05-30</lastmod>
+     <lastmod>2020-07-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
