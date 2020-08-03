@@ -617,3 +617,9 @@ However, the $\sigma$ is usually unknown, what you can do is to use the estimate
   [2]: http://static.zybuluo.com/iurnah/2ivtzqonj3ubmoa2hntahbmy/Screen%20Shot%202018-11-12%20at%208.28.07%20PM.png
   [3]: http://static.zybuluo.com/iurnah/5uynu5cc4lzzjrnwn4401ccx/Screen%20Shot%202018-11-22%20at%2011.36.38%20AM.png
   [4]: http://static.zybuluo.com/iurnah/9g342so1e6z2xlagd1eqgaf6/Screen%20Shot%202018-11-27%20at%2011.53.51%20AM.png
+
+## Resources
+
+1. [Distributtion Explorer by Justin Bois](https://distribution-explorer.github.io/)
+2. [Tutorial 3b: Probability distributions and their stories](http://bois.caltech.edu/dist_stories/t3b_probability_stories.html)
+3. [Think Stats: Exploratory Data Analysis in Python](http://greenteapress.com/thinkstats2/html/index.html)
