@@ -22,7 +22,8 @@ DFS(graph G, start vertex s)
 5. Nesting of descendants intervals: $u.d < v.d < v.f < u.f$.
     * $d$: discovery time
     * $f$: finish time.
-6. If vertex $v$ is a descendant of vertex $u$, at the time of discovery of $u$, there is a path from $u$ to $v$ isn't been visited (all white path) (White-path theorem)
+6. If vertex $v$ is a descendant of vertex $u$, at the time of discovery of $u$,
+there is a path from $u$ to $v$ isn't been visited (all white path) (White-path theorem)
 
 ## Topological sort
 
@@ -83,6 +84,98 @@ $$
 $$
 
 ### Negative edge and Negative edge circle
+
+## Problems
+
+### 339. Nested List Weight Sum
+
+```C++ tab="DFS solution"
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * class NestedInteger {
+ *   public:
+ *     // Constructor initializes an empty nested list.
+ *     NestedInteger();
+ *
+ *     // Constructor initializes a single integer.
+ *     NestedInteger(int value);
+ *
+ *     // Return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     bool isInteger() const;
+ *
+ *     // Return the single integer that this NestedInteger holds, if it holds a single integer
+ *     // The result is undefined if this NestedInteger holds a nested list
+ *     int getInteger() const;
+ *
+ *     // Set this NestedInteger to hold a single integer.
+ *     void setInteger(int value);
+ *
+ *     // Set this NestedInteger to hold a nested list and adds a nested integer to it.
+ *     void add(const NestedInteger &ni);
+ *
+ *     // Return the nested list that this NestedInteger holds, if it holds a nested list
+ *     // The result is undefined if this NestedInteger holds a single integer
+ *     const vector<NestedInteger> &getList() const;
+ * };
+ */
+class Solution {
+public:
+    int depthSum(vector<NestedInteger>& nestedList) {
+        return depthSumHelper(nestedList, 1);
+    }
+
+    int depthSumHelper(vector<NestedInteger>& nestedList, int depth) {
+
+        int result = 0;
+        for (auto curr: nestedList) {
+            if (curr.isInteger()) {
+                result += (curr.getInteger() * depth);
+            } else {
+                result += depthSumHelper(curr.getList(), depth + 1);
+            }
+
+        }
+
+        return result;
+    }
+};
+```
+
+### 364. Nested List Weight Sum II
+
+```C++ tab="C++"
+class Solution {
+public:
+    int depthSumInverse(vector<NestedInteger>& nestedList) {
+        int sum = 0;
+        vector<int> results;
+
+        /* 1st place we iterate through a list */
+        for (auto nestedInt : nestedList) {
+            dfs_helper(nestedInt, 0, results);
+        }
+
+        /* calculate the results */
+        for (int i = results.size() - 1, level = 1; i >= 0; i--, level++) {
+            sum += results[i] * level;
+        }
+
+        return sum;
+    }
+
+    void dfs_helper(NestedInteger& nestedList, int level, vector<int>& results) {
+        if (results.size() < level + 1) results.resize(level + 1);
+        if (nestedList.isInteger()) {
+            results[level] += nestedList.getInteger();
+        } else {
+            for (auto ni : nestedList.getList()) { /* 2nd place we iterate through a list */
+                dfs_helper(ni, level + 1, results);
+            }
+        }
+    }
+};
+```
 
 ## Reference
 

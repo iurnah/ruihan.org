@@ -309,6 +309,66 @@ public:
 };
 ```
 
+### 435. Non-overlapping Intervals
+
+Solution 1 Greedy algorithm
+
+```C++ tab="C++, sort by start"
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        int n = intervals.size();
+        int res = 0;
+
+        sort(intervals.begin(), intervals.end(),
+             [](const vector<int>& a, const vector<int>& b){
+                 return a[0] < b[0];
+             });
+
+        int left = 0;
+        for (int i = 1; i < n; i++) {
+            if (intervals[left][1] > intervals[i][0]) {
+                if (intervals[left][1] > intervals[i][1]) {
+                    left = i;
+                }
+                res++;
+            } else {
+                left = i;
+            }
+        }
+
+        return res;
+    }
+};
+```
+
+```C++ tab="C++, sort by end"
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        int n = intervals.size();
+        int res = 0;
+
+        sort(intervals.begin(), intervals.end(),
+             [](const vector<int>& a, const vector<int>& b){
+                 return a[1] < b[1];
+             });
+
+        int left = 0;
+        int end = intervals[0][1];
+        for (int i = 1; i < n; i++) {
+            if (interval[i][0] < end) {
+                res++;
+            } else {
+                end = intervals[i][1]; // no need to remove, update the new end
+            }
+        }
+
+        return res
+    }
+}
+```
+
 ### 452. Minimum Number of Arrows to Burst Balloons
 
 Solution 1 Sweep line, using map.
@@ -319,7 +379,6 @@ Solution 1 Sweep line, using map.
 ### 252. Meeting Rooms
 
 ```C++
-
 ```
 
 ### 253. Meeting Rooms II
