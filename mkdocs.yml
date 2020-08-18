@@ -63,6 +63,7 @@ nav:
     - Union Find: leetcode/union-find/notes.md
   - Research:
     - Index: research/index.md
+    - Paper Reading: research/paper-reading/notes.md
     - Coalition Game: research/coalition-game/notes.md
     - Contextual Multi-Armed Bandit: research/contextual-bandit/notes.md
     - TF-IDF for Information Retrieval: research/tfidf-score/notes.md

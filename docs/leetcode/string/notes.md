@@ -11,7 +11,83 @@ chars in the string that may affect the complexity of the loop. The following
 problems can be tricky to implement when you keep the wrong loop invariance or
 have identified wrong if condition or while conditions.
 
-### [Decode String](https://leetcode.com/problems/decode-string/)
+### 157. Read N Characters Given Read4
+
+Solution 1
+
+```C++ tab="loop invariance"
+/**
+ * The read4 API is defined in the parent class Reader4.
+ *     int read4(char *buf4);
+ */
+
+class Solution {
+public:
+    /**
+     * @param buf Destination buffer
+     * @param n   Number of characters to read
+     * @return    The number of actual characters read
+     */
+    int read(char *buf, int n) {
+        int total = 0;
+        int len = 0;
+        while (total < n) {
+            len = read4(buf + total);
+            if (len == 0) {
+                break;
+            }
+
+            total += len;
+
+            if (total > n) {
+                total = n;
+            }
+        }
+
+        return total;
+    }
+};
+```
+
+### 158. Read N Characters Given Read4 II - Call multiple times
+
+```C++ tab="one byte by one byte"
+/**
+ * The read4 API is defined in the parent class Reader4.
+ *     int read4(char *buf);
+ */
+
+class Solution {
+    char buf4[4];
+    int pos = 0, len = 0;
+public:
+    /**
+     * @param buf Destination buffer
+     * @param n   Number of characters to read
+     * @return    The number of actual characters read
+     */
+    int read(char *buf, int n) {
+        for (int i = 0; i < n; i++) {
+            if (pos == len) {
+                len = read4(buf4);
+                pos = 0;
+            }
+
+            if (len == 0) {
+                return i;
+            }
+
+            if (pos < len) {
+                buf[i] = buf4[pos++];
+            }
+        }
+
+        return n;
+    }
+};
+```
+
+### 394. Decode String
 
 * Iterative solution v.s. Recursive solution
 * Make sure you have all the test cases first
@@ -96,9 +172,9 @@ public:
 };
 ```
 
-### Longest Absolute File Path
+### 388. Longest Absolute File Path
 
-### Remove Sub-Folders from the Filesystem
+### 1233. Remove Sub-Folders from the Filesystem
 
 ```C++
 class Solution {
@@ -130,7 +206,7 @@ public:
 };;
 ```
 
-### [Maximum Score After Splitting a String](https://leetcode.com/problems/maximum-score-after-splitting-a-string/)
+### 1422. Maximum Score After Splitting a String
 
 * The steps to solve this type of problem is
     1. enumerate all the possible test cases
@@ -200,7 +276,7 @@ following principles while solving the problem.
 2. Identify when to move the `left` pointer. Be clear about how the map is modified meanwhile.
 3. Maintain the invariance: the map keeps the info about chars in `[left, i)`.
 
-### Longest Substring Without Repeating Characters
+### 3. Longest Substring Without Repeating Characters
 
 ```C++ tab="One pass iteration"
 class Solution {
@@ -307,7 +383,7 @@ public:
 };
 ```
 
-### Longest Substring with At Most Two Distinct Characters
+### 159. Longest Substring with At Most Two Distinct Characters
 
 * We can use a __hash table__ to record the chars we have seen, the key is the
   char, the value is the count of the char seen so far.
@@ -389,7 +465,7 @@ public:
 };
 ```
 
-### Longest Substring with At Most K Distinct Characters
+### 340. Longest Substring with At Most K Distinct Characters
 
 * This problem is essentially equivalent to the
   [Longest Substring with At Most Two Distinct Characters](#longest-substring-with-at-most-two-distinct-characters) problem.
