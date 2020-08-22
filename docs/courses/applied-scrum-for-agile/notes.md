@@ -124,7 +124,7 @@ Scrum Alliance - www.scrumalliance.org
 
 * [Agile Atlas](https://www.scrumalliance.org/learn-about-scrum/agile-atlas)
 * [Learn About Scrum](https://www.scrumalliance.org/learn-about-scrum)
-* [Scrum.org](www.scrum.org)
+* [Scrum.org](https://www.scrum.org)
 
 * [What Is Scrum](https://www.scrum.org/resources/what-is-scrum)
 * [Scrum Guide](https://www.scrumguides.org/docs/scrumguide/v2017/2017-Scrum-Guide-US.pdf#zoom=100)

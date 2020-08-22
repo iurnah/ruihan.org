@@ -18,7 +18,7 @@
 * [x] [Heap](./heap/notes.md)
 * [x] [Interval](./interval/notes.md)
 * [x] [Linked List](./linked-list/notes.md)
-* [ ] [Math](./math/notes.md)
+* [x] [Math](./math/notes.md)
 * [ ] [Queue](./queue/notes.md)
 * [ ] [Recursion](./recursion/notes.md)
 * [ ] [Reservoir Sampling](./reservior-sampling/notes.md)
