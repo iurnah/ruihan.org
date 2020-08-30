@@ -7,7 +7,7 @@
 
 ## Artificial Intelligence and Machine Learning
 
-* [ ] [Stanford Machine Learning](./stanford-machine-learning/notes.md)
+* [x] [Machine Learning](./machine-learning-coursera/notes.md)
 * [x] [CS224N Lecture Notes](./cs224n/lec-notes.md)
 * [x] [CS224N Write-up](./cs224n/write-up.md)
 * [x] [6.431 Probability](./6.431-probability/notes.md)

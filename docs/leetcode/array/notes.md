@@ -1362,7 +1362,7 @@ public:
 };
 ```
 
-### Split Array Largest Sum
+### 410. Split Array Largest Sum
 
 Similar problems:
 
@@ -1370,7 +1370,14 @@ Similar problems:
 
 DP solution
 
-Notice the edge case: `[1, INT_MAX]`, use `double` can avoid integer overflow.
+* Notice the edge case: `[1, INT_MAX]`, use `double` can avoid integer overflow.
+
+Binary Search solution
+
+* This is a greedy search solution that use binary search to accelerate the
+  search speed
+* The bisection condition is not `A[m] < target` any more. It is a function to
+  check whether the constains can meet for th value `mid`.
 
 ```C++ tab="C++ DP"
 /**
@@ -1411,6 +1418,51 @@ public:
         }
 
         return f[m][n];
+    }
+};
+```
+
+```C++ tab="C++ binary search"
+class Solution {
+public:
+    int splitArray(vector<int>& nums, int m) {
+        int total = 0;
+        int mx = 0;
+        for (int num: nums) {
+            total += num;
+            mx = max(mx, num);
+        }
+
+        int l = mx, r = total;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+
+            if (!canCut(nums, mid, m - 1)) {
+                l = mid + 1;
+            } else {
+                r = mid;
+            }
+        }
+
+        return l;
+    }
+
+    // check whether the constains are met
+    // 1. whether m - 1 cut is possible for all subsum <= mid with
+    bool canCut(vector<int>& nums, int mid, int m) {
+        int sum = 0;
+        for (int num: nums) {
+            if (num > mid) return false;
+            else if (sum + num <= mid) sum += num;
+            else { // cut is ok so far
+                m--;
+                if (m < 0) return false; // more element after all cuts.
+
+                sum = num; // init the next group sum
+            }
+        }
+
+        return true;
     }
 };
 ```

@@ -1035,7 +1035,12 @@ Solution 3 Use the insert interval subroutine.
 
 Solution 1
 
-```C++
+* This problem show us the importance of defining the loop invariant. If we use
+  The one ahead of the first variable `prev` to keep the loop invariant, it saved
+  many code to handle the coner cases.
+* Another trick is factor out the logic to generate the final result in to a funciton.
+
+```C++ "C++ succient solution"
 class Solution {
 public:
     vector<string> findMissingRanges(vector<int>& nums, int lower, int upper) {
@@ -1064,6 +1069,52 @@ public:
 
     string getRange(int a, int b) {
         return a == b ? to_string(a) : to_string(a) + "->" + to_string(b);
+    }
+};
+```
+
+```C++ tab="C++ lengthy solution"
+class Solution {
+public:
+    vector<string> findMissingRanges(vector<int>& nums, int lower, int upper) {
+        vector<string> res;
+
+        if (nums.size() == 0) {
+            if (lower == upper)
+                res.push_back(to_string(lower));
+            else
+                res.push_back(to_string(lower) + "->" + to_string(upper));
+
+            return res;
+        }
+
+        long s = nums[0];
+        if (lower < s - 1) {
+            res.push_back(to_string(lower) + "->" + to_string(s - 1));
+        } else if (lower < s) {
+            res.push_back(to_string(lower));
+        }
+
+        for (int i = 0; i < nums.size() - 1; i++) {
+            long a = nums[i];
+            long b = nums[i + 1];
+            if (a == b - 1) {
+                continue;
+            } else if (a == b - 2) {
+                res.push_back(to_string(a + 1));
+            } else if (a < b - 2) {
+                res.push_back(to_string(a + 1) + "->" + to_string(b - 1));
+            }
+        }
+
+        long e = nums[nums.size() - 1];
+        if (e < upper - 1) {
+            res.push_back(to_string(e + 1) + "->" + to_string(upper));
+        } else if (e < upper) {
+            res.push_back(to_string(upper));
+        }
+
+        return res;
     }
 };
 ```

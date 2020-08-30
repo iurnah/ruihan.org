@@ -1134,6 +1134,132 @@ public:
 
 ### Evaluate Devision
 
+### 399. Evaluate Division
+
+Solution BFS
+
+```C++ tab="C++ BFS"
+class Solution {
+public:
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        unordered_map<string, vector<pair<string, double>>> graph;
+        for (int i = 0; i < equations.size(); i++) {
+
+            graph[equations[i][0]].push_back({equations[i][1], values[i]});
+            graph[equations[i][0]].push_back({equations[i][0], 1.0});
+            graph[equations[i][1]].push_back({equations[i][0], 1.0 / values[i]});
+            graph[equations[i][1]].push_back({equations[i][1], 1.0});
+
+        }
+
+        vector<double> res;
+
+        for (auto& qr: queries ) {
+            if (graph.find(qr[0]) == graph.end() || graph.find(qr[1]) == graph.end()) {
+                res.push_back(-1);
+                continue;
+            }
+
+            queue<pair<string, double>> q;
+            unordered_set<string> visited;
+            q.push({qr[0], 1.0});
+            visited.insert(qr[0]);
+            bool find = false;
+            while (!q.empty() && !find) {
+                auto t = q.front(); q.pop();
+                if (t.first == qr[1]) {
+                    res.push_back(t.second);
+                    find = true;
+                    break;
+                }
+
+                for (auto a: graph[t.first]) {
+                    if (visited.find(a.first) == visited.end()) {
+                        a.second *= t.second;
+                        q.push(a);
+                        visited.insert(a.first);
+                    }
+                }
+            }
+            if (!find) res.push_back(-1.0);
+        }
+
+        return res;
+    }
+};
+```
+
+Solution 2 DFS
+
+```C++ tab="C++ DFS"
+class Solution {
+public:
+    vector<double> calcEquation(vector<pair<string, string>> equations,
+                                vector<double>& values, vector<pair<string, string>> queries) {
+
+        int m = equations.size();
+        int n = queries.size();
+        vector<double> res(n, -1);
+        set<string> s;
+        for (auto equation : equations) {
+            s.insert(equation.first);
+            s.insert(equation.second);
+        }
+
+        for (int i = 0; i < n; i++) {
+            vector<string> query({queries[i].first, queries[i].second});
+            if (s.count(query[0]) && s.count(query[1])) {
+                vector<bool> visited(m, 0);
+                res[i] = helper(equations, values, query, visited);
+            }
+        }
+
+        return res;
+    }
+
+    // Parameter visited here is to help the search.
+    double helper (vector<pair<string, string>> equations, vector<double>& values, vector<string> query, vector<bool>visited) {
+        int m = equations.size();
+
+        //base case, writing in seperate loop is more efficient O(n)
+        for (int i = 0; i < m; i++) {
+            if (equations[i].first == query[0] && equations[i].second == query[1]) {
+                return values[i];
+            }
+
+            if (equations[i].first == query[1] && equations[i].second == query[0]) {
+                return 1 / values[i];
+            }
+        }
+
+        // not found do DFS
+        for (int i = 0; i < m; i++) {
+            if (equations[i].first == query[0] && !visited[i]) {
+                visited[i] = true;
+                double t = values[i] * helper(equations, values, {equations[i].second, query[1]}, visited);
+                if (t > 0) return t;
+                visited[i] = false;
+            }
+
+            if (equations[i].second == query[0] && !visited[i]) {
+                visited[i] = true;
+                double t = (1 / values[i]) * helper(equations, values, {equations[i].first, query[1]}, visited);
+                if (t > 0) return t;
+                visited[i] = false;
+            }
+        }
+
+        return -1.0;
+    }
+};
+```
+
+Solution 3 Floyd–Warshall All pair shortest path
+
+```C++ tab="C++ Floyd-Warshall"
+
+```
+
 ## Compute shortest path for undirected graphs
 
 ### [The Maze II](#the-maze-ii)

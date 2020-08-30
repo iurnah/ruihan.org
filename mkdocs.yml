@@ -35,7 +35,7 @@ nav:
     - Accelerated C++: books/accelerated-cpp/notes.md
   - Courses:
     - Index: courses/index.md
-    - Stanford Machine Learning: courses/stanford-machine-learning/notes.md
+    - Machine Learning (Coursera): courses/machine-learning-coursera/notes.md
     - CS224N Lecture Notes: courses/cs224n/lec-notes.md
     - CS224N Write-up: courses/cs224n/write-up.md
     - 6.431 Probability: courses/6.431-probability/notes.md

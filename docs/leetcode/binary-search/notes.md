@@ -816,6 +816,149 @@ class Solution(object):
         return res
 ```
 
+### 1539. Kth Missing Positive Number
+
+Naive Solution
+
+* using multiple variable and keep loop invariant.
+
+Binary Search
+
+* Observe the relation: total missing positives before `A[m]` is `A[m] -  1 - m`
+  because the index `m` and `A[m]` is related to th emissing positives thus can
+  be used for counting.
+* the bisection condition can be intepreted as boolean predicate: "whether the
+  number of missing positives before `A[m]` is __no less__ than `k`?"
+
+```C++ tab="Naive Solution"
+class Solution {
+public:
+    int findKthPositive(vector<int>& arr, int k) {
+        if (arr.empty()) return k;
+        int missing_cnt = arr[0] - 1;
+        if (missing_cnt >= k) return k;
+        int prev = arr[0];
+        for (int i = 1;  i < arr.size(); ++i ) {
+            if (!(arr[i] == prev || arr[i] == prev + 1)) {
+                int skip = arr[i] - prev - 1;
+                if (missing_cnt + skip >= k) {
+                    return prev + k - missing_cnt;
+                }
+                missing_cnt +=skip;
+            }
+            prev = arr[i];
+        }
+        return (prev + k - missing_cnt);
+    }
+};
+```
+
+```C++ tab="Binary Search"
+class Solution {
+public:
+    int findKthPositive(vector<int>& arr, int k) {
+        int l = 0, r = arr.size();
+        while (l < r) {
+            int m = l + (r - l) / 2;
+
+            if (arr[m] - 1 - m < k) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+
+        return l + k;
+    }
+};
+```
+
+### [410. Split Array Largest Sum](../../array/notes/#split-array-largest-sum)
+
+### 1482. Minimum Number of Days to Make m Bouquets
+
+Solution Binary Search
+
+* Use a subroutine to compute whether the constrain can be meet or not.
+* The search is looking for the whether m bouquets is possible, meet the binary
+  pattern "no less than". So that we use `if(cnt_m < m)` and the return values is l.
+
+```C++ tab="C++ binary search"
+class Solution {
+public:
+    int minDays(vector<int>& bloomDay, int m, int k) {
+        int l = *min_element(bloomDay.begin(), bloomDay.end());
+        int r = *max_element(bloomDay.begin(), bloomDay.end());
+
+        if (bloomDay.size() < m * k) return -1;
+
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+
+            int cnt_k = 0;
+            int cnt_m = 0;
+            for (int d: bloomDay) {
+                if (d > mid) {
+                    cnt_k = 0;
+                } else {
+                    cnt_k++;
+                    if (cnt_k == k) {
+                        cnt_m++;
+                        cnt_k = 0;
+                    }
+                }
+            }
+
+            if (cnt_m < m) {
+                l = mid + 1;
+            } else {
+                r = mid;
+            }
+        }
+
+        return l;
+    }
+};
+```
+
+### 1283. Find the Smallest Divisor Given a Threshold
+
+Solution Binary search
+
+* Notice the specific divisor calculation. under this divisor operation, no matter
+  how large the divisor is, the sum is always greater than `nums.size()`, if not,
+  the solution is not guaranteed. so the threshold cannot smaller than `nums.size()`.
+  This also indicate that the minimum divisor is less than or eaual to `max(nums)`.
+* in the bsection predicate, notice this time the condition becomes `if (res > target)`
+  essentially, the `if (f(mid) < target)` in the binary search templates is saying
+  `mid` and `f(mid)` are positive correlation. here the `mid` and `res` are negative
+  correlation.
+
+```C++ tab="C++ binary search" hl_lines="13"
+class Solution {
+public:
+    int smallestDivisor(vector<int>& nums, int threshold) {
+        int l = 1;
+        int r = *max_element(nums.begin(), nums.end());
+
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            int res = 0;
+            for (int num: nums) {
+                res += (num + m - 1) / m;
+            }
+            if (res > threshold) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+
+        return l;
+    }
+};
+```
+
 ### 74. Search a 2D Matrix
 
 Binary search

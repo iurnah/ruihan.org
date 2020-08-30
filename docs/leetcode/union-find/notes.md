@@ -254,3 +254,48 @@ In practice, WQUPC is linear.
 ### Number of Connected Components in an Undirected Graph
 
 ### Friend Circles
+
+### 765. Couples Holding Hands
+
+Solution 1 Union Find
+
+Briefly, We can view each double seat couch as a node. Each couple in the same
+couch is a graph node. For those couple not seat in the same couch, we connect
+the two different couch together. We are looking for valid swaps that remove the
+inter-counch edge and create a new component in the graph. the conclusion is
+that we cannot remove two edges by a single swap. This should proof the greedy will work.
+
+```C++ tab="C++ Union Find"
+
+```
+
+Solution 2 Greedy
+
+Notice there is a tick to use here which is `XOR` a number `x` with 1 will get you
+to either `x + 1` or `x - 1`.
+
+    x^1 = x + 1, if x is even
+    x^1 = x - 1, if x is odd
+
+```C++ tab="C++ Greedy"
+class Solution {
+public:
+  int minSwapsCouples(vector<int>& row) {
+      int res = 0;
+      for (int i = 0; i < row.size(); i += 2) {
+          int x = row[i];
+          if ((x ^ 1) == row[i + 1]) continue;
+          res++;
+          for (int j = i + 1; j < row.size(); ++j) {
+              if (row[j] == (x ^ 1)) {
+                  row[j] = row[i + 1];
+                  row[i + 1] = (x ^ 1);
+                  break;
+              }
+          }
+      }
+
+      return res;
+  }
+};
+```
