@@ -12,6 +12,8 @@
 * [x] [CS224N Write-up](./cs224n/write-up.md)
 * [x] [6.431 Probability](./6.431-probability/notes.md)
 * [ ] [Learning From Data](./learning-from-data/notes.md)
+* [ ] [Mining Massive Data Sets](./mining-massive-datasets/notes.md)
+* [ ] [Convolutional Neural Networks](./coursera-dl4-cnn/notes.md)
 
 ## Distributed Systems
 

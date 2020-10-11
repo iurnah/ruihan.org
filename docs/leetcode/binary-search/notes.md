@@ -2,7 +2,7 @@
 
 ## Binary search problem characteristics
 
-1. Ordered binary search. You need to find index or array element where ordering
+1. Ordered binary search. You need to find an index or array element where ordering
    info is available, either explicitly (sorted array) or implicitly (partially
    sorted or other special info).
 2. monotony pattern. If the ordering info isn't available, but you can exclude
@@ -13,7 +13,7 @@
 
 1. Clarify that you are trying to find the first one or find the last one.
 2. Clarify that you are trying to move the index or move the value
-   (i.e. kth smallest number in multiplicative table).
+   (i.e. kth smallest number in a multiplicative table).
 3. Use an "ordering abstraction" `vless(target, f(mid))`. This ordering
    abstraction will produce a boolean array that indicate the ordering
    information between the target value and the `f(mid)`.
@@ -26,17 +26,17 @@
 ## Binary search practical use case
 
 1. Find whether the given target is in the array.
-2. Find the the position of the first value equal to the given target.
+2. Find the position of the first value equal to the given target.
 3. Find the insertion position of the given target in the array.
-4. Find the the position of the last value equal to the given target.
+4. Find the position of the last value equal to the given target.
 5. Find the total number of x in a sorted array.
 6. Find the last element less than the target.
 7. Find the first element greater than the target.
 
 ## Binary search in C++ STL
 
-1. `lower_bound`: return iterator point to the element no less than the target.
-2. `upper_bound`: return iterator point to the element greater than the target.
+1. `lower_bound`: return iterator point to the element __no less__ than the target.
+2. `upper_bound`: return iterator point to the element __greater__ than the target.
 3. `equal_range`: return a pair of iterators, first of which is `lower_bound`,
    second is `upper_bound`.
 4. `binary_search`: return true if an element equivalent to val is found, and
@@ -61,18 +61,18 @@ complexity. Among all the binary search implementation you have seen, the
 following one is the most powerful version and it equivalent to C++ STL
 `lower_bound` algorithm.
 
-```C++
+```c++
 /**
- * return index to an element no less than x. Be more specifically, if there is
- * an element in the given array equal to x, it returns the index of first such
- * element; if there is no element that is equal to x, it returns the index
- * where x can be inserted into the position without changing the ordering of
- * the elements.
- *
- * All possible return value for calling this function with array.size() == n is
- * [0, 1, ..., n - 1, n]
- *
- */
+* return an index to an element no less than x. Be more specifically, if there is
+* an element in the given array equal to x, it returns the index of first such
+* element; if there is no element that is equal to x, it returns the index
+* where x can be inserted into the position without changing the ordering of
+* the elements.
+*
+* All possible return value for calling this function with array.size() == n is
+* [0, 1, ..., n - 1, n]
+*
+*/
 size_t binary_search(int x, vector<int>& array, size_t n)
 {
     size_t begin = 0, end = n;
@@ -155,120 +155,128 @@ To solve this type of binary search problem. You should focus on the following:
 
 ### 34. Search for a Range
 
-```c++ tab="C++ Use STL function"
-class Solution {
-public:
-    vector<int> searchRange(vector<int>& nums, int target) {
-        vector<int> res(2, -1);
-        int low = lower_bound(nums.begin(), nums.end(), target) - nums.begin();
-        int high = upper_bound(nums.begin(), nums.end(), target) - nums.begin();
-        if (low == high)
-            return res;
+=== "C++ Use STL function"
 
-        return {low, hight - 1};
-    }
-};
-```
+    ``` c++
+    class Solution {
+    public:
+        vector<int> searchRange(vector<int>& nums, int target) {
+            vector<int> res(2, -1);
+            int low = lower_bound(nums.begin(), nums.end(), target) - nums.begin();
+            int high = upper_bound(nums.begin(), nums.end(), target) - nums.begin();
+            if (low == high)
+                return res;
 
-```c++ tab="C++ Implementation of binary search"
-class Solution {
-public:
-    vector<int> searchRange(vector<int>& nums, int target) {
-        vector<int> res(2, -1);
-
-        int low = lower_bound(nums, target);
-        //int high = lower_bound(nums, target + 1); // also works.
-        int high = upper_bound(nums, target);
-        if (low == high) {
-            return res;
+            return {low, hight - 1};
         }
+    };
+    ```
 
-        return {low, high - 1};
-    }
+=== "C++ Implementation of binary search"
 
-    int lower_bound(vector<int>& nums, int target) {
-        if (nums.size() == 0) return 0;
-        int l = 0, r = nums.size();
+    ```c++
+    class Solution {
+    public:
+        vector<int> searchRange(vector<int>& nums, int target) {
+            vector<int> res(2, -1);
 
-        while (l < r) {
-            int m = l + (r - l) / 2;
-            if (nums[m] < target) {
-                l = m + 1;
-            } else {
-                r = m;
+            int low = lower_bound(nums, target);
+            //int high = lower_bound(nums, target + 1); // also works.
+            int high = upper_bound(nums, target);
+            if (low == high) {
+                return res;
             }
+
+            return {low, high - 1};
         }
 
-        return l;
-    }
+        int lower_bound(vector<int>& nums, int target) {
+            if (nums.size() == 0) return 0;
+            int l = 0, r = nums.size();
 
-    int upper_bound(vector<int>& nums, int target) {
-        if (nums.size() == 0) return 0;
-        int l = 0, r = nums.size();
-
-        while (l < r) {
-            int m = l + (r - l) / 2;
-            if (nums[m] <= target) {
-                l = m + 1;
-            } else {
-                r = m;
+            while (l < r) {
+                int m = l + (r - l) / 2;
+                if (nums[m] < target) {
+                    l = m + 1;
+                } else {
+                    r = m;
+                }
             }
+
+            return l;
         }
 
-        return l;
-    }
-};
-```
+        int upper_bound(vector<int>& nums, int target) {
+            if (nums.size() == 0) return 0;
+            int l = 0, r = nums.size();
 
-```python tab="Python solution"
-class Solution(object):
-    def searchRange(self, nums, target):
-        """
-        :type nums: List[int]
-        :type target: int
-        :rtype: List[int]
-        """
-        if len(nums) == 0:
-            return [-1, -1]
+            while (l < r) {
+                int m = l + (r - l) / 2;
+                if (nums[m] <= target) {
+                    l = m + 1;
+                } else {
+                    r = m;
+                }
+            }
 
-        begin = 0
-        end = len(nums)
+            return l;
+        }
+    };
+    ```
 
-        while begin != end:
-            mid = begin + (end - begin) / 2
-            if nums[mid] < target:
-                begin = mid + 1
+=== "Python solution"
+
+    ```python
+    class Solution(object):
+        def searchRange(self, nums, target):
+            """
+            :type nums: List[int]
+            :type target: int
+            :rtype: List[int]
+            """
+            if len(nums) == 0:
+                return [-1, -1]
+
+            begin = 0
+            end = len(nums)
+
+            while begin != end:
+                mid = begin + (end - begin) / 2
+                if nums[mid] < target:
+                    begin = mid + 1
+                else:
+                    end = mid
+            if begin == len(nums):
+                return [-1, -1]
+
+            if nums[begin] == target:
+                lower = begin
             else:
-                end = mid
-        if begin == len(nums):
-            return [-1, -1]
+                lower = -1
 
-        if nums[begin] == target:
-            lower = begin
-        else:
-            lower = -1
+            begin = 0
+            end = len(nums)
 
-        begin = 0
-        end = len(nums)
+            while begin != end:
+                mid = begin + (end - begin) / 2
+                if nums[mid] <= target:
+                    begin = mid + 1
+                else:
+                    end = mid
 
-        while begin != end:
-            mid = begin + (end - begin) / 2
-            if nums[mid] <= target:
-                begin = mid + 1
+            if nums[begin - 1] == target:
+                upper = begin - 1
             else:
-                end = mid
+                upper = -1
 
-        if nums[begin - 1] == target:
-            upper = begin - 1
-        else:
-            upper = -1
-
-        return [lower, upper]
-```
+            return [lower, upper]
+    ```
 
 ### 35. Search Insert Position
 
-```c++ tab="C++ solution lower_bound"
+=== "C++ solution lower_bound"
+
+```c++
 class Solution {
 public:
     int searchInsert(vector<int>& nums, int target) {
@@ -297,173 +305,180 @@ How to locate the sorted half?
    else if right half is sorted, check where the target `t` is like to be.
    else if mid element is equal to left or right. Remove one of them.
 2. Although no duplicate, should consider short input like `[3 1], 1` will have the equal case.
+=== "C++"
 
-```C++ tab=
-/**
-t = 1       t = 3        t = 5       t = 4       t = -1
-5 1 2 3 4   5 1 2 3 4    5 1 2 3 4   5 1 2 3 4   5 1 2 3 4
-5 1               3 4    5 1               3 4   5 1
-  1               3      5                   4     1 <--need check
-*/
-class Solution {
-public:
-    int search(vector<int>& A, int t) {
-        if (A.empty()) return -1;
+    ```c++
+    /**
+    t = 1       t = 3        t = 5       t = 4       t = -1
+    5 1 2 3 4   5 1 2 3 4    5 1 2 3 4   5 1 2 3 4   5 1 2 3 4
+    5 1               3 4    5 1               3 4   5 1
+    1               3      5                   4     1 <--need check
+    */
+    class Solution {
+    public:
+        int search(vector<int>& A, int t) {
+            if (A.empty()) return -1;
 
-        int l = 0, r = A.size() - 1;
+            int l = 0, r = A.size() - 1;
 
-        while (l < r) {
-            int m = l + (r - l) / 2;
-            if (A[m] == t) return m;
-            if (A[l] < A[m]) { // left is sorted
-                if (A[l] <= t && t < A[m]) {
-                    r = m - 1;
-                } else {
-                    l = m + 1;
+            while (l < r) {
+                int m = l + (r - l) / 2;
+                if (A[m] == t) return m;
+                if (A[l] < A[m]) { // left is sorted
+                    if (A[l] <= t && t < A[m]) {
+                        r = m - 1;
+                    } else {
+                        l = m + 1;
+                    }
+                } else if (A[m] < A[r]) { // right is sorted
+                    if (A[m] < t && t <= A[r]) {
+                        l = m + 1;
+                    } else {
+                        r = m - 1;
+                    }
+                } else { // if equal, remove one. case: [3, 1], 1
+                    if (A[l] == A[m]) l++;
+                    if (A[m] == A[r]) r--;
                 }
-            } else if (A[m] < A[r]) { // right is sorted
-                if (A[m] < t && t <= A[r]) {
-                    l = m + 1;
-                } else {
-                    r = m - 1;
-                }
-            } else { // if equal, remove one. case: [3, 1], 1
-                if (A[l] == A[m]) l++;
-                if (A[m] == A[r]) r--;
             }
+
+            return A[l] == t ? l : -1;
         }
+    };
+    ```
 
-        return A[l] == t ? l : -1;
-    }
-};
-```
+=== "Python"
 
-```Python tab=
-class Solution(object):
-    def search(self, nums, target):
-        """
-        :type nums: List[int]
-        :type target: int
-        :rtype: int
-        """
-        if len(nums) == 0:
+    ```python
+    class Solution(object):
+        def search(self, nums, target):
+            """
+            :type nums: List[int]
+            :type target: int
+            :rtype: int
+            """
+            if len(nums) == 0:
+                return -1
+
+            left = 0
+            right = len(nums) - 1
+
+            while left < right:
+                mid = left + (right - left) / 2
+
+                if nums[mid] == target:
+                    return mid;
+
+                if nums[left] < nums[mid]:
+                    if nums[left] <= target and target < nums[mid]:
+                        right = mid - 1
+                    else:
+                        left = mid + 1
+
+                elif nums[mid] < nums[right]:
+                    if nums[mid] < target and target <= nums[right]:
+                        left = mid + 1
+                    else:
+                        right = mid - 1
+
+                else:
+                    if nums[left] == nums[mid]:
+                        left += 1
+                    if nums[right] == nums[mid]:
+                        right -= 1
+
+            if nums[left] == target:
+                return left
+
             return -1
-
-        left = 0
-        right = len(nums) - 1
-
-        while left < right:
-            mid = left + (right - left) / 2
-
-            if nums[mid] == target:
-                return mid;
-
-            if nums[left] < nums[mid]:
-                if nums[left] <= target and target < nums[mid]:
-                    right = mid - 1
-                else:
-                    left = mid + 1
-
-            elif nums[mid] < nums[right]:
-                if nums[mid] < target and target <= nums[right]:
-                    left = mid + 1
-                else:
-                    right = mid - 1
-
-            else:
-                if nums[left] == nums[mid]:
-                    left += 1
-                if nums[right] == nums[mid]:
-                    right -= 1
-
-        if nums[left] == target:
-            return left
-
-        return -1
-```
+    ```
 
 ### 81. Search in Rotated Sorted Array II
 
 How to locate the sorted half?
 
-```C++ tab=
-class Solution {
-public:
-    bool search(vector<int>& A, int t) {
-        if (A.empty())
-            return false;
+=== "C++"
 
-        int l = 0, r = A.size() - 1;
+    ```c++
+    class Solution {
+    public:
+        bool search(vector<int>& A, int t) {
+            if (A.empty())
+                return false;
 
-        while (l < r) {
-            int m = l + (r - l) / 2;
-            if (A[m] == t) return true;
-            if (A[l] < A[m]) {
-                if (A[l] <= t && t < A[m]) {
-                    r = m - 1;
+            int l = 0, r = A.size() - 1;
+
+            while (l < r) {
+                int m = l + (r - l) / 2;
+                if (A[m] == t) return true;
+                if (A[l] < A[m]) {
+                    if (A[l] <= t && t < A[m]) {
+                        r = m - 1;
+                    } else {
+                        l = m + 1;
+                    }
+                } else if (A[m] < A[r]) {
+                    if (A[m] < t && t <= A[r]) {
+                        l = m + 1;
+                    } else {
+                        r = m - 1;
+                    }
                 } else {
-                    l = m + 1;
+                    if (A[l] == A[m]) l++;
+                    if (A[m] == A[r]) r--;
                 }
-            } else if (A[m] < A[r]) {
-                if (A[m] < t && t <= A[r]) {
-                    l = m + 1;
-                } else {
-                    r = m - 1;
-                }
-            } else {
-                if (A[l] == A[m]) l++;
-                if (A[m] == A[r]) r--;
             }
+
+            return A[l] == t? true : false;
         }
+    };
+    ```
 
-        return A[l] == t? true : false;
-    }
-};
-```
+=== "Python"
 
-```Python tab=
-class Solution(object):
-    def search(self, nums, target):
-        """
-        :type nums: List[int]
-        :type target: int
-        :rtype: int
-        """
-        if len(nums) == 0:
-            return False
+    ```python
+    class Solution(object):
+        def search(self, nums, target):
+            """
+            :type nums: List[int]
+            :type target: int
+            :rtype: int
+            """
+            if len(nums) == 0:
+                return False
 
-        left = 0
-        right = len(nums) - 1
+            left = 0
+            right = len(nums) - 1
 
-        while left < right:
-            mid = left + (right - left) / 2
+            while left < right:
+                mid = left + (right - left) / 2
 
-            if nums[mid] == target:
+                if nums[mid] == target:
+                    return True
+
+                if nums[left] < nums[mid]:
+                    if nums[left] <= target and target < nums[mid]:
+                        right = mid - 1
+                    else:
+                        left = mid + 1
+
+                elif nums[mid] < nums[right]:
+                    if nums[mid] < target and target <= nums[right]:
+                        left = mid + 1
+                    else:
+                        right = mid - 1
+
+                else:
+                    if nums[left] == nums[mid]:
+                        left += 1
+                    if nums[right] == nums[mid]:
+                        right -= 1
+
+            if nums[left] == target:
                 return True
 
-            if nums[left] < nums[mid]:
-                if nums[left] <= target and target < nums[mid]:
-                    right = mid - 1
-                else:
-                    left = mid + 1
-
-            elif nums[mid] < nums[right]:
-                if nums[mid] < target and target <= nums[right]:
-                    left = mid + 1
-                else:
-                    right = mid - 1
-
-            else:
-                if nums[left] == nums[mid]:
-                    left += 1
-                if nums[right] == nums[mid]:
-                    right -= 1
-
-        if nums[left] == target:
-            return True
-
-        return False
-```
+            return False
+    ```
 
 ### 153. Find Minimum in Rotated Sorted Array
 
@@ -472,54 +487,57 @@ Try to locate the valley which contains the min.
 1. Notice when `A[0] < A[n - 1]`, return `A[0]`.
 2. Draw a monotonic curve and then split the curve into two half, swith the order. This can help you to write the code.
 
-```C++ tab=
-class Solution {
-public:
-    int findMin(vector<int>& A) {
-        int l = 0, r = A.size() - 1;
-        while (l < r) {
-            if (A[l] < A[r]) // serve as base case.
-                return A[l];
+=== "C++"
 
-            int m = l + (r - l) / 2;
+    ```c++
+    class Solution {
+    public:
+        int findMin(vector<int>& A) {
+            int l = 0, r = A.size() - 1;
+            while (l < r) {
+                if (A[l] < A[r]) // serve as base case.
+                    return A[l];
 
-            if (A[m] > A[r]) { // also works. looking for not sorted half
-                l = m + 1;
-            } else if (A[m] < A[r]) { // don't really need if statement
-                r = m;
+                int m = l + (r - l) / 2;
+
+                if (A[m] > A[r]) { // also works. looking for not sorted half
+                    l = m + 1;
+                } else if (A[m] < A[r]) { // don't really need if statement
+                    r = m;
+                }
             }
+
+            return A[l];
         }
+    };
+    ```
+=== "Python"
 
-        return A[l];
-    }
-};
-```
+    ```python
+    class Solution(object):
+        def findMin(self, nums):
+            """
+            :type nums: List[int]
+            :rtype: int
+            """
+            if len(nums) == 0:
+                return -1
 
-```Python tab=
-class Solution(object):
-    def findMin(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
-        if len(nums) == 0:
-            return -1
+            left = 0
+            right = len(nums) - 1
+            while left < right:
+                if nums[left] == nums[right]:
+                    return nums[left]
 
-        left = 0
-        right = len(nums) - 1
-        while left < right:
-            if nums[left] == nums[right]:
-                return nums[left]
+                mid = left + (right - left) / 2
 
-            mid = left + (right - left) / 2
+                if nums[mid] > nums[right]:
+                    left = mid + 1
+                else:
+                    right = mid
 
-            if nums[mid] > nums[right]:
-                left = mid + 1
-            else:
-                right = mid
-
-        return nums[left]
-```
+            return nums[left]
+    ```
 
 ### 154. Find Minimum in Rotated Sorted Array II
 
@@ -528,54 +546,58 @@ Locate the valley which contains the min.
 1. Since duplicates exist. we cannot use the observation `A[l] == A[r]`.
 2. Here we deal with duplicates using decrease by one step.
 
-```C++ tab=
-class Solution {
-public:
-    int findMin(vector<int>& A) {
-        int l = 0, r = A.size() - 1;
+=== "C++"
 
-        while (l < r) {
-            int m = l + (r - l) / 2;
+    ```c++
+    class Solution {
+    public:
+        int findMin(vector<int>& A) {
+            int l = 0, r = A.size() - 1;
 
-            if (A[m] > A[r]) {
-                l = m + 1;
-            } else if (A[m] < A[r]) {
-                r = m;
-            } else {
-                r--;
+            while (l < r) {
+                int m = l + (r - l) / 2;
+
+                if (A[m] > A[r]) {
+                    l = m + 1;
+                } else if (A[m] < A[r]) {
+                    r = m;
+                } else {
+                    r--;
+                }
             }
+
+            return A[l];
         }
+    };
+    ```
 
-        return A[l];
-    }
-};
-```
+=== "Python"
 
-```Python tab=
-class Solution(object):
-    def findMin(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
-        if len(nums) == 0:
-            return -1
+    ```python
+    class Solution(object):
+        def findMin(self, nums):
+            """
+            :type nums: List[int]
+            :rtype: int
+            """
+            if len(nums) == 0:
+                return -1
 
-        left = 0
-        right = len(nums) - 1
+            left = 0
+            right = len(nums) - 1
 
-        while left < right:
-            mid = left + (right - left) / 2
+            while left < right:
+                mid = left + (right - left) / 2
 
-            if nums[mid] > nums[right]:
-                left = mid + 1
-            elif nums[mid] < nums[right]:
-                right = mid
-            else:
-                right -= 1
+                if nums[mid] > nums[right]:
+                    left = mid + 1
+                elif nums[mid] < nums[right]:
+                    right = mid
+                else:
+                    right -= 1
 
-        return nums[left]
-```
+            return nums[left]
+    ```
 
 ### 162 Find Peak Element
 
@@ -583,7 +605,7 @@ Use Binary search
 
 1. Use the neighboring relation to determin which side a peak value may occur then eliminate the other side.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int findPeakElement(vector<int>& A) {
@@ -608,7 +630,7 @@ Binary search
 
 1. Notice how this can be related to the ordering abstraction.
 
-```C++
+```c++
 // Forward declaration of isBadVersion API.
 bool isBadVersion(int version);
 class Solution {
@@ -631,60 +653,63 @@ public:
 
 ### 374. Guess Number Higher or Lower
 
-```C++ tab="C++ binary search"
-// Forward declaration of guess API.
-// @param num, your guess
-// @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
-int guess(int num);
+=== "C++ binary search"
 
-class Solution {
-public:
-    int guessNumber(int n) {
-        int start = 1, end = n;
-        while(start < end) {
-            int mid = start + (end - start) / 2;
-            if (guess(mid) == 0)
-                return mid;
+    ```c++ 
+    // Forward declaration of guess API.
+    // @param num, your guess
+    // @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
+    int guess(int num);
 
-            if (guess(mid) == 1) {
-                start = mid + 1;
-            } else {
-                end = mid;
+    class Solution {
+    public:
+        int guessNumber(int n) {
+            int start = 1, end = n;
+            while(start < end) {
+                int mid = start + (end - start) / 2;
+                if (guess(mid) == 0)
+                    return mid;
+
+                if (guess(mid) == 1) {
+                    start = mid + 1;
+                } else {
+                    end = mid;
+                }
             }
+
+            return start;
         }
+    };
+    ```
+=== "Python"
 
-        return start;
-    }
-};
-```
+    ```python
+    # The guess API is already defined for you.
+    # @param num, your guess
+    # @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
+    # def guess(num):
 
-```Python tab=
-# The guess API is already defined for you.
-# @param num, your guess
-# @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
-# def guess(num):
+    class Solution(object):
+        def guessNumber(self, n):
+            """
+            :type n: int
+            :rtype: int
+            """
+            begin = 0
+            end = n
 
-class Solution(object):
-    def guessNumber(self, n):
-        """
-        :type n: int
-        :rtype: int
-        """
-        begin = 0
-        end = n
+            while begin != end:
+                mid = begin + (end - begin) / 2
+                if guess(mid) == 0:
+                    return mid
 
-        while begin != end:
-            mid = begin + (end - begin) / 2
-            if guess(mid) == 0:
-                return mid
+                if guess(mid) == 1:
+                    begin = mid + 1
+                else:
+                    end = mid
 
-            if guess(mid) == 1:
-                begin = mid + 1
-            else:
-                end = mid
-
-        return begin
-```
+            return begin
+    ```
 
 ### 475. Heaters
 
@@ -693,128 +718,136 @@ Sort then brute force
 1. The solution we are looking for is the max value of the smallest house-heater distance.
 2. Think through what is the distance you want to keep, min or max
 
-```C++ tab=
-class Solution {
-public:
-    int findRadius(vector<int>& houses, vector<int>& heaters) {
-        int m = houses.size();
-        int n = heaters.size();
-        sort(houses.begin(), houses.end());
-        sort(heaters.begin(), heaters.end());
+=== "C++"
 
-        int res = INT_MIN;
-        int i, j = 0;
-        for (i = 0; i < m; ++i) {
-            while (j < n - 1 && abs(heaters[j + 1] - houses[i]) <= abs(heaters[j] - houses[i])) {
-                j++;
+    ```c++
+    class Solution {
+    public:
+        int findRadius(vector<int>& houses, vector<int>& heaters) {
+            int m = houses.size();
+            int n = heaters.size();
+            sort(houses.begin(), houses.end());
+            sort(heaters.begin(), heaters.end());
+
+            int res = INT_MIN;
+            int i, j = 0;
+            for (i = 0; i < m; ++i) {
+                while (j < n - 1 && abs(heaters[j + 1] - houses[i]) <= abs(heaters[j] - houses[i])) {
+                    j++;
+                }
+
+                res = max(res, abs(houses[i] - heaters[j]));
             }
 
-            res = max(res, abs(houses[i] - heaters[j]));
+            return res;
         }
+    };
+    ```
 
-        return res;
-    }
-};
-```
+=== "Python"
 
-```Python tab=
-class Solution(object):
-    def findRadius(self, houses, heaters):
-        """
-        :type houses: List[int]
-        :type heaters: List[int]
-        :rtype: int
-        """
-        m = len(houses)
-        n = len(heaters)
+    ```python
+    class Solution(object):
+        def findRadius(self, houses, heaters):
+            """
+            :type houses: List[int]
+            :type heaters: List[int]
+            :rtype: int
+            """
+            m = len(houses)
+            n = len(heaters)
 
-        houses.sort()
-        heaters.sort()
+            houses.sort()
+            heaters.sort()
 
-        i = 0
-        j = 0
-        res = 0
-        for i in range(m):
-            while j < n - 1 and abs(heaters[j + 1] - houses[i]) <= abs(heaters[j] -  houses[i]):
-                j += 1
+            i = 0
+            j = 0
+            res = 0
+            for i in range(m):
+                while j < n - 1 and abs(heaters[j + 1] - houses[i]) <= abs(heaters[j] -  houses[i]):
+                    j += 1
 
-            res = max(res, abs(houses[i] - heaters[j]))
+                res = max(res, abs(houses[i] - heaters[j]))
 
-        return res
-```
+            return res
+    ```
 
 Binary search the neighboring heaters get max of min
 
 1. Notice we cannot sort hourses and then search each heater's position. A special
    cases `[1, 2, 3] 2`, the result is `0` whereis it should be `1`.
 
-```C++ tab=
-class Solution {
-public:
-    int findRadius(vector<int>& houses, vector<int>& heaters) {
-        int n = heaters.size();
+=== "C++"
 
-        sort(heaters.begin(), heaters.end());
+    ```c++
+    class Solution {
+    public:
+        int findRadius(vector<int>& houses, vector<int>& heaters) {
+            int n = heaters.size();
 
-        int res = INT_MIN;
-        for (int house : houses) {
-            int start = 0, end = n;
+            sort(heaters.begin(), heaters.end());
 
-            while (start < end) {
-                int mid = start + (end - start) / 2;
-                if (heaters[mid] < house)
-                    start = mid + 1;
-                else
-                    end = mid;
+            int res = INT_MIN;
+            for (int house : houses) {
+                int start = 0, end = n;
+
+                while (start < end) {
+                    int mid = start + (end - start) / 2;
+                    if (heaters[mid] < house)
+                        start = mid + 1;
+                    else
+                        end = mid;
+                }
+
+                int dist1 = (start == n) ? INT_MAX : heaters[start] - house;
+                int dist2 = (start == 0) ? INT_MAX : house - heaters[start - 1];
+                res = max(res, min(dist1, dist2));
             }
 
-            int dist1 = (start == n) ? INT_MAX : heaters[start] - house;
-            int dist2 = (start == 0) ? INT_MAX : house - heaters[start - 1];
-            res = max(res, min(dist1, dist2));
+            return res;
         }
+    };
+    ```
 
-        return res;
-    }
-};
-```
+=== "Python"
 
-```Python tab=
-class Solution(object):
-    def findRadius(self, houses, heaters):
-        """
-        :type houses: List[int]
-        :type heaters: List[int]
-        :rtype: int
-        """
-        m = len(houses)
-        n = len(heaters)
+    ```python
+    class Solution(object):
+        def findRadius(self, houses, heaters):
+            """
+            :type houses: List[int]
+            :type heaters: List[int]
+            :rtype: int
+            """
+            m = len(houses)
+            n = len(heaters)
 
-        heaters.sort()
+            heaters.sort()
 
-        i = 0
-        j = 0
-        res = float('-inf')
-        for i in range(m):
-            start = 0
-            end = n
-            while start != end:
-                mid = start + (end - start) / 2
-                if heaters[mid] < houses[i]:
-                    start = mid + 1
-                else:
-                    end = mid
+            i = 0
+            j = 0
+            res = float('-inf')
+            for i in range(m):
+                start = 0
+                end = n
+                while start != end:
+                    mid = start + (end - start) / 2
+                    if heaters[mid] < houses[i]:
+                        start = mid + 1
+                    else:
+                        end = mid
 
-            dist1 = float('inf')
-            dist2 = float('inf')
-            if start != n:
-                dist1 = heaters[start] - houses[i]
-            if start != 0:
-                dist2 = houses[i] - heaters[start - 1]
+                dist1 = float('inf')
+                dist2 = float('inf')
+                if start != n:
+                    dist1 = heaters[start] - houses[i]
+                if start != 0:
+                    dist2 = houses[i] - heaters[start - 1]
 
-            res = max(res, min(dist1, dist2))
+                res = max(res, min(dist1, dist2))
 
-        return res
-```
+            return res
+    ```
 
 ### 1539. Kth Missing Positive Number
 
@@ -825,53 +858,57 @@ Naive Solution
 Binary Search
 
 * Observe the relation: total missing positives before `A[m]` is `A[m] -  1 - m`
-  because the index `m` and `A[m]` is related to th emissing positives thus can
+  because the index `m` and `A[m]` is related to the missing positives thus can
   be used for counting.
 * the bisection condition can be intepreted as boolean predicate: "whether the
   number of missing positives before `A[m]` is __no less__ than `k`?"
 
-```C++ tab="Naive Solution"
-class Solution {
-public:
-    int findKthPositive(vector<int>& arr, int k) {
-        if (arr.empty()) return k;
-        int missing_cnt = arr[0] - 1;
-        if (missing_cnt >= k) return k;
-        int prev = arr[0];
-        for (int i = 1;  i < arr.size(); ++i ) {
-            if (!(arr[i] == prev || arr[i] == prev + 1)) {
-                int skip = arr[i] - prev - 1;
-                if (missing_cnt + skip >= k) {
-                    return prev + k - missing_cnt;
+=== "Naive Solution"
+
+    ```c++ 
+    class Solution {
+    public:
+        int findKthPositive(vector<int>& arr, int k) {
+            if (arr.empty()) return k;
+            int missing_cnt = arr[0] - 1;
+            if (missing_cnt >= k) return k;
+            int prev = arr[0];
+            for (int i = 1;  i < arr.size(); ++i ) {
+                if (!(arr[i] == prev || arr[i] == prev + 1)) {
+                    int skip = arr[i] - prev - 1;
+                    if (missing_cnt + skip >= k) {
+                        return prev + k - missing_cnt;
+                    }
+                    missing_cnt +=skip;
                 }
-                missing_cnt +=skip;
+                prev = arr[i];
             }
-            prev = arr[i];
+            return (prev + k - missing_cnt);
         }
-        return (prev + k - missing_cnt);
-    }
-};
-```
+    };
+    ```
 
-```C++ tab="Binary Search"
-class Solution {
-public:
-    int findKthPositive(vector<int>& arr, int k) {
-        int l = 0, r = arr.size();
-        while (l < r) {
-            int m = l + (r - l) / 2;
+=== "Binary Search"
 
-            if (arr[m] - 1 - m < k) {
-                l = m + 1;
-            } else {
-                r = m;
+    ```c++
+    class Solution {
+    public:
+        int findKthPositive(vector<int>& arr, int k) {
+            int l = 0, r = arr.size();
+            while (l < r) {
+                int m = l + (r - l) / 2;
+
+                if (arr[m] - 1 - m < k) {
+                    l = m + 1;
+                } else {
+                    r = m;
+                }
             }
-        }
 
-        return l + k;
-    }
-};
-```
+            return l + k;
+        }
+    };
+    ```
 
 ### [410. Split Array Largest Sum](../../array/notes/#split-array-largest-sum)
 
@@ -883,7 +920,9 @@ Solution Binary Search
 * The search is looking for the whether m bouquets is possible, meet the binary
   pattern "no less than". So that we use `if(cnt_m < m)` and the return values is l.
 
-```C++ tab="C++ binary search"
+=== "C++ binary search"
+
+```c++
 class Solution {
 public:
     int minDays(vector<int>& bloomDay, int m, int k) {
@@ -934,30 +973,32 @@ Solution Binary search
   `mid` and `f(mid)` are positive correlation. here the `mid` and `res` are negative
   correlation.
 
-```C++ tab="C++ binary search" hl_lines="13"
-class Solution {
-public:
-    int smallestDivisor(vector<int>& nums, int threshold) {
-        int l = 1;
-        int r = *max_element(nums.begin(), nums.end());
+=== "C++ binary search"
 
-        while (l < r) {
-            int m = l + (r - l) / 2;
-            int res = 0;
-            for (int num: nums) {
-                res += (num + m - 1) / m;
+    ```c++  hl_lines="13"
+    class Solution {
+    public:
+        int smallestDivisor(vector<int>& nums, int threshold) {
+            int l = 1;
+            int r = *max_element(nums.begin(), nums.end());
+
+            while (l < r) {
+                int m = l + (r - l) / 2;
+                int res = 0;
+                for (int num: nums) {
+                    res += (num + m - 1) / m;
+                }
+                if (res > threshold) {
+                    l = m + 1;
+                } else {
+                    r = m;
+                }
             }
-            if (res > threshold) {
-                l = m + 1;
-            } else {
-                r = m;
-            }
+
+            return l;
         }
-
-        return l;
-    }
-};
-```
+    };
+    ```
 
 ### 74. Search a 2D Matrix
 
@@ -967,7 +1008,7 @@ Binary search
 2. Notice test your finished routine using edge cases. (i.e. the initial value
    of end)
 
-```C++ tab=
+```c++
 class Solution {
 public:
     bool searchMatrix(vector<vector<int>>& matrix, int target) {
@@ -1000,7 +1041,7 @@ Binary search to exclude whole column or whole row
 1. the key is you decide where to start the compare. If you start from left bottom or right top, the solution should be abvious.
 2. Notice the idea is from binary search, if ordering info available, we want to exclude as many as impossible values as we can.
 
-```C++
+```c++
 class Solution {
 public:
     bool searchMatrix(vector<vector<int>>& matrix, int target) {
@@ -1029,7 +1070,9 @@ public:
 
 ### 302. Smallest Rectangle Enclosing Black Pixels
 
-```C++ tab="C++ Brute Force"
+=== "C++ Brute Force"
+
+```c++
 class Solution {
 public:
     int minArea(vector<vector<char>>& image, int x, int y) {
@@ -1057,233 +1100,243 @@ Binary search
 
 1. Notice the binary search idea is related to the problem Smallest Good Base
    and Wood Cut.
-2. The basic idea is seach each of furthest `1` from 4 directions. First make
+2. The basic idea is to search each of `1` from 4 directions. First, make
    sure you can search one boundary and the others are similar. For example, to
    search the first row that contains `1`, we can look at the whole column/row
    to see whether this col/row have `1`. Because we are searching the first row
    that have `1` top down, bisec based on the count of `1` on each row we can
-   know whether we ignore upper half or lower half.
+   know whether we ignore the upper half or the lower half.
 
-```C++ tab="C++ Binary Search"
-class Solution {
-public:
-    int minArea(vector<vector<char>>& image, int x, int y) {
-        int m = image.size();
-        int n = m ? image[0].size() : 0;
+=== "C++ Binary Search"
 
-        int top = bsearch_byrows(image, 0, x, 0, n, true); // search top
-        int bottom = bsearch_byrows(image, x + 1, m, 0, n, false);
-        int left = bsearch_bycols(image, 0, y, top, bottom, true);
-        int right = bsearch_bycols(image, y + 1, n, top, bottom, false);
+    ```c++
+    class Solution {
+    public:
+        int minArea(vector<vector<char>>& image, int x, int y) {
+            int m = image.size();
+            int n = m ? image[0].size() : 0;
 
-        return (bottom - top) * (right - left);
-    }
+            int top = bsearch_byrows(image, 0, x, 0, n, true); // search top
+            int bottom = bsearch_byrows(image, x + 1, m, 0, n, false);
+            int left = bsearch_bycols(image, 0, y, top, bottom, true);
+            int right = bsearch_bycols(image, y + 1, n, top, bottom, false);
 
-    int bsearch_byrows(vector<vector<char>>& image, int x, int y,
-                    int left, int right, bool white2black) {
-        while (x < y) {
-            int m = (x + y) / 2;
-            int k = left;
-            while (k < right && image[m][k] == '0') k++;
-            if (k < right == white2black) { // mth row have '1'
-                y = m;
-            } else {
-                x = m + 1;
-            }
+            return (bottom - top) * (right - left);
         }
 
-        return x;
-    }
-
-    int bsearch_bycols(vector<vector<char>>& image, int x, int y,
-                    int top, int bottom, bool white2black) {
-        while (x < y) {
-            int m = (x + y) / 2;
-            int k = top;
-            while (k < bottom && image[k][m] == '0') k++;
-            if (k < bottom == white2black) { // mth column have '1'
-                y = m;
-            } else {
-                x = m + 1;
-            }
-        }
-
-        return x;
-    }
-};
-```
-
-```Python tab="Python Binary Search"
-class Solution(object):
-    def minArea(self, image, x, y):
-        """
-        :type image: List[List[str]]
-        :type x: int
-        :type y: int
-        :rtype: int
-        """
-        m = len(image)
-        n = 0
-        if m != 0:
-            n = len(image[0])
-
-        top = self.bsearch_row(image, 0, x, 0, n, True)
-        bottom = self.bsearch_row(image, x + 1, m, 0, n, False)
-        left =  self.bsearch_col(image, 0, y, top, bottom, True)
-        right = self.bsearch_col(image, y + 1, n, top, bottom, False)
-
-        return (bottom - top) * (right - left)
-
-    def bsearch_row(self, image, start, end, lower, upper, white2black):
-        while start < end:
-            m = (start + end) / 2
-            k = lower
-
-            while k < upper and image[m][k] == '0':
-                k += 1
-
-            if (k < upper) == white2black:
-                end = m
-            else:
-                start = m + 1
-
-        return start
-
-    def bsearch_col(self, image, start, end, lower, upper, white2black):
-        while start < end:
-            m = (start + end) / 2
-            k = lower
-
-            while k < upper and image[k][m] == '0':
-                k += 1
-
-            if (k < upper) == white2black:
-                end = m
-            else:
-                start = m + 1
-
-        return start
-```
-
-```C++ tab="BFS"
-class Solution {
-public:
-    int minArea(vector<vector<char>>& image, int x, int y) {
-        int m = image.size();
-        int n = m ? image[0].size() : 0;
-
-        int top = m, bottom = 0, left = n, right = 0;
-
-        int xx[4] = {-1, 0, 1, 0};
-        int yy[4] = {0, 1, 0, -1};
-
-        queue<pair<int, int>> q;
-        q.push({x, y});
-        image[x][y] = '0';
-
-        while (!q.empty()) {
-            pair<int, int> t = q.front(); q.pop();
-
-            top = min(top, t.first);
-            bottom = max(bottom, t.first + 1);
-            left = min(left, t.second);
-            right = max(right, t.second + 1);
-
-            for (int k = 0; k < 4; ++k) {
-                int a = t.first + xx[k];
-                int b = t.second + yy[k];
-                if (a >= 0 && a < m && b >= 0 && b < n && image[a][b] == '1') {
-                    q.push({a, b});
-                    image[a][b] = '0';
+        int bsearch_byrows(vector<vector<char>>& image, int x, int y,
+                        int left, int right, bool white2black) {
+            while (x < y) {
+                int m = (x + y) / 2;
+                int k = left;
+                while (k < right && image[m][k] == '0') k++;
+                if (k < right == white2black) { // mth row have '1'
+                    y = m;
+                } else {
+                    x = m + 1;
                 }
             }
+
+            return x;
         }
 
-        return (right - left) * (bottom - top);
-    }
-};
-```
+        int bsearch_bycols(vector<vector<char>>& image, int x, int y,
+                        int top, int bottom, bool white2black) {
+            while (x < y) {
+                int m = (x + y) / 2;
+                int k = top;
+                while (k < bottom && image[k][m] == '0') k++;
+                if (k < bottom == white2black) { // mth column have '1'
+                    y = m;
+                } else {
+                    x = m + 1;
+                }
+            }
 
-```Python tab="BFS"
-from collections import deque
+            return x;
+        }
+    };
+    ```
 
-class Solution(object):
-    def minArea(self, image, x, y):
-        """
-        :type image: List[List[str]]
-        :type x: int
-        :type y: int
-        :rtype: int
-        """
-        m = len(image)
-        n = 0
-        if m != 0:
-            n = len(image[0])
+=== "Python Binary Search"
 
-        xx = [-1, 0, 1, 0]
-        yy = [0, -1, 0, 1]
+    ```python
+    class Solution(object):
+        def minArea(self, image, x, y):
+            """
+            :type image: List[List[str]]
+            :type x: int
+            :type y: int
+            :rtype: int
+            """
+            m = len(image)
+            n = 0
+            if m != 0:
+                n = len(image[0])
 
-        top = m
-        bottom = 0
-        left = n
-        right = 0
+            top = self.bsearch_row(image, 0, x, 0, n, True)
+            bottom = self.bsearch_row(image, x + 1, m, 0, n, False)
+            left =  self.bsearch_col(image, 0, y, top, bottom, True)
+            right = self.bsearch_col(image, y + 1, n, top, bottom, False)
 
-        q = deque()
-        q.append([x, y])
-        image[x][y] = '0'
+            return (bottom - top) * (right - left)
 
-        while len(q) > 0:
-            t = q.popleft()
+        def bsearch_row(self, image, start, end, lower, upper, white2black):
+            while start < end:
+                m = (start + end) / 2
+                k = lower
 
-            top = min(top, t[0])
-            bottom = max(bottom, t[0] + 1)
-            left = min(left, t[1])
-            right = max(right, t[1] + 1)
+                while k < upper and image[m][k] == '0':
+                    k += 1
 
-            for k in range(4):
-                a = t[0] + xx[k]
-                b = t[1] + yy[k]
-                if a >= 0 and a < m and b >= 0 and b < n and image[a][b] == '1':
-                    q.append([a, b])
-                    image[a][b] = '0'
+                if (k < upper) == white2black:
+                    end = m
+                else:
+                    start = m + 1
 
-        return (right - left) * (bottom - top)
-```
+            return start
 
-```C++ tab="DF"
-class Solution {
-private:
-    int m, n;
-    int top, bottom, left, right;
-public:
-    int minArea(vector<vector<char>>& image, int x, int y) {
-        m = image.size();
-        n = m ? image[0].size() : 0;
-        top = m, bottom = 0, left = n, right = 0;
+        def bsearch_col(self, image, start, end, lower, upper, white2black):
+            while start < end:
+                m = (start + end) / 2
+                k = lower
 
-        dfs_helper(image, x, y);
+                while k < upper and image[k][m] == '0':
+                    k += 1
 
-        return (right - left) * (bottom - top);
-    }
+                if (k < upper) == white2black:
+                    end = m
+                else:
+                    start = m + 1
 
-    void dfs_helper(vector<vector<char>>& image, int x, int y) {
-        if (x < 0 || x >= m || y < 0 || y >= n || image[x][y] == '0') {
-            return;
+            return start
+    ```
+
+=== "C++ BFS"
+
+    ```c++
+    class Solution {
+    public:
+        int minArea(vector<vector<char>>& image, int x, int y) {
+            int m = image.size();
+            int n = m ? image[0].size() : 0;
+
+            int top = m, bottom = 0, left = n, right = 0;
+
+            int xx[4] = {-1, 0, 1, 0};
+            int yy[4] = {0, 1, 0, -1};
+
+            queue<pair<int, int>> q;
+            q.push({x, y});
+            image[x][y] = '0';
+
+            while (!q.empty()) {
+                pair<int, int> t = q.front(); q.pop();
+
+                top = min(top, t.first);
+                bottom = max(bottom, t.first + 1);
+                left = min(left, t.second);
+                right = max(right, t.second + 1);
+
+                for (int k = 0; k < 4; ++k) {
+                    int a = t.first + xx[k];
+                    int b = t.second + yy[k];
+                    if (a >= 0 && a < m && b >= 0 && b < n && image[a][b] == '1') {
+                        q.push({a, b});
+                        image[a][b] = '0';
+                    }
+                }
+            }
+
+            return (right - left) * (bottom - top);
+        }
+    };
+    ```
+
+=== "Python BFS"
+
+    ```python
+    from collections import deque
+
+    class Solution(object):
+        def minArea(self, image, x, y):
+            """
+            :type image: List[List[str]]
+            :type x: int
+            :type y: int
+            :rtype: int
+            """
+            m = len(image)
+            n = 0
+            if m != 0:
+                n = len(image[0])
+
+            xx = [-1, 0, 1, 0]
+            yy = [0, -1, 0, 1]
+
+            top = m
+            bottom = 0
+            left = n
+            right = 0
+
+            q = deque()
+            q.append([x, y])
+            image[x][y] = '0'
+
+            while len(q) > 0:
+                t = q.popleft()
+
+                top = min(top, t[0])
+                bottom = max(bottom, t[0] + 1)
+                left = min(left, t[1])
+                right = max(right, t[1] + 1)
+
+                for k in range(4):
+                    a = t[0] + xx[k]
+                    b = t[1] + yy[k]
+                    if a >= 0 and a < m and b >= 0 and b < n and image[a][b] == '1':
+                        q.append([a, b])
+                        image[a][b] = '0'
+
+            return (right - left) * (bottom - top)
+    ```
+
+=== "C++ DFS"
+
+    ```c++
+    class Solution {
+    private:
+        int m, n;
+        int top, bottom, left, right;
+    public:
+        int minArea(vector<vector<char>>& image, int x, int y) {
+            m = image.size();
+            n = m ? image[0].size() : 0;
+            top = m, bottom = 0, left = n, right = 0;
+
+            dfs_helper(image, x, y);
+
+            return (right - left) * (bottom - top);
         }
 
-        image[x][y] = '0';
-        top = min(top, x);
-        bottom = max(bottom, x + 1);
-        left = min(left, y);
-        right = max(right, y + 1);
+        void dfs_helper(vector<vector<char>>& image, int x, int y) {
+            if (x < 0 || x >= m || y < 0 || y >= n || image[x][y] == '0') {
+                return;
+            }
 
-        dfs_helper(image, x - 1, y);
-        dfs_helper(image, x, y + 1);
-        dfs_helper(image, x + 1, y);
-        dfs_helper(image, x, y - 1);
-    }
-};
-```
+            image[x][y] = '0';
+            top = min(top, x);
+            bottom = max(bottom, x + 1);
+            left = min(left, y);
+            right = max(right, y + 1);
+
+            dfs_helper(image, x - 1, y);
+            dfs_helper(image, x, y + 1);
+            dfs_helper(image, x + 1, y);
+            dfs_helper(image, x, y - 1);
+        }
+    };
+    ```
 
 ### 363. Max Sum of Rectangle No Larger Than K
 
@@ -1293,42 +1346,44 @@ Iterate the wide of the matrix and using prefix sum and set `lower_bound`.
    the width of the sub-matrix and sum up all row elements and get an array
    of length `m`, `m` is the number of rows of the matrix. Then apply the method.
 
-```C++ tab="C++ presum"
-class Solution {
-public:
-    int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
-        if (matrix.empty()) return 0;
-        int m = matrix.size();
-        int n = m ? matrix[0].size() : 0;
-        int res = INT_MIN;
+=== "C++ presum"
 
-        for (int l = 0; l < n; ++l) {
-            vector<int> sums(m, 0);
-            for (int r = l; r < n; ++r) {
-                for (int i = 0; i < m; ++i) {
-                    sums[i] += matrix[i][r];
-                }
+    ```c++
+    class Solution {
+    public:
+        int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
+            if (matrix.empty()) return 0;
+            int m = matrix.size();
+            int n = m ? matrix[0].size() : 0;
+            int res = INT_MIN;
 
-                set<int> preSumSet;
-                preSumSet.insert(0);
-                int preSum = 0, curMax = INT_MIN;
-                for (int sum : sums) {
-                    preSum += sum;
-                    set<int>::iterator it = preSumSet.lower_bound(preSum - k);
-                    if (it != preSumSet.end()) {
-                        curMax = max(curMax, preSum - *it);
+            for (int l = 0; l < n; ++l) {
+                vector<int> sums(m, 0);
+                for (int r = l; r < n; ++r) {
+                    for (int i = 0; i < m; ++i) {
+                        sums[i] += matrix[i][r];
                     }
-                    preSumSet.insert(preSum);
+
+                    set<int> preSumSet;
+                    preSumSet.insert(0);
+                    int preSum = 0, curMax = INT_MIN;
+                    for (int sum : sums) {
+                        preSum += sum;
+                        set<int>::iterator it = preSumSet.lower_bound(preSum - k);
+                        if (it != preSumSet.end()) {
+                            curMax = max(curMax, preSum - *it);
+                        }
+                        preSumSet.insert(preSum);
+                    }
+
+                    res = max(res, curMax);
                 }
-
-                res = max(res, curMax);
             }
-        }
 
-        return res;
-    }
-};
-```
+            return res;
+        }
+    };
+    ```
 
 merge sort
 
@@ -1337,65 +1392,67 @@ merge sort
 2. The use `mergeSort` here is to find the `A[j] - A[i] <= k` efficiently,
    `O(nlogn)`.
 
-```C++ tab="C++ Merge Sort"
-class Solution {
-public:
-    int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
-        int m = matrix.size();
-        int n = m ? matrix[0].size() : 0;
-        int res = INT_MIN;
-        vector<long long> sums(m + 1, 0);
+=== "C++ Merge Sort"
 
-        for (int l = 0; l < n; ++l) {
-            vector<long long>sumInRow(m, 0);
-            for (int r = l; r < n; ++r) {
-                for (int i = 0; i < m; ++i) {
-                    sumInRow[i] += matrix[i][r];
-                    sums[i + 1] = sums[i] + sumInRow[i];
+    ```c++
+    class Solution {
+    public:
+        int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
+            int m = matrix.size();
+            int n = m ? matrix[0].size() : 0;
+            int res = INT_MIN;
+            vector<long long> sums(m + 1, 0);
+
+            for (int l = 0; l < n; ++l) {
+                vector<long long>sumInRow(m, 0);
+                for (int r = l; r < n; ++r) {
+                    for (int i = 0; i < m; ++i) {
+                        sumInRow[i] += matrix[i][r];
+                        sums[i + 1] = sums[i] + sumInRow[i];
+                    }
+                    res = max(res, mergeSort(sums, 0, m + 1, k));
+                    if (res == k) return k;
                 }
-                res = max(res, mergeSort(sums, 0, m + 1, k));
-                if (res == k) return k;
             }
+
+            return res;
         }
 
-        return res;
-    }
+        int mergeSort(vector<long long>& sums, int start, int end, int k) {
+            if (end == start + 1) return INT_MIN;
 
-    int mergeSort(vector<long long>& sums, int start, int end, int k) {
-        if (end == start + 1) return INT_MIN;
+            int mid = start + (end - start) / 2;
+            int res = mergeSort(sums, start, mid, k);
+            if (res == k) return k;
 
-        int mid = start + (end - start) / 2;
-        int res = mergeSort(sums, start, mid, k);
-        if (res == k) return k;
+            res = max(res, mergeSort(sums, mid, end, k));
+            if (res == k) return k;
 
-        res = max(res, mergeSort(sums, mid, end, k));
-        if (res == k) return k;
+            long long cache[end - start];
 
-        long long cache[end - start];
-
-        int j = mid, c = 0, t = mid;
-        for (int i = start; i < mid; ++i) {
-            while (j < end && sums[j] - sums[i] <= k) ++j; // search first time sums[j] - sums[i] > k
-            if (j - 1 >= mid) { // sums[j - 1] - sums[i] <= k, make sure j - 1 is still in right side
-                res = max(res, (int)(sums[j - 1] - sums[i]));
-                if (res == k) return k;
+            int j = mid, c = 0, t = mid;
+            for (int i = start; i < mid; ++i) {
+                while (j < end && sums[j] - sums[i] <= k) ++j; // search first time sums[j] - sums[i] > k
+                if (j - 1 >= mid) { // sums[j - 1] - sums[i] <= k, make sure j - 1 is still in right side
+                    res = max(res, (int)(sums[j - 1] - sums[i]));
+                    if (res == k) return k;
+                }
+                while (t < end && sums[t] < sums[i]) {
+                    cache[c++] = sums[t++];
+                }
+                cache[c++] = sums[i];
             }
-            while (t < end && sums[t] < sums[i]) {
-                cache[c++] = sums[t++];
+
+            for (int i = start; i < t; ++i) {
+                sums[i] = cache[i - start];
             }
-            cache[c++] = sums[i];
+
+            return res;
         }
+    };
+    ```
 
-        for (int i = start; i < t; ++i) {
-            sums[i] = cache[i - start];
-        }
-
-        return res;
-    }
-};
-```
-
-## Category 2 Using ordering abstration
+## Category 2 Using ordering abstraction
 
 ### 69. Sqrt(x)
 
@@ -1431,7 +1488,7 @@ f(sqrt(9), k) = [T  T  T  T  F]
 
 The binary search routine will be:
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int mySqrt(int x) {
@@ -1462,7 +1519,7 @@ f(sqrt(8), k) = [F  F  F  T  T]
 f(sqrt(9), k) = [F  F  F  F  T]
 ```
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int mySqrt(int x) {
@@ -1489,56 +1546,60 @@ Solution 1 Binary search using ordering abstraction
 
 1. Notice you have to run tests for cases from 1 to 5.
 
-```C++ tab=
-class Solution {
-public:
-    bool isPerfectSquare(int num) {
-        if (num == 1) return true;
-        int begin = 1, end = num / 2;
-        while (begin < end) {
-            //long long mid = begin + (end - begin) / 2; // not working, deadloop for 5
-            long long mid = end - (end - begin) / 2;
-            if (mid * mid == num)
-                return true;
+=== "C++"
 
-            if (mid * mid < num) {
-                begin = mid;
-            } else {
-                end = mid - 1;
+    ```c++
+    class Solution {
+    public:
+        bool isPerfectSquare(int num) {
+            if (num == 1) return true;
+            int begin = 1, end = num / 2;
+            while (begin < end) {
+                //long long mid = begin + (end - begin) / 2; // not working, deadloop for 5
+                long long mid = end - (end - begin) / 2;
+                if (mid * mid == num)
+                    return true;
+
+                if (mid * mid < num) {
+                    begin = mid;
+                } else {
+                    end = mid - 1;
+                }
             }
+
+            return false;
         }
+    };
+    ```
 
-        return false;
-    }
-};
-```
+=== "Python"
 
-```Python tab=
-class Solution(object):
-    def isPerfectSquare(self, num):
-        """
-        :type num: int
-        :rtype: bool
-        """
-        if num == 1:
-            return True
-
-        lower = 1
-        upper = num / 2
-
-        while lower < upper:
-            mid = upper - (upper - lower) / 2
-            if mid * mid == num:
+    ```python
+    class Solution(object):
+        def isPerfectSquare(self, num):
+            """
+            :type num: int
+            :rtype: bool
+            """
+            if num == 1:
                 return True
 
-            if mid * mid < num:
-                lower = mid
-            else:
-                upper = mid - 1
+            lower = 1
+            upper = num / 2
+
+            while lower < upper:
+                mid = upper - (upper - lower) / 2
+                if mid * mid == num:
+                    return True
+
+                if mid * mid < num:
+                    lower = mid
+                else:
+                    upper = mid - 1
 
 
-        return False
-```
+            return False
+    ```
 
 ### 633. Sum of Square Numbers
 
@@ -1546,7 +1607,7 @@ Solution 1 Binary search
 
 1. Once you have derived value `b` from `a` and `c`, you can binary search `b`.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     bool judgeSquareSum(int c) {
@@ -1577,7 +1638,7 @@ Solution 2 Two pointers
 
 1. Notice this square sum can be found efficiently using two pointers.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     bool judgeSquareSum(int c) {
@@ -1598,7 +1659,7 @@ Solution 3 Using set
 
 1. Keep inserting the value into a set, in the meantime also look up the other
 
-```C++ tab=
+```c++
 class Solution {
 public:
     bool judgeSquareSum(int c) {
@@ -1619,7 +1680,7 @@ Solution 1 Binary search
 1. Compare to problem 475. Heaters
 2. Our search target is to find the starting index of the subarray of length K.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     vector<int> findClosestElements(vector<int>& arr, int k, int x) {
@@ -1646,7 +1707,7 @@ Solution 2 Binary search and Two pointers
 * Notice the `i < 0` in the if condition, it is very important to be there.
   otherwise the array index will be out of bound.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     vector<int> findClosestElements(vector<int>& arr, int k, int x) {
@@ -1676,7 +1737,7 @@ public:
   search to find the `k` in the ragne of `A[j + 1] ~ A[n - 1]`. We can use our
   classic binary search template to achieve the goal.
 
-```C++ tab="C++"
+```c++
 class Solution {
 public:
     int triangleNumber(vector<int>& nums) {
@@ -1724,7 +1785,7 @@ Solution 1 Binary search
   learn that the duplicate is in the higher end. If the count is greater, we can
   know that the duplicate element is in the lower end of the sequence `[1, ..., n-1]`.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
@@ -1760,7 +1821,7 @@ Solution 2 tortoise and hare algorithm
   becuase at least one element you will not come back to it if you leave it.
 * [Find Duplicate](http://www.keithschwarz.com/interesting/code/find-duplicate/FindDuplicate.python.html)
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
@@ -1788,12 +1849,83 @@ public:
 
 ### 410. Split Array Largest Sum
 
+Solution
+
+### 1231. Divide Chocolate
+
+Solution Binary search
+
+1. The key difference between this problem and [410. Split Array Largest Sum](./#)
+   is this problem is asking for maximizing the smallest sum (sweetness). The
+   greedy condition in [410. Split Array Largest Sum](./#) cannot apply directly here.
+2. Imagine you guessed a value `m`, which is the maximum sweetness you can get
+   from the smallest sweetness piece of all cuts. How to test whether the value
+   `m` is possible? If possible, we will increase it to maximize it; if not,
+    we will still keep it a candidate.
+
+=== "binary search" hl_lines="8, 19-23"
+
+```c++
+class Solution {
+public:
+    int maximizeSweetness(vector<int>& sweetness, int K) {
+        int start = *min_element(sweetness.begin(), sweetness.end());
+        int end = accumulate(sweetness.begin(), sweetness.end(), 0);
+
+        while (start < end) {
+            int mid = (start + end + 1) / 2;
+            int sum = 0;
+            int cuts = 0;
+            for (int s: sweetness) {
+                if ((sum += s) >= mid) {
+                    sum = 0;
+                    if (++cuts > K)
+                        break;
+                }
+            }
+
+            if (cuts > K) {
+                start = mid;
+            } else {
+                end = mid - 1;
+            }
+        }
+
+        return start;
+    }
+};
+```
+
 ### Copy books (lintcode)
+
+Description
+
+Given n books and the ith book has `A[i]` pages. You are given `k` people to
+copy the `n` books. the `n` books list in a row and each person can claim
+a continuous range of the `n` books. For example, one copier can copy the books
+from ith to jth continuously, but he can not copy the 1st book, 2nd book and 4th
+ book (without the 3rd book).
+
+They start copying books at the same time and they all cost 1 minute to copy 1
+page of a book. What's the best strategy to assign books so that the slowest
+copier can finish at the earliest time?
+
+Example
+
+Given array A = [3,2,4], k = 2. Return 5 (First person spends 5 minutes to copy
+book 1 and book 2 and the second person spends 4 minutes to copy book 3.)
+
+Solution 1 Binary search
+
+```C++
+
+```
 
 ### 183. Wood cut (lintcode)
 
 Description
-Given n pieces of wood with length L[i] (integer array). Cut them into small
+
+Given n pieces of wood with length `L[i]` (integer array). Cut them into small
 pieces to guarantee you could have equal or more than k pieces with the same
 length. What is the longest length you can get from the n pieces of wood? Given
 L & k, return the maximum length of the small pieces. You couldn't cut wood into
@@ -1813,7 +1945,7 @@ Solution 1 Binary search
   a length out of guessing, can you verify whether it going to work or not? Yes,
   you can! That's the core idea of this solution.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int woodCut(vector<int> &L, int k) {
@@ -1853,7 +1985,7 @@ Solution 1 Binary search
 * Notice the `count` variable is int type, you should test your solution
   expecially for the line `count += dist[i] / mid`;
 
-```C++
+```c++
 class Solution {
 public:
     double minmaxGasDist(vector<int>& stations, int K) {
@@ -1897,7 +2029,7 @@ public:
   distant apart. We actually compare the prefix sum to the smallest prefix sum
   k distant apart.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     double findMaxAverage(vector<int>& nums, int k) {
@@ -1961,7 +2093,7 @@ public:
   the grid, such that there exist a path from `grid[0][0]` to `grid[n-1][n-1]`
   which includes this value and it is the maximum value in the path.
 
-```C++ tab=
+```c++
 class Solution {
     int x[4] = {0, -1, 0, 1};
     int y[4] = {-1, 0, 1, 0};
@@ -2022,7 +2154,7 @@ Solution 1 Binary search
    looking for. If binary search found nothing, we simpley return the special
    case `n-1`.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     string smallestGoodBase(string n) {
@@ -2077,7 +2209,7 @@ Solution 1 Binary Search
    and can be use to test a condition that decide which `side` we can go to shrink
    the range the target value is possible in.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int kthSmallest(vector<vector<int>>& matrix, int k) {
@@ -2109,7 +2241,7 @@ Solution 2 Priority Queue
 
 1. Notice when the `k <= n^2`, index `j < matrix.size()` will also make it work.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int kthSmallest(vector<vector<int>>& matrix, int k) {
@@ -2147,7 +2279,7 @@ Solution 1 Binary search
    can at most have `x/i` number smaller than `x`, why?
 6. Follow up: Does the kth element will be in the range of `[1, m*n]`?
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int findKthNumber(int m, int n, int k) {
@@ -2176,7 +2308,7 @@ public:
 
 Solution 1 Priority Queue TLE
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int smallestDistancePair(vector<int>& nums, int k) {
@@ -2209,7 +2341,7 @@ Solution 2 Binary search
 4. When the binary search loop stops, if the result exist, `start` point to the
    distance we are searching. Since this problem guarrantee solution exist, we return `start`.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int smallestDistancePair(vector<int>& nums, int k) {
@@ -2250,7 +2382,7 @@ Solution 3 Using binary search to optimize the counting
 
 1. You can also write your own binary search routine `upper_bound`.
 
-```C++
+```c++
 class Solution {
 public:
     int smallestDistancePair(vector<int>& nums, int k) {
@@ -2302,7 +2434,7 @@ Solution 1 DP
 
 1. The base case is single char. `f[i]` is the length of LIS from the begining.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
@@ -2347,7 +2479,7 @@ Solution 2 Using binary search
     f[7] = 4, a[7] = 10
     ```
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
@@ -2377,7 +2509,7 @@ public:
 
 Alternatively, we could use `lower_bound`.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {

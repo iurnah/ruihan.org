@@ -44,7 +44,7 @@
 
 ### Type of subarray problem
 
-* Find a subarray fulfill certain propertie, i.e maximum size subarray, [Longest Substring with At Most Two Distinct Characters](#longest-substring-with-at-most-two-distinct-characters)
+* Find a subarray that fulfills a certain property, i.e maximum size subarray, [Longest Substring with At Most Two Distinct Characters](#longest-substring-with-at-most-two-distinct-characters)
     1. Use map or two pointer to solve the problem.
 * Split into subarrays that fulfill certain properties, i.e. sum greater than k.
 
@@ -1376,8 +1376,10 @@ Binary Search solution
 
 * This is a greedy search solution that use binary search to accelerate the
   search speed
+* The goal is to "minimize the largest sub-array sum". It is different from
+  [Divide Chocolate](./#divide-chocolate), which is maximize the smallest sum.
 * The bisection condition is not `A[m] < target` any more. It is a function to
-  check whether the constains can meet for th value `mid`.
+  check whether the constrain can meet given a guesss value `mid`.
 
 ```C++ tab="C++ DP"
 /**
@@ -1447,8 +1449,9 @@ public:
         return l;
     }
 
-    // check whether the constains are met
-    // 1. whether m - 1 cut is possible for all subsum <= mid with
+    // whether m cuts are possible, notice the greedy property of this check
+    // you should notice that if not possible, it is because mid is too small,
+    // not because it is too large.
     bool canCut(vector<int>& nums, int mid, int m) {
         int sum = 0;
         for (int num: nums) {

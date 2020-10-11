@@ -7,16 +7,21 @@ edit_uri: ""
 copyright: 'Copyright &copy; 2020 Rui Han'
 
 theme:
-  name: 'material'
+  name: material
   palette:
-    primary: 'black'
-    accent: 'black'
-  feature:
-    tabs: true 
+    scheme: default
+    primary: black
+    accent: black
+  features:
+    - navigation.tabs
 
 markdown_extensions:
   - admonition
-  - codehilite
+  - pymdownx.inlinehilite
+  - pymdownx.highlight:
+      linenums: false 
+      linenums_style: pymdownx.inline
+  - pymdownx.tabbed
   - pymdownx.superfences
   - pymdownx.arithmatex
   - pymdownx.tasklist:
@@ -33,11 +38,14 @@ nav:
   - Books:
     - Index: books/index.md
     - Accelerated C++: books/accelerated-cpp/notes.md
+    - Mining Massive Datasets: books/mining-massive-datasets/notes.md
   - Courses:
     - Index: courses/index.md
     - Machine Learning (Coursera): courses/machine-learning-coursera/notes.md
     - CS224N Lecture Notes: courses/cs224n/lec-notes.md
     - CS224N Write-up: courses/cs224n/write-up.md
+    - Convolutional Neural Networks: courses/coursera-dl4-cnn/notes.md
+    - Mining Massive Data Sets: courses/mining-massive-datasets/notes.md
     - 6.431 Probability: courses/6.431-probability/notes.md
     - Learning From Data: courses/learning-from-data/notes.md
     - Nine Chapter System Design: courses/9chap-system-design/notes.md
