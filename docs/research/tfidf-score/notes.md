@@ -12,9 +12,8 @@ not practical because of the sparsity.
 
 token to document list mapping
 
-word -> [doc1, doc2, ...]
-
-UA -> [2020-04-01 13:03:23, 2020-04-01 13:03:23]
+* word -> [doc1, doc2, ...]
+* UA -> [2020-04-01 13:03:23, 2020-04-01 13:03:23]
 
 ## Query processing
 
@@ -139,12 +138,13 @@ request.
 
 This solution models a collection of requests during a window as a document.
 
-term frequency = count of each UA, HC, CC, and RF in a time window
-document frequency = count of how many windows each UA, HC, CC, and RF occurs
+* term frequency = count of each UA, HC, CC, and RF in a time window
+* document frequency = count of how many windows each UA, HC, CC, and RF occurs
 
-the window can be a time window or fixed size window. In the fixed size window,
-instead of divided by hour, we divide by fixed number of requests and treat each
-collection as a document. This model can also be used for the tokenized solution.
+The window can be a time window or a fixed size window. In the fixed size window,
+instead of dividing by equal time slots, we divide by the fixed number of
+requests and treat each collection as a document. This model can also be used
+for the tokenized solution.
 
 ### tokenize all request facets
 
@@ -154,17 +154,17 @@ tokens as the query. Compare this to a phrase retrival task.
 term frequency = count of each token
 
 !!! question
-    Can we use the consine similarity to compare two queries? Because the
-    similarirty measure described in the lectures is for query-document pair.
+    Can we use the cosine similarity to compare two queries? Because the
+    similarity measure described in the lectures is for query-document pair.
     Can we compare query-query pair? Whether the TF-IDF embedding can capture
     enough similarity info and used for clustering?
 
 ## Intuitions
 
-Using TF-IDF, we are able to measure the speed of demage from request possess
-the similar attributes (belongs to certain attacks). Specifically, given a
-request in realtime, it can check the current TF, and DF, and calculate the
-TF-IDF. All these three values are useful for us.
+Using TF-IDF, we can measure the speed of damage from requests possess similar
+attributes (belongs to certain attacks). Specifically, given a request in realtime,
+it can check the current TF, and DF, and calculate the TF-IDF. All these three
+values are useful for us.
 
 * TF - If TF is greater than a threshold setting.
   We can it is may be a high qps scraping. If TF is moderate or very small, we

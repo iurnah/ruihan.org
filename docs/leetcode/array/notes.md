@@ -117,59 +117,59 @@ of k" are solved using this trick. There are two hints.
 
 ### Maximum Subarray
 
-Greedy solution
+=== "C++ Greedy solution"
 
-```C++ tab="C++ Greedy solution"
-// why this greedy solution works?
-class Solution {
-public:
-    int maxSubArray(vector<int>& nums) {
-        int n = nums.size();
-        int sum = 0;
-        int max = 0;
-        if (n == 0)
-            return 0;
+    ```C++
+    // why this greedy solution works?
+    class Solution {
+    public:
+        int maxSubArray(vector<int>& nums) {
+            int n = nums.size();
+            int sum = 0;
+            int max = 0;
+            if (n == 0)
+                return 0;
 
-        max = nums[0];
-        for (int i = 0; i < n; i++) {
-            sum += nums[i];
-            max = sum > max ? sum : max;
-            sum = sum > 0 ? sum : 0;
+            max = nums[0];
+            for (int i = 0; i < n; i++) {
+                sum += nums[i];
+                max = sum > max ? sum : max;
+                sum = sum > 0 ? sum : 0;
+            }
+
+            return max;
         }
-
-        return max;
-    }
-};
-```
-
-DP solution
+    };
+    ```
 
 !!! note
     Why can not compare to `f[i - 1])` to find the maximum. Because including the `f[i - 1]` will skip
     elements, the sum will not from a subarray, but sequence of numbers in the array. This is very similar to
     problems Longest Common Substring and Longest Common Subsequence
 
-```C++ tab="C++ DP" hl_lines="11"
-class Solution {
-public:
-    int maxSubArray(vector<int>& nums) {
-        int n = nums.size();
-        int res = INT_MIN;
+=== "C++ DP"
 
-        int f[n + 1] = {0}; // f[i] = maxSubArray of first i elements
-        f[0] = 0;           // initial value
+    ```c++ hl_lines="11"
+    class Solution {
+    public:
+        int maxSubArray(vector<int>& nums) {
+            int n = nums.size();
+            int res = INT_MIN;
 
-        for (int i = 1; i <= n; i++) {
-            f[i] = max(f[i - 1] + nums[i - 1], nums[i - 1]);
-            res = max(f[i], res);
+            int f[n + 1] = {0}; // f[i] = maxSubArray of first i elements
+            f[0] = 0;           // initial value
+
+            for (int i = 1; i <= n; i++) {
+                f[i] = max(f[i - 1] + nums[i - 1], nums[i - 1]);
+                res = max(f[i], res);
+            }
+
+            return res;
         }
-
-        return res;
-    }
-};
-// Notice this is a coordinate based DP problem, the meaning of the index i
-// in nums and f are different.
-```
+    };
+    // Notice this is a coordinate based DP problem, the meaning of the index i
+    // in nums and f are different.
+    ```
 
 Kadane's solution
 
@@ -182,23 +182,25 @@ where it make use of the idea of global maximum and local maximum.
     The local maximum is the maximum sum of a continuous subarray, the global maximum
     is keep the maximum of the local mmaximum.
 
-```C++ tab="C++ Kadane's solution" hl_lines="9"
-class Solution {
-public:
-    int maxSubArray(vector<int>& nums) {
-        int n = nums.size();
-        int res = INT_MIN;
-        int curr = 0;
+=== "C++ Kadane's solution" hl_lines="9"
 
-        for (int i = 0; i < n; i++) {
-            curr = max(curr + nums[i], nums[i]);
-            res = max(curr, res);
+    ```c++
+    class Solution {
+    public:
+        int maxSubArray(vector<int>& nums) {
+            int n = nums.size();
+            int res = INT_MIN;
+            int curr = 0;
+
+            for (int i = 0; i < n; i++) {
+                curr = max(curr + nums[i], nums[i]);
+                res = max(curr, res);
+            }
+
+            return res;
         }
-
-        return res;
-    }
-};
-```
+    };
+    ``` 
 
 Prefix sum solution
 
@@ -206,24 +208,26 @@ The ideas is we have array sums, `sums[i] = A[0] +, ... + A[i]`, called prefix s
 With one for loop we can find the maxSum so far and the minSum before it.
 The difference is the possible results, we collect the maximum of those differences.
 
-```C++ tab="C++ prefix sum solution"
-public class Solution {
-    public int maxSubArray(int[] A) {
-        if (A == null || A.length == 0){
-            return 0;
-        }
+=== "C++ prefix sum solution"
 
-        int max = Integer.MIN_VALUE, sum = 0, minSum = 0;
-        for (int i = 0; i < A.length; i++) {
-            sum += A[i];
-            max = Math.max(max, sum - minSum);
-            minSum = Math.min(minSum, sum);
-        }
+    ```c++
+    public class Solution {
+        public int maxSubArray(int[] A) {
+            if (A == null || A.length == 0){
+                return 0;
+            }
 
-        return max;
-    }
-};
-```
+            int max = Integer.MIN_VALUE, sum = 0, minSum = 0;
+            for (int i = 0; i < A.length; i++) {
+                sum += A[i];
+                max = Math.max(max, sum - minSum);
+                minSum = Math.min(minSum, sum);
+            }
+
+            return max;
+        }
+    };
+    ```
 
 ### Maximum Subarray II*
 
@@ -242,51 +246,53 @@ For given [1, 3, -1, 2, -1, 2], the two subarrays are [1, 3] and [2, -1, 2] or
 
 Prefix sum solution
 
-```C++ tab="C++ Prefix sum solution" hl_lines="18 19 29 30"
-class Solution {
-public:
-    /*
-     * @param nums: A list of integers
-     * @return: An integer denotes the sum of max two non-overlapping subarrays
-     */
-    int maxTwoSubArrays(vector<int> nums) {
-        int n = nums.size();
-        int minSum = 0;
-        int sums = 0;
-        int maxSum = INT_MIN;
-        int left [n] = {0};
-        int right [n] = {0};
+=== "C++ Prefix sum solution"
 
-        /* calculate the prefix sum */
-        for (int i = 0; i < n; i++) {
-            sums += nums[i];
-            maxSum = max(maxSum, sums - minSum); // minSum is previous calculated
-            minSum = min(minSum, sums);
-            left[i] = maxSum;
+    ```C++ hl_lines="18 19 29 30"
+    class Solution {
+    public:
+        /*
+        * @param nums: A list of integers
+        * @return: An integer denotes the sum of max two non-overlapping subarrays
+        */
+        int maxTwoSubArrays(vector<int> nums) {
+            int n = nums.size();
+            int minSum = 0;
+            int sums = 0;
+            int maxSum = INT_MIN;
+            int left [n] = {0};
+            int right [n] = {0};
+
+            /* calculate the prefix sum */
+            for (int i = 0; i < n; i++) {
+                sums += nums[i];
+                maxSum = max(maxSum, sums - minSum); // minSum is previous calculated
+                minSum = min(minSum, sums);
+                left[i] = maxSum;
+            }
+
+            /* calculate the postfix sum */
+            minSum = 0;
+            sums = 0;
+            maxSum = INT_MIN;
+            for (int i = n - 1; i >= 0; i--) {
+                sums += nums[i];
+                maxSum = max(maxSum, sums - minSum);
+                minSum = min(minSum, sums);
+                right[i] = maxSum;
+            }
+
+            /* iterate the divider line, left[i] stored the maxSubArraySum
+            * from nums[0] to nums[i], similar for right[i] */
+            maxSum = INT_MIN;
+            for (int i = 0; i < n - 1; i++) {
+                maxSum = max(maxSum, left[i] + right[i + 1]);
+            }
+
+            return maxSum;
         }
-
-        /* calculate the postfix sum */
-        minSum = 0;
-        sums = 0;
-        maxSum = INT_MIN;
-        for (int i = n - 1; i >= 0; i--) {
-            sums += nums[i];
-            maxSum = max(maxSum, sums - minSum);
-            minSum = min(minSum, sums);
-            right[i] = maxSum;
-        }
-
-        /* iterate the divider line, left[i] stored the maxSubArraySum
-         * from nums[0] to nums[i], similar for right[i] */
-        maxSum = INT_MIN;
-        for (int i = 0; i < n - 1; i++) {
-            maxSum = max(maxSum, left[i] + right[i + 1]);
-        }
-
-        return maxSum;
-    }
-};
-```
+    };
+    ```
 
 !!! warning
     Cannot swap the highlighted lines. Because the maximum sum is calculated from
@@ -317,7 +323,7 @@ Use the idea of global maximum and local maximum from [Maximum Subarray](./#maxi
 See [this artical](https://zhengyang2015.gitbooks.io/lintcode/maximum_subarray_iii_43.html)
 for detailed explaination of the solution.
 
-```C++ tab=""
+```c++
 class Solution {
 public:
     /**
@@ -383,75 +389,77 @@ We use the similar idea for problem [Maximum Subarray II](./#maximum-subarray-ii
 We have to maintain four arrays. from forward maximum and minimum subarray sum
 and backward maximum and minimum subarray sum.
 
-```C++ tab="C++ Prefix sum solution"
-class Solution {
-public:
-    /*
-     * @param nums: A list of integers
-     * @return: value of maximum difference between two subarrays
-     */
-    int maxDiffSubArrays(vector<int> nums) {
-        int n = nums.size();
-        int minSum = 0;
-        int sums = 0;
-        int maxSum = INT_MIN;
+=== "C++ Prefix sum solution"
 
-        int left_max[n] = {0};
-        int left_min[n] = {0};
-        int right_max[n] = {0};
-        int right_min[n] = {0};
+    ```C++
+    class Solution {
+    public:
+        /*
+        * @param nums: A list of integers
+        * @return: value of maximum difference between two subarrays
+        */
+        int maxDiffSubArrays(vector<int> nums) {
+            int n = nums.size();
+            int minSum = 0;
+            int sums = 0;
+            int maxSum = INT_MIN;
 
-        for (int i = 0; i < n; i++) {
-            sums += nums[i];
-            maxSum = max(maxSum, sums - minSum);
-            minSum = min(minSum, sums);
-            left_max[i] = maxSum;
-            //left_min[i] = minSum;
+            int left_max[n] = {0};
+            int left_min[n] = {0};
+            int right_max[n] = {0};
+            int right_min[n] = {0};
+
+            for (int i = 0; i < n; i++) {
+                sums += nums[i];
+                maxSum = max(maxSum, sums - minSum);
+                minSum = min(minSum, sums);
+                left_max[i] = maxSum;
+                //left_min[i] = minSum;
+            }
+
+            minSum = INT_MAX;
+            sums = 0;
+            maxSum = 0;
+            for (int i = 0; i < n; i++) {
+                sums += nums[i];
+                minSum = min(minSum, sums - maxSum);
+                maxSum = max(maxSum, sums);
+                //left_max[i] = maxSum;
+                left_min[i] = minSum;
+            }
+
+            minSum = 0;
+            sums = 0;
+            maxSum = INT_MIN;
+            for (int i = n - 1; i >= 0; i--) {
+                sums += nums[i];
+                maxSum = max(maxSum, sums - minSum);
+                minSum = min(minSum, sums);
+                right_max[i] = maxSum;
+                //right_min[i] = minSum;
+            }
+
+            minSum = INT_MAX;
+            sums = 0;
+            maxSum = 0;
+            for (int i = n - 1; i >= 0; i--) {
+                sums += nums[i];
+                minSum = min(minSum, sums - maxSum);
+                maxSum = max(maxSum, sums);
+                //right_max[i] = maxSum;
+                right_min[i] = minSum;
+            }
+
+            int diff = INT_MIN;
+            for (int i = 0; i < n - 1; i++) {
+                diff = max(left_max[i] - right_min[i + 1], diff);
+                diff = max(right_max[i + 1] - left_min[i], diff);
+            }
+
+            return diff;
         }
-
-        minSum = INT_MAX;
-        sums = 0;
-        maxSum = 0;
-        for (int i = 0; i < n; i++) {
-            sums += nums[i];
-            minSum = min(minSum, sums - maxSum);
-            maxSum = max(maxSum, sums);
-            //left_max[i] = maxSum;
-            left_min[i] = minSum;
-        }
-
-        minSum = 0;
-        sums = 0;
-        maxSum = INT_MIN;
-        for (int i = n - 1; i >= 0; i--) {
-            sums += nums[i];
-            maxSum = max(maxSum, sums - minSum);
-            minSum = min(minSum, sums);
-            right_max[i] = maxSum;
-            //right_min[i] = minSum;
-        }
-
-        minSum = INT_MAX;
-        sums = 0;
-        maxSum = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            sums += nums[i];
-            minSum = min(minSum, sums - maxSum);
-            maxSum = max(maxSum, sums);
-            //right_max[i] = maxSum;
-            right_min[i] = minSum;
-        }
-
-        int diff = INT_MIN;
-        for (int i = 0; i < n - 1; i++) {
-            diff = max(left_max[i] - right_min[i + 1], diff);
-            diff = max(right_max[i + 1] - left_min[i], diff);
-        }
-
-        return diff;
-    }
-};
-```
+    };
+    ```
 
 ### Maximum Product Subarray
 
@@ -460,7 +468,7 @@ DP solution
 * It is similar to the problem [Maximum Subarray](./#maximum-subarray). Notice
   the negative number, min multiply a minus number could become the largest product.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int maxProduct(vector<int>& nums) {
@@ -494,7 +502,7 @@ Constant space solution
 Without need to check whether `nums[i]` is positive is negative, we can just find
 the maximum or minium of three cases.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     /*
@@ -541,7 +549,7 @@ use a hash table to keep the prefix sum. Once we see another prefix sum that
 exists in the hash table, we discovered the subarray that sums to zero. However,
 pay attention to the indexing, because it requires to return the original array's index.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     /**
@@ -585,7 +593,7 @@ Prefix sum solution
 Calculate the prefix sum first and then use the prefix sum to find the subarray.
 This solution is $O(n^2)$
 
-```C++
+```c++
 class Solution {
 public:
     vector<int> subarraySum(vector<int> nums){
@@ -620,7 +628,7 @@ Accumulative sum solution
 Using accumulative sum and another moving pointer to check both the sum and the
 length of the subarray.
 
-```C++ tab=""
+```C++
 class Solution {
 public:
     int minSubArrayLen(int s, vector<int>& nums) {
@@ -656,7 +664,7 @@ add to the hash table for the first time a value is appeared. It ensures the
 length of the found subarray is the largest. Notice you also have to initialize
 the hash with value `<0, -1>` to handle the edge case.
 
-```C++ tab=
+```C++
 class Solution {
 public:
     int maxSubArrayLen(vector<int>& nums, int k) {
@@ -702,7 +710,9 @@ Prefix sum solution
 
 Use prefix sum to find the subarray sum. Two pointer to check all the possible subarray sum.
 
-```C++ tab="C++ prefix sum solution"
+=== "C++ prefix sum solution"
+
+```C++
 public class Solution {
     public int subarraySum(int[] nums, int k) {
         int count = 0;
@@ -746,7 +756,7 @@ prefix sum and previous prefix sum "sum - k"
 */
 ```
 
-```C++ tab=""
+```C++
 class Solution {
 public:
     int subarraySum(vector<int>& nums, int k) {
@@ -789,7 +799,9 @@ public:
   remainder in the map, the new index and all the found indexes can be used to
   retrive one solution. The count keep in the map show how many of those can be.
   
-```C++ tab="One pass solution"  
+=== "One pass solution"
+
+```c++
 class Solution {
 public:
     int subarraysDivByK(vector<int>& A, int K) {
@@ -823,7 +835,9 @@ public:
 };
 ```
 
-```C++ tab="Naive solution O(n^2)"
+==="Naive solution O(n^2)"
+
+```C++
 class Solution {
 public:
     int subarraysDivByK(vector<int>& A, int K) {
@@ -865,7 +879,7 @@ Solution 1 using prefix sum and set
    We can use `lower_bound` to achieve that. Notice if it is asking the sum less
    than k we have to use `upper_bound`
 
-```C++ tab=
+```C++
 int maxSumSubarryNoLargerThanK (int A[], int n, int k) {
     set<int> preSumSet;
     preSumSet.insert(0);
@@ -895,7 +909,7 @@ Solution 1 iterate the wide of the matrix and using prefix sum and set `lower_bo
    the width of the sub-matrix and sum up all row elements and get an array
    of length `m`, `m` is the number of rows of the matrix. Then apply the method.
 
-```C++ tab=
+```C++
 class Solution {
 public:
     int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
@@ -947,7 +961,7 @@ Solution 2 using merge sort
    `O(nlogn)`.
 3. The complexity is n⋅n⋅(m+m⋅\log m)=O(n⋅n⋅m⋅\log m)
 
-```C++ tab=
+```C++
 class Solution {
 public:
     int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
@@ -1019,7 +1033,7 @@ Solution 1 using merge sort
 
 1. This problem is the basic of using merge sort to solve lots of hard problems.
 
-```C++ tab=
+```C++
 long long merge_and_count(int A[], int start, int end) {
     if (end - start <= 1) return 0;
 
@@ -1054,7 +1068,7 @@ Solution 1 using merge sort
 
 1. This problem is the basic of using merge sort to solve lots of hard problems.
 
-```C++ tab=
+```c++
 long long merge_and_count(int A[], int start, int end) {
     if (end - start <= 1) return 0;
 
@@ -1092,152 +1106,158 @@ Solution 1 Merge sort
    we don't know where to put those count values in the result vector.
 2. The second merge solutions run much faster than the first one.
 
-```C++ tab="C++ Merge sort"
-class Solution {
-public:
-    vector<int> countSmaller(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> res(n, 0);
-        vector<pair<int, int> > vp;
+=== "C++ Merge sort"
 
-        for (int i = 0; i < n; i++) {
-            vp.emplace_back(nums[i], i);
-        }
-
-        merge_sort_count(vp, 0, n, res);
-
-        return res;
-    }
-
-private:
-    void merge_sort_count(vector<pair<int, int> >& nums, int start, int end,
-                          vector<int>& res) {
-        if (end - start <= 1)
-            return;
-
-        int mid = start + (end - start) / 2;
-
-        merge_sort_count(nums, start, mid, res);
-        merge_sort_count(nums, mid, end, res);
-
-        vector<pair<int, int> > cache(end - start, pair<int, int>(0, 0));
-
-        int j = mid, k = 0, t = mid;
-        for (int i = start; i < mid; i++) {
-            j = mid;
-            while (j < end && nums[i].first > nums[j].first) { // found smaller elements
-                res[nums[i].second]++;
-                j++;
-            }
-
-            while (t < end && nums[i].first > nums[t].first) {
-                cache[k++] = nums[t++];
-            }
-
-            cache[k++] = nums[i];
-        }
-
-        for (int i = start; i < j; i++) {
-            nums[i] = cache[i - start];
-        }
-
-        return;
-    }
-};
-```
-
-```C++ tab="C++ more efficient  Merge sort"
-class Solution {
-public:
-    vector<int> countSmaller(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> res(n, 0);
-        vector<pair<int, int> > vp;
-
-        for (int i = 0; i < n; i++) {
-            vp.emplace_back(nums[i], i);
-        }
-
-        mergeSort(vp, 0, n, res);
-
-        return res;
-    }
-
-    void mergeSort(vector<pair<int, int>>& x, int start,
-                   int end, vector<int>& res) {
-        if (end - start <= 1) return;
-
-        int mid = start + (end - start) / 2;
-        mergeSort(x, start, mid, res);
-        mergeSort(x, mid, end, res);
-
-        vector<pair<int, int> > cache(end - start, pair<int, int>(0, 0));
-
-        int i = start, j = mid, k = 0;
-        while(i < mid && j < end) {
-            if (x[i].first <= x[j].first) {
-                cache[k++] = x[i];
-                res[x[i].second] += j - mid;
-                ++i;
-            } else {
-                cache[k++] = x[j++];
-            }
-        }
-
-        while(i < mid) {
-            cache[k++] = x[i];
-            res[x[i].second] += end - mid;
-            ++i;
-        }
-
-        while(j < end)
-            cache[k++] = x[j++];
-
-        for(i = start, k = 0; i < end; ++i, ++k) {
-            x[i] = cache[k];
-        }
-    }
-};
-```
-
-```C++ tab="C++ BST"
-class Solution {
-public:
-    class TreeNode {
+    ```c++
+    class Solution {
     public:
-        int val, smallerCnt;
-        TreeNode* left, *right;
-        TreeNode(int v, int s) : left(NULL), right(NULL), val(v), smallerCnt(s){}
-    };
-    vector<int> countSmaller(vector<int>& nums) {
-        int n = nums.size();
-        if(n == 0) return {};
-        vector<int> res(n, 0);
-        TreeNode* root = NULL;
+        vector<int> countSmaller(vector<int>& nums) {
+            int n = nums.size();
+            vector<int> res(n, 0);
+            vector<pair<int, int> > vp;
 
-        for(int i = n - 1; i >= 0; --i)
-            root = insert(root, nums[i], i, 0, res);
+            for (int i = 0; i < n; i++) {
+                vp.emplace_back(nums[i], i);
+            }
 
-        return res;
-    }
+            merge_sort_count(vp, 0, n, res);
 
-private:
-    TreeNode* insert( TreeNode* node, int val, int idx, int preSum, vector<int>& res) {
-        if(node == NULL) {
-            node = new TreeNode(val, 0);
-            res[idx] = preSum;
-        } else if(node->val > val) {
-            node->smallerCnt++;
-            node->left = insert(node->left, val, idx, preSum, res);
-        } else {
-            node->right = insert(node->right, val, idx,
-                                 preSum + node->smallerCnt + ((node->val < val)? 1: 0), res);
+            return res;
         }
 
-        return node;
-    }
-};
-```
+    private:
+        void merge_sort_count(vector<pair<int, int> >& nums, int start, int end,
+                            vector<int>& res) {
+            if (end - start <= 1)
+                return;
+
+            int mid = start + (end - start) / 2;
+
+            merge_sort_count(nums, start, mid, res);
+            merge_sort_count(nums, mid, end, res);
+
+            vector<pair<int, int> > cache(end - start, pair<int, int>(0, 0));
+
+            int j = mid, k = 0, t = mid;
+            for (int i = start; i < mid; i++) {
+                j = mid;
+                while (j < end && nums[i].first > nums[j].first) { // found smaller elements
+                    res[nums[i].second]++;
+                    j++;
+                }
+
+                while (t < end && nums[i].first > nums[t].first) {
+                    cache[k++] = nums[t++];
+                }
+
+                cache[k++] = nums[i];
+            }
+
+            for (int i = start; i < j; i++) {
+                nums[i] = cache[i - start];
+            }
+
+            return;
+        }
+    };
+    ```
+
+=== "C++ more efficient  Merge sort"
+
+    ```C++
+    class Solution {
+    public:
+        vector<int> countSmaller(vector<int>& nums) {
+            int n = nums.size();
+            vector<int> res(n, 0);
+            vector<pair<int, int> > vp;
+
+            for (int i = 0; i < n; i++) {
+                vp.emplace_back(nums[i], i);
+            }
+
+            mergeSort(vp, 0, n, res);
+
+            return res;
+        }
+
+        void mergeSort(vector<pair<int, int>>& x, int start,
+                    int end, vector<int>& res) {
+            if (end - start <= 1) return;
+
+            int mid = start + (end - start) / 2;
+            mergeSort(x, start, mid, res);
+            mergeSort(x, mid, end, res);
+
+            vector<pair<int, int> > cache(end - start, pair<int, int>(0, 0));
+
+            int i = start, j = mid, k = 0;
+            while(i < mid && j < end) {
+                if (x[i].first <= x[j].first) {
+                    cache[k++] = x[i];
+                    res[x[i].second] += j - mid;
+                    ++i;
+                } else {
+                    cache[k++] = x[j++];
+                }
+            }
+
+            while(i < mid) {
+                cache[k++] = x[i];
+                res[x[i].second] += end - mid;
+                ++i;
+            }
+
+            while(j < end)
+                cache[k++] = x[j++];
+
+            for(i = start, k = 0; i < end; ++i, ++k) {
+                x[i] = cache[k];
+            }
+        }
+    };
+    ```
+
+=== "C++ BST"
+
+    ```C++
+    class Solution {
+    public:
+        class TreeNode {
+        public:
+            int val, smallerCnt;
+            TreeNode* left, *right;
+            TreeNode(int v, int s) : left(NULL), right(NULL), val(v), smallerCnt(s){}
+        };
+        vector<int> countSmaller(vector<int>& nums) {
+            int n = nums.size();
+            if(n == 0) return {};
+            vector<int> res(n, 0);
+            TreeNode* root = NULL;
+
+            for(int i = n - 1; i >= 0; --i)
+                root = insert(root, nums[i], i, 0, res);
+
+            return res;
+        }
+
+    private:
+        TreeNode* insert( TreeNode* node, int val, int idx, int preSum, vector<int>& res) {
+            if(node == NULL) {
+                node = new TreeNode(val, 0);
+                res[idx] = preSum;
+            } else if(node->val > val) {
+                node->smallerCnt++;
+                node->left = insert(node->left, val, idx, preSum, res);
+            } else {
+                node->right = insert(node->right, val, idx,
+                                    preSum + node->smallerCnt + ((node->val < val)? 1: 0), res);
+            }
+
+            return node;
+        }
+    };
+    ```
 
 ### Continuous Subarray Sum
 
@@ -1248,37 +1268,39 @@ Once see a multiple of K, you should consider the modulor operation `%`
 The values put into to the hash only for the first time, this is similar to the
 case in the problem Maximum Size Subarray Sum Equals k.
 
-```C++ tab="C++ Hash soution" hl_lines="11"
-class Solution {
-public:
-    bool checkSubarraySum(vector<int>& nums, int k) {
-        int n = nums.size();
-        if (n == 0)
-            return false;
+=== "C++ Hash soution" hl_lines="11"
 
-        unordered_map<int, int> map;
-        int sum = 0;
+    ```c++
+    class Solution {
+    public:
+        bool checkSubarraySum(vector<int>& nums, int k) {
+            int n = nums.size();
+            if (n == 0)
+                return false;
 
-        map[0] = -1; // test case [0, 0], 0
-        for (int i = 0; i < n; i++) {
-            sum += nums[i];
+            unordered_map<int, int> map;
+            int sum = 0;
 
-            if (k != 0)
-                sum = sum % k;
+            map[0] = -1; // test case [0, 0], 0
+            for (int i = 0; i < n; i++) {
+                sum += nums[i];
 
-            if (map.count(sum) != 0) {
-                if (i - map[sum] > 1) {
-                    return true;
+                if (k != 0)
+                    sum = sum % k;
+
+                if (map.count(sum) != 0) {
+                    if (i - map[sum] > 1) {
+                        return true;
+                    }
+                } else {
+                    map[sum] = i;
                 }
-            } else {
-                map[sum] = i;
             }
-        }
 
-        return false;
-    }
-};
-```
+            return false;
+        }
+    };
+    ```
 
 ### Contiguous Array
 
@@ -1292,7 +1314,7 @@ Hash solution
 This problem is very similar to the problem [Continuous Subarray Sum](./#continuous-subarray-sum).
 However, there is a trick to calculate the cummulative sum, treat `0` as `-1`.
 
-```C++ tab=
+```C++
 class Solution {
 public:
     int findMaxLength(vector<int>& nums) {
@@ -1324,49 +1346,51 @@ Because of the symetric property of the head subarray and trailing subarray, we
 can calculate cumulative sum from both direction. This can help to fix the index
 `i` and `k`. we can enumerate the index `j` in between.
 
-```C++ tab="C++ cummulateive sum solution"
-class Solution {
-public:
-    bool splitArray(vector<int>& nums) {
-        int n = nums.size();
-        int sum1[n] = {0};
-        int sum2[n] = {0};
+=== "C++ cummulateive sum solution"
 
-        sum1[0] = nums[0];
-        for (int i = 1; i < n; i++) {
-            sum1[i] = sum1[i - 1] + nums[i];
-        }
+    ```C++
+    class Solution {
+    public:
+        bool splitArray(vector<int>& nums) {
+            int n = nums.size();
+            int sum1[n] = {0};
+            int sum2[n] = {0};
 
-        sum2[n - 1] = nums[n - 1];
-        for (int i = n - 2; i >= 0; i--) {
-            sum2[i] = sum2[i + 1] + nums[i];
-        }
+            sum1[0] = nums[0];
+            for (int i = 1; i < n; i++) {
+                sum1[i] = sum1[i - 1] + nums[i];
+            }
 
-        // notice the index bounds
-        for (int i = 1; i < n - 5; i++) {
-            for (int k = n - 2; k > i + 3; k--) {
-                if (sum1[i] - nums[i] == sum2[k] - nums[k]) {
-                    for (int j = i + 2; j < k - 1; j++) {
-                        int sumij = sum1[j] - nums[j] - sum1[i];
-                        int sumjk = sum2[j] - nums[j] - sum2[k];
-                        if (sumij == sumjk) {
-                            return true;
+            sum2[n - 1] = nums[n - 1];
+            for (int i = n - 2; i >= 0; i--) {
+                sum2[i] = sum2[i + 1] + nums[i];
+            }
+
+            // notice the index bounds
+            for (int i = 1; i < n - 5; i++) {
+                for (int k = n - 2; k > i + 3; k--) {
+                    if (sum1[i] - nums[i] == sum2[k] - nums[k]) {
+                        for (int j = i + 2; j < k - 1; j++) {
+                            int sumij = sum1[j] - nums[j] - sum1[i];
+                            int sumjk = sum2[j] - nums[j] - sum2[k];
+                            if (sumij == sumjk) {
+                                return true;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        return false;
-    }
-};
-```
+            return false;
+        }
+    };
+    ```
 
 ### 410. Split Array Largest Sum
 
 Similar problems:
 
-* [Copy Books](./#copy-books).
+* [Copy Books (linktcode)](./#copy-books-lintcode).
 
 DP solution
 
@@ -1381,98 +1405,123 @@ Binary Search solution
 * The bisection condition is not `A[m] < target` any more. It is a function to
   check whether the constrain can meet given a guesss value `mid`.
 
-```C++ tab="C++ DP"
-/**
- * equivalent to the lintcode copy books problem
- *
- * last step: mth subarray A[j], ..., A[i - 1].
- * State: f[m][n]: minmax sum of m subarrays that include n elements
- * Equation: f[m][n] = min_{0<=j<n}(max(f[m - 1][j], sum(A[j], ..., A[n - 1])))
- * Init: f[0][n] = INT_MAX;
- *       f[0][0] = 0;
- * NB: notice a special case: [1, 2147483247], 2
- *     the sum will overflow in the state update, You use a double type  
- */
-class Solution {
-public:
-    int splitArray(vector<int>& nums, int m) {
-        int n = nums.size();
+=== "C++ DP"
 
-        double f[m + 1][n + 1];
-        f[0][0] = 0;
-        for (int i = 1; i <= n; i++) {
-            f[0][i] = INT_MAX;
-        }
+    ```C++
+    /**
+    * equivalent to the lintcode copy books problem
+    *
+    * last step: mth subarray A[j], ..., A[i - 1].
+    * State: f[m][n]: minmax sum of m subarrays that include n elements
+    * Equation: f[m][n] = min_{0<=j<n}(max(f[m - 1][j], sum(A[j], ..., A[n - 1])))
+    * Init: f[0][n] = INT_MAX;
+    *       f[0][0] = 0;
+    * NB: notice a special case: [1, 2147483247], 2
+    *     the sum will overflow in the state update, You use a double type  
+    */
+    class Solution {
+    public:
+        int splitArray(vector<int>& nums, int m) {
+            int n = nums.size();
 
-        double sum = 0;
-        for (int k = 1; k <= m; k++) {
-            f[k][0] = 0;
+            double f[m + 1][n + 1];
+            f[0][0] = 0;
             for (int i = 1; i <= n; i++) {
-                sum = 0;
-                f[k][i] = INT_MAX;
-                for (int j = i; j >= 0; j--) {//j = i, mean sum = 0.
-                    f[k][i] = min(f[k][i], max(f[k - 1][j], sum));
-                    if (j > 0) {
-                        sum += nums[j - 1];
+                f[0][i] = INT_MAX;
+            }
+
+            double sum = 0;
+            for (int k = 1; k <= m; k++) {
+                f[k][0] = 0;
+                for (int i = 1; i <= n; i++) {
+                    sum = 0;
+                    f[k][i] = INT_MAX;
+                    for (int j = i; j >= 0; j--) {//j = i, mean sum = 0.
+                        f[k][i] = min(f[k][i], max(f[k - 1][j], sum));
+                        if (j > 0) {
+                            sum += nums[j - 1];
+                        }
                     }
                 }
             }
+
+            return f[m][n];
         }
+    };
+    ```
 
-        return f[m][n];
-    }
-};
-```
+=== "C++ binary search"
 
-```C++ tab="C++ binary search"
-class Solution {
-public:
-    int splitArray(vector<int>& nums, int m) {
-        int total = 0;
-        int mx = 0;
-        for (int num: nums) {
-            total += num;
-            mx = max(mx, num);
-        }
-
-        int l = mx, r = total;
-        while (l < r) {
-            int mid = l + (r - l) / 2;
-
-            if (!canCut(nums, mid, m - 1)) {
-                l = mid + 1;
-            } else {
-                r = mid;
+    ```C++
+    class Solution {
+    public:
+        int splitArray(vector<int>& nums, int m) {
+            int total = 0;
+            int mx = 0;
+            for (int num: nums) {
+                total += num;
+                mx = max(mx, num);
             }
-        }
 
-        return l;
-    }
+            int l = mx, r = total;
+            while (l < r) {
+                int mid = l + (r - l) / 2;
 
-    // whether m cuts are possible, notice the greedy property of this check
-    // you should notice that if not possible, it is because mid is too small,
-    // not because it is too large.
-    bool canCut(vector<int>& nums, int mid, int m) {
-        int sum = 0;
-        for (int num: nums) {
-            if (num > mid) return false;
-            else if (sum + num <= mid) sum += num;
-            else { // cut is ok so far
-                m--;
-                if (m < 0) return false; // more element after all cuts.
-
-                sum = num; // init the next group sum
+                if (!canCut(nums, mid, m - 1)) {
+                    l = mid + 1;
+                } else {
+                    r = mid;
+                }
             }
+
+            return l;
         }
 
-        return true;
-    }
-};
-```
+        // whether m cuts are possible, notice the greedy property of this check
+        // you should notice that if not possible, it is because mid is too small,
+        // not because it is too large.
+        bool canCut(vector<int>& nums, int mid, int m) {
+            int sum = 0;
+            for (int num: nums) {
+                if (num > mid) return false;
+                else if (sum + num <= mid) sum += num;
+                else { // cut is ok so far
+                    m--;
+                    if (m < 0) return false; // more element after all cuts.
 
-### Copy Books*
+                    sum = num; // init the next group sum
+                }
+            }
 
-DP solution
+            return true;
+        }
+    };
+    ```
+
+### Copy books (lintcode)
+
+Description
+
+Given n books and the ith book has `A[i]` pages. You are given `k` people to
+copy the `n` books. the `n` books list in a row and each person can claim
+a continuous range of the `n` books. For example, one copier can copy the books
+from ith to jth continuously, but he can not copy the 1st book, 2nd book and 4th
+ book (without the 3rd book).
+
+They start copying books at the same time and they all cost 1 minute to copy 1
+page of a book. What's the best strategy to assign books so that the slowest
+copier can finish at the earliest time?
+
+Example
+
+Given array A = [3,2,4], k = 2. Return 5 (First person spends 5 minutes to copy
+book 1 and book 2 and the second person spends 4 minutes to copy book 3.)
+
+Solution 1 Binary search
+
+See the solution for [410. Split Array Largest Sum](#410-split-array-largest-sum)
+
+Solution 2 DP solution
 
 There are `i` books, consider the last copier, he can copy `A[j], ..., A[i-1]`.
 The first `k-1` copier copy `A[0], ..., A[j - 1]`.
@@ -1480,53 +1529,55 @@ The first `k-1` copier copy `A[0], ..., A[j - 1]`.
 * Define state: `f[k][i]`, meaning the k-th copier copy `i` books.
 * State transition equation: $f[k][i] = \min_{0 \le j \le i} \max(f[k - 1][j], A[j] + ... + A[i - 1])$
 
-```C++ tab="C++ DP solution" hl_lines="34 35 36 37 38 39"
-class Solution {
-public:
-    /**
-     * last step: last copier copy A[j], ... A[i-1]
-     * first k-1 copier --> A[0], ... A[j - 1].
-     * f[k][i]: k copier copy i books.
-     * f[k][i] = \min_{0 \le j \le i} \max(f[k - 1][j], A[j] + ... + A[i - 1])
-     */
-    int copyBooks(vector<int> &pages, int K) {
-        // write your code here
-        int n = pages.size();
-        if (n == 0) {
-            return 0;
-        }
+=== "C++ DP solution"
 
-        if (K > n) {
-            K = n;
-        }
+    ```C++ hl_lines="34 35 36 37 38 39"
+    class Solution {
+    public:
+        /**
+        * last step: last copier copy A[j], ... A[i-1]
+        * first k-1 copier --> A[0], ... A[j - 1].
+        * f[k][i]: k copier copy i books.
+        * f[k][i] = \min_{0 \le j \le i} \max(f[k - 1][j], A[j] + ... + A[i - 1])
+        */
+        int copyBooks(vector<int> &pages, int K) {
+            // write your code here
+            int n = pages.size();
+            if (n == 0) {
+                return 0;
+            }
 
-        int f[K + 1][n + 1];
+            if (K > n) {
+                K = n;
+            }
 
-        /* init */
-        f[0][0] = 0;
-        for (int j = 1; j <= n; j++) {
-            f[0][j] = INT_MAX;
-        }
+            int f[K + 1][n + 1];
 
-        int sum = 0;
-        for (int k = 1; k <= K; k++) {
-            f[k][0] = 0;
-            for (int i = 1; i <= n; i++) {
-                sum = 0;
-                f[k][i] = INT_MAX;
-                for (int j = i; j >= 0; j--) {
-                    f[k][i] = min(f[k][i], max(f[k - 1][j], sum));
-                    if (j > 0) {
-                        sum += pages[j - 1];
+            /* init */
+            f[0][0] = 0;
+            for (int j = 1; j <= n; j++) {
+                f[0][j] = INT_MAX;
+            }
+
+            int sum = 0;
+            for (int k = 1; k <= K; k++) {
+                f[k][0] = 0;
+                for (int i = 1; i <= n; i++) {
+                    sum = 0;
+                    f[k][i] = INT_MAX;
+                    for (int j = i; j >= 0; j--) {
+                        f[k][i] = min(f[k][i], max(f[k - 1][j], sum));
+                        if (j > 0) {
+                            sum += pages[j - 1];
+                        }
                     }
                 }
             }
-        }
 
-        return f[K][n];
-    }
-};
-```
+            return f[K][n];
+        }
+    };
+    ```
 
 !!! note
     We have to enumerate the index `j`, the highlighted code used a clever technique
@@ -1539,7 +1590,7 @@ public:
 
 Prefix sum solution
 
-```C++
+```c++
 class Solution {
 public:
     double findMaxAverage(vector<int>& nums, int k) {
@@ -1571,31 +1622,12 @@ This is still a brute force solution.
 * time complexity: $O(n^2)$
 * space complexity: $O(n)$
 
-```C++ tab="C++ prefix sum solution"
-class Solution {
-public:
-    double findMaxAverage(vector<int>& nums, int k) {
-        int n = nums.size();
-        vector<int> sums = nums;
+Space optimized solution
 
-        for (int i = 1; i < n; ++i) {
-            sums[i] = sums[i - 1] + nums[i];
-        }
-
-        double res = (double) sums[k - 1] / k;
-        for (int i = k; i < n; ++i) {
-            double t = sums[i];
-            if (t > res * (i + 1)) res = t / (i + 1);
-            for (int j = 0; j < i - k + 1; ++j) {
-                t = sums[i] - sums[j];
-                if (t > res * (i - j)) res = t / (i - j);
-            }
-        }
-
-        return res;
-    }
-};
-```
+* We could avoid using the prefix sum array and only use two variables to record
+  the prefix sum at any particular instance. One for record prefix sum of exact
+  `k` elements. Another for the inner loop to check whether removing an element
+  from the beginning will make a new maximum value or not.
 
 Space optimized solution
 
@@ -1604,148 +1636,174 @@ Space optimized solution
   `k` elements. Another for the inner loop to check whether removing an element
   from the beginning will make a new maximum value or not.
 
-```C++ tab="C++ space optimized"
-class Solution {
-public:
-    double findMaxAverage(vector<int>& nums, int k) {
-        int n = nums.size();
-        /* range is half open */
-        double sumsAll = accumulate(nums.begin(), nums.begin() + k, 0);
-        double sums = sumsAll, res = sumsAll / k;
+Deque solution
 
-        for (int i = k; i < n; ++i) {
-            sumsAll += nums[i];
-            sums = sumsAll;
-            if (sums > res * (i + 1)) res = sums / (i + 1);
-            for (int j = 0; j < i - k + 1; ++j) {
-                sums -= nums[j];
-                if (sums > res * (i - j)) res = sums / (i - j);
+=== "C++ prefix sum solution"
+
+    ```C++
+    class Solution {
+    public:
+        double findMaxAverage(vector<int>& nums, int k) {
+            int n = nums.size();
+            vector<int> sums = nums;
+
+            for (int i = 1; i < n; ++i) {
+                sums[i] = sums[i - 1] + nums[i];
             }
-        }
 
-        return res;
-    }
-};
-```
-
-Binary search solution
-
-The key question to answer in order to solve this problem using binary search is
-that what condition we should use to serve the similar effect of cutting the input
-space in half in the original binary search. The answer is we can test whether it
-is possible to have an average value of subarray whose length is greater than or
-equal to k in the upper half.
-
-```C++ tab="C++ binary search soluiton"
-class Solution {
-public:
-    double findMaxAverage(vector<int>& nums, int k) {
-        int n = nums.size();
-        double upper = INT_MIN, lower = INT_MAX;
-
-        for (auto num : nums) {
-            upper = max(upper, (double)num);
-            lower = min(lower, (double)num);
-        }
-
-        while (lower + 0.00001 < upper) {
-            double mid = lower + (upper - lower) / 2;
-            if (isLarger(nums, mid, k)) { // is average value >= mid?
-                lower = mid;
-            } else {
-                upper = mid;
+            double res = (double) sums[k - 1] / k;
+            for (int i = k; i < n; ++i) {
+                double t = sums[i];
+                if (t > res * (i + 1)) res = t / (i + 1);
+                for (int j = 0; j < i - k + 1; ++j) {
+                    t = sums[i] - sums[j];
+                    if (t > res * (i - j)) res = t / (i - j);
+                }
             }
+
+            return res;
+        }
+    };
+    ```
+
+=== "C++ space optimized"
+
+    ```C++
+    class Solution {
+    public:
+        double findMaxAverage(vector<int>& nums, int k) {
+            int n = nums.size();
+            /* range is half open */
+            double sumsAll = accumulate(nums.begin(), nums.begin() + k, 0);
+            double sums = sumsAll, res = sumsAll / k;
+
+            for (int i = k; i < n; ++i) {
+                sumsAll += nums[i];
+                sums = sumsAll;
+                if (sums > res * (i + 1)) res = sums / (i + 1);
+                for (int j = 0; j < i - k + 1; ++j) {
+                    sums -= nums[j];
+                    if (sums > res * (i - j)) res = sums / (i - j);
+                }
+            }
+
+            return res;
+        }
+    };
+    ```
+
+=== "C++ binary search soluiton"
+
+    ```C++
+    class Solution {
+    public:
+        double findMaxAverage(vector<int>& nums, int k) {
+            int n = nums.size();
+            double upper = INT_MIN, lower = INT_MAX;
+
+            for (auto num : nums) {
+                upper = max(upper, (double)num);
+                lower = min(lower, (double)num);
+            }
+
+            while (lower + 0.00001 < upper) {
+                double mid = lower + (upper - lower) / 2;
+                if (isLarger(nums, mid, k)) { // is average value >= mid?
+                    lower = mid;
+                } else {
+                    upper = mid;
+                }
+            }
+
+            return lower;
         }
 
-        return lower;
-    }
+        /* return true if a greater average value is possible */
+        bool isLarger(vector<int>& nums, double mid, int k) {
+            int n = nums.size();
+            double sums = 0, prev = 0, prev_min = 0;
+            for (int i = 0; i < k; i++) {
+                sums += nums[i] - mid;
+            }
 
-    /* return true if a greater average value is possible */
-    bool isLarger(vector<int>& nums, double mid, int k) {
-        int n = nums.size();
-        double sums = 0, prev = 0, prev_min = 0;
-        for (int i = 0; i < k; i++) {
-            sums += nums[i] - mid;
-        }
-
-        if (sums >= 0) {
-            return true;
-        }
-        /*
-         * we keep looking for whether a subarray sum of length >= k in array
-         * "sums" is possible to be greater than zero. If such a subarray exist,
-         * it means that the target average value is greater than the "mid"
-         * value. We look at the front part of sums that at least k element
-         * apart from i. If we can find the minimum of the sums[0, 1, ..., i - k]
-         * and check if sums[i] - min(sum[0, 1, ..., i - k]) >= 0. If this is the
-         * case, it indicate there exist a subarray of length >= k with sum
-         * greater than 0 in sums, we can return ture, otherwise, false.
-         */
-        for (int i = k; i < n; i++) {
-            sums += nums[i] - mid;
-            prev += nums[i - k] - mid;
-            prev_min = min(prev_min, prev);
-            if (sums >= prev_min)
+            if (sums >= 0) {
                 return true;
+            }
+            /*
+            * we keep looking for whether a subarray sum of length >= k in array
+            * "sums" is possible to be greater than zero. If such a subarray exist,
+            * it means that the target average value is greater than the "mid"
+            * value. We look at the front part of sums that at least k element
+            * apart from i. If we can find the minimum of the sums[0, 1, ..., i - k]
+            * and check if sums[i] - min(sum[0, 1, ..., i - k]) >= 0. If this is the
+            * case, it indicate there exist a subarray of length >= k with sum
+            * greater than 0 in sums, we can return ture, otherwise, false.
+            */
+            for (int i = k; i < n; i++) {
+                sums += nums[i] - mid;
+                prev += nums[i - k] - mid;
+                prev_min = min(prev_min, prev);
+                if (sums >= prev_min)
+                    return true;
+            }
+
+            return false;
+        }
+    };
+    ```
+
+=== "C++ deque solution"
+
+    ```C++
+    class Solution {
+    public:
+        double findMaxAverage(vector<int>& nums, int k) {
+            int n = nums.size();
+            vector<double> sums(n, 0);
+            deque<int> q;
+
+            sums[0] = nums[0];
+            for (int i = 1; i < n; ++i)
+                sums[i] = sums[i - 1] + nums[i];
+
+            double res = sums[n - 1] / n;
+            for (int j = k - 1; j < n; ++j)
+            {
+                while(q.size() >= 2 &&
+                    density(sums, q[q.size() - 2], q.back() - 1) >=
+                    density(sums, q.back(), j - k)) {
+
+                    q.pop_back();
+                }
+
+                q.push_back(j - k + 1);
+
+                while(q.size() >= 2 &&
+                    density(sums, q[0], j) <= density(sums, q[1], j)) {
+
+                    q.pop_front();
+                }
+
+                res = max(res, density(sums, q.front(), j));
+            }
+
+            return res;
         }
 
-        return false;
-    }
-};
-```
+    private:
+        double density(vector<double>& sums, int l, int r) {
+            if (l == 0)
+                return sums[r] / (r + 1);
+
+            return (sums[r] - sums[l - 1]) / (r - l + 1);
+        }
+    };
+    ```
 
 !!! note
     Notice the initial value of prev_min is set to 0 not INT_MAX;
     Try to understand why set the initial value of prev_min to INT_MAX cannot
      pass the test case: `[8,9,3,1,8,3,0,6,9,2]`, 8.
-
-Deque solution
-
-```C++ tab="C++ deque solution"
-class Solution {
-public:
-    double findMaxAverage(vector<int>& nums, int k) {
-        int n = nums.size();
-        vector<double> sums(n, 0);
-        deque<int> q;
-
-        sums[0] = nums[0];
-        for (int i = 1; i < n; ++i)
-            sums[i] = sums[i - 1] + nums[i];
-
-        double res = sums[n - 1] / n;
-        for (int j = k - 1; j < n; ++j)
-        {
-            while(q.size() >= 2 &&
-                density(sums, q[q.size() - 2], q.back() - 1) >=
-                density(sums, q.back(), j - k)) {
-
-                q.pop_back();
-            }
-
-            q.push_back(j - k + 1);
-
-            while(q.size() >= 2 &&
-                density(sums, q[0], j) <= density(sums, q[1], j)) {
-
-                q.pop_front();
-            }
-
-            res = max(res, density(sums, q.front(), j));
-        }
-
-        return res;
-    }
-
-private:
-    double density(vector<double>& sums, int l, int r) {
-        if (l == 0)
-            return sums[r] / (r + 1);
-
-        return (sums[r] - sums[l - 1]) / (r - l + 1);
-    }
-};
-```
 
 ### Range Sum Query - Immutable
 
@@ -1754,7 +1812,7 @@ Prefix sum solution
 Use prefix sum to record the accumulative sum of the array in the constructor.
 The algorithm is $O(n)$ in space and $O(1)$ in time.
 
-```C++ tab=
+```C++
 class NumArray {
 private:
     vector<int> sums;
@@ -1787,85 +1845,87 @@ Segment tree solution
 
 Using segment tree, the solution is given at [Leetcode Solution](https://leetcode.com/problems/range-sum-query-mutable/solution/).
 
-```C++ tab="C++ segment tree"
-class NumArray {
-private:
-    vector<int> tree;
-    int n;
-public:
-    NumArray(vector<int> nums) {
-        n = nums.size();
-        tree.resize(2 * n, 0);
+=== "C++ segment tree"
 
-        for (int i = n, j = 0; i < 2 * n; ++i, ++j) {
-            tree[i] = nums[j];
-        }
+    ```C++
+    class NumArray {
+    private:
+        vector<int> tree;
+        int n;
+    public:
+        NumArray(vector<int> nums) {
+            n = nums.size();
+            tree.resize(2 * n, 0);
 
-        for (int i = n - 1; i > 0; --i) {
-            tree[i] = tree[2 * i] + tree[2 * i + 1];
-        }
-    }
-
-    void update(int i, int val) {
-        int pos = n + i;
-        int left = 0;
-        int right = 0;
-
-        tree[pos] = val;
-        while (pos > 0) {
-            left = pos;
-            right = pos;
-            if (pos % 2 == 0) {
-                right = pos + 1;
+            for (int i = n, j = 0; i < 2 * n; ++i, ++j) {
+                tree[i] = nums[j];
             }
 
-            if (pos % 2 == 1) {
-                left = pos - 1;
+            for (int i = n - 1; i > 0; --i) {
+                tree[i] = tree[2 * i] + tree[2 * i + 1];
             }
-
-            tree[pos / 2] = tree[left] + tree[right];
-            pos /= 2;
-        }
-    }
-
-    int sumRange(int i, int j) {
-        int left = i + n;
-        int right = j + n;
-        int sum = 0;
-
-        while (left <= right) {
-            if (left % 2 == 1) {
-                sum += tree[left];
-                left++;
-            }
-
-            if (right % 2 == 0) {
-                sum += tree[right];
-                right--;
-            }
-
-            left /= 2;
-            right /= 2;
         }
 
-        return sum;
-    }
-};
+        void update(int i, int val) {
+            int pos = n + i;
+            int left = 0;
+            int right = 0;
 
-/**
- * Your NumArray object will be instantiated and called as such:
- * NumArray obj = new NumArray(nums);
- * obj.update(i,val);
- * int param_2 = obj.sumRange(i,j);
- */
-```
+            tree[pos] = val;
+            while (pos > 0) {
+                left = pos;
+                right = pos;
+                if (pos % 2 == 0) {
+                    right = pos + 1;
+                }
+
+                if (pos % 2 == 1) {
+                    left = pos - 1;
+                }
+
+                tree[pos / 2] = tree[left] + tree[right];
+                pos /= 2;
+            }
+        }
+
+        int sumRange(int i, int j) {
+            int left = i + n;
+            int right = j + n;
+            int sum = 0;
+
+            while (left <= right) {
+                if (left % 2 == 1) {
+                    sum += tree[left];
+                    left++;
+                }
+
+                if (right % 2 == 0) {
+                    sum += tree[right];
+                    right--;
+                }
+
+                left /= 2;
+                right /= 2;
+            }
+
+            return sum;
+        }
+    };
+
+    /**
+    * Your NumArray object will be instantiated and called as such:
+    * NumArray obj = new NumArray(nums);
+    * obj.update(i,val);
+    * int param_2 = obj.sumRange(i,j);
+    */
+    ```
 
 Binary Indexed Tree solution I
 
 Using Binary indexed tree, we are able to solve it optimally in $O(\log n)$ .
 The solution originally from [here](https://leetcode.com/problems/range-sum-query-mutable/discuss/75753/java-using-binary-indexed-tree-with-clear-explanation)
 
-```C++
+```c++
 class NumArray {
 private:
     vector<int> arr;
@@ -1925,7 +1985,7 @@ Binary Indexed Tree solution II
 Similar to the above solution, We have combined the `init` and `update`. To make
 it consistant with the solution with problem [Range Sum Query 2D - Mutable](#range-sum-query-2d-mutable)
 
-```C++
+```c++
 class NumArray {
 private:
     vector<int> arr;
@@ -1986,7 +2046,9 @@ Extended from the 1d array, we can use the prefix sum of the 2d matrix. we use
 extra space to store the accumulative sum of the submatrix with upper left
 coordinate `(0, 0)` and lower right coordinate `(i, j)`.
 
-```C++ tab="C++ prefix sum solution"
+=== "C++ prefix sum solution"
+
+```c++
 class NumMatrix {
 private:
     vector<vector<int> > dp;
@@ -2028,7 +2090,9 @@ Alternative prefix sum solution
 The idea is the same, in the following solution, we have a `m` by `n` 2d array
 to record the accumulative sum. See how complex the code is.
 
-```C++ tab="C++ prefix sum solution"
+=== "C++ prefix sum solution"
+
+```c++
 class NumMatrix {
 private:
     vector<vector<int>> dp;
@@ -2099,68 +2163,70 @@ Binary Indexed Tree solution
 We use 2D version of Binary Index Tree. Some of the explaination can be found at
 [Topcoder tutorial](https://www.topcoder.com/community/competitive-programming/tutorials/binary-indexed-trees/)
 
-```C++ tab="C++ BIT solution"
-class NumMatrix {
-private:
-    vector<vector<int> > nums;
-    vector<vector<int> > tree;
-    int m;
-    int n;
+== "C++ BIT solution"
 
-public:
-    NumMatrix(vector<vector<int>> matrix) {
-        if (matrix.size() == 0 || matrix[0].size() == 0)
-            return;
-        m = matrix.size();
-        n = matrix[0].size();
+    ```c++
+    class NumMatrix {
+    private:
+        vector<vector<int> > nums;
+        vector<vector<int> > tree;
+        int m;
+        int n;
 
-        tree.resize(m + 1, vector<int>(n + 1, 0));
-        nums.resize(m, vector<int>(n, 0));
+    public:
+        NumMatrix(vector<vector<int>> matrix) {
+            if (matrix.size() == 0 || matrix[0].size() == 0)
+                return;
+            m = matrix.size();
+            n = matrix[0].size();
 
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                update(i, j, matrix[i][j]);
-            }
-        }
-    }
+            tree.resize(m + 1, vector<int>(n + 1, 0));
+            nums.resize(m, vector<int>(n, 0));
 
-    void update(int row, int col, int val) {
-        if (m == 0 || n == 0) return;
-        int diff = val - nums[row][col];
-        nums[row][col] = val;
-        for (int i = row + 1; i <= m; i += i & (-i)) {
-            for (int j = col + 1; j <= n; j += j & (-j)) {
-                tree[i][j] += diff;
-            }
-        }
-    }
-
-    int sumRegion(int row1, int col1, int row2, int col2) {
-        if (m == 0 || n == 0)
-            return 0;
-
-        return getSum(row2 + 1, col2 + 1) - getSum(row1, col2 + 1) - getSum(row2 + 1, col1) + getSum(row1, col1);
-    }
-
-    int getSum(int row, int col) {
-        int sum = 0;
-        for (int i = row; i > 0; i -= i & (-i)) {
-            for (int j = col; j > 0; j -= j & (-j)) {
-                sum += tree[i][j];
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    update(i, j, matrix[i][j]);
+                }
             }
         }
 
-        return sum;
-    }
-};
+        void update(int row, int col, int val) {
+            if (m == 0 || n == 0) return;
+            int diff = val - nums[row][col];
+            nums[row][col] = val;
+            for (int i = row + 1; i <= m; i += i & (-i)) {
+                for (int j = col + 1; j <= n; j += j & (-j)) {
+                    tree[i][j] += diff;
+                }
+            }
+        }
 
-/**
- * Your NumMatrix object will be instantiated and called as such:
- * NumMatrix obj = new NumMatrix(matrix);
- * obj.update(row,col,val);
- * int param_2 = obj.sumRegion(row1,col1,row2,col2);
- */
-```
+        int sumRegion(int row1, int col1, int row2, int col2) {
+            if (m == 0 || n == 0)
+                return 0;
+
+            return getSum(row2 + 1, col2 + 1) - getSum(row1, col2 + 1) - getSum(row2 + 1, col1) + getSum(row1, col1);
+        }
+
+        int getSum(int row, int col) {
+            int sum = 0;
+            for (int i = row; i > 0; i -= i & (-i)) {
+                for (int j = col; j > 0; j -= j & (-j)) {
+                    sum += tree[i][j];
+                }
+            }
+
+            return sum;
+        }
+    };
+
+    /**
+    * Your NumMatrix object will be instantiated and called as such:
+    * NumMatrix obj = new NumMatrix(matrix);
+    * obj.update(row,col,val);
+    * int param_2 = obj.sumRegion(row1,col1,row2,col2);
+    */
+    ```
 
 ### Count of Range Sum
 
@@ -2177,7 +2243,7 @@ Solution 1 Merge sort using `inplace_merge()`
    counted in the for loop, we don't need to count it again. Not because the
    base case is `0`.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int countRangeSum(vector<int>& nums, int lower, int upper) {
@@ -2225,7 +2291,7 @@ So for the subarray start with i, ending index in [j, k), the range
 sum is in [lower, upper]. Notice k should not be included.
 ```
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int countRangeSum(vector<int>& nums, int lower, int upper) {
@@ -2292,98 +2358,104 @@ Solution 4 BIT
 
 ### Maximum Sum of Two Non-Overlapping Subarrays
 
-```C++ tab="Brute Force Iterate"
-class Solution {
-public:
-    int maxSumTwoNoOverlap(vector<int>& A, int L, int M) {
-        int n = A.size();
-        if (L == 0 || M == 0) {
-            return 0;
-        }
+=== "Brute Force Iterate"
 
-        vector<int> preSum(n, 0);
-        preSum[0] = A[0];
-        for (int i = 1; i < n; i++) {
-            preSum[i] = preSum[i - 1] + A[i];
-        }
-
-        int res = 0;
-        // iterate the L using index i
-        for (int i = 0; i < n - L + 1; i++) {
-            int Lsum = 0;
-            if (i == 0) {
-                Lsum = preSum[i + L - 1];
-            } else {
-                Lsum = preSum[i + L - 1] - preSum[i - 1];
+    ```c++
+    class Solution {
+    public:
+        int maxSumTwoNoOverlap(vector<int>& A, int L, int M) {
+            int n = A.size();
+            if (L == 0 || M == 0) {
+                return 0;
             }
 
-            int Msum = 0;
-            // iterate the left M array using index j
-            for (int j = 0; j < i - M; j++) {
-                int tmp = 0;
-                if (j == 0) {
-                    tmp = preSum[j + M - 1];
+            vector<int> preSum(n, 0);
+            preSum[0] = A[0];
+            for (int i = 1; i < n; i++) {
+                preSum[i] = preSum[i - 1] + A[i];
+            }
+
+            int res = 0;
+            // iterate the L using index i
+            for (int i = 0; i < n - L + 1; i++) {
+                int Lsum = 0;
+                if (i == 0) {
+                    Lsum = preSum[i + L - 1];
                 } else {
-                    tmp = preSum[j + M - 1] - preSum[j - 1];
+                    Lsum = preSum[i + L - 1] - preSum[i - 1];
                 }
-                Msum = max(Msum, tmp);
-            }
-            // iterate the right M array using index j
-            for (int j = i + L; j < n - M + 1; j++) {
-                Msum = max(Msum, preSum[j + M - 1] - preSum[j - 1]);
-            }
 
-            res = max(res, Msum + Lsum);
-        }
+                int Msum = 0;
+                // iterate the left M array using index j
+                for (int j = 0; j < i - M; j++) {
+                    int tmp = 0;
+                    if (j == 0) {
+                        tmp = preSum[j + M - 1];
+                    } else {
+                        tmp = preSum[j + M - 1] - preSum[j - 1];
+                    }
+                    Msum = max(Msum, tmp);
+                }
+                // iterate the right M array using index j
+                for (int j = i + L; j < n - M + 1; j++) {
+                    Msum = max(Msum, preSum[j + M - 1] - preSum[j - 1]);
+                }
 
-        return res;
-    }
-};
-```
-
-```C++ tab="One pass"
-class Solution {
-public:
-    int maxSumTwoNoOverlap(vector<int>& A, int L, int M) {
-        int n = A.size();
-        if (L == 0 || M == 0) {
-            return 0;
-        }
-
-        vector<int> preSum(n, 0);
-        preSum[0] = A[0];
-        for (int i = 1; i < n; i++) {
-            preSum[i] = preSum[i - 1] + A[i];
-        }
-
-        int res = INT_MIN;
-        int Lmax = INT_MIN;
-        int Mmax = INT_MIN;
-        //
-        for (int i = L + M; i <= n; i++) {
-            // L is front, M is back
-            if (i == L + M) {
-                Lmax = preSum[L - 1];
-            } else {
-                Lmax = max(Lmax, preSum[i - M - 1] - preSum[i - L - M - 1]);
-            }
-            // M is front, L is back
-            if (i == L + M) {
-                Mmax = preSum[M - 1];
-            } else {
-                Mmax = max(Mmax, preSum(i - L - 1) - preSum[i - M - L - 1]);
+                res = max(res, Msum + Lsum);
             }
 
-            res = max({res,
-                       Lmax + preSum[i - 1] - preSum[i - M - 1],
-                       Mmax + preSum[i - 1] - preSum[i - L - 1]})
+            return res;
         }
-        return res;
-    }
-};
-```
+    };
+    ```
 
-```C++ tab="DP solution"
+=== "One pass"
+
+    ```c++
+    class Solution {
+    public:
+        int maxSumTwoNoOverlap(vector<int>& A, int L, int M) {
+            int n = A.size();
+            if (L == 0 || M == 0) {
+                return 0;
+            }
+
+            vector<int> preSum(n, 0);
+            preSum[0] = A[0];
+            for (int i = 1; i < n; i++) {
+                preSum[i] = preSum[i - 1] + A[i];
+            }
+
+            int res = INT_MIN;
+            int Lmax = INT_MIN;
+            int Mmax = INT_MIN;
+            //
+            for (int i = L + M; i <= n; i++) {
+                // L is front, M is back
+                if (i == L + M) {
+                    Lmax = preSum[L - 1];
+                } else {
+                    Lmax = max(Lmax, preSum[i - M - 1] - preSum[i - L - M - 1]);
+                }
+                // M is front, L is back
+                if (i == L + M) {
+                    Mmax = preSum[M - 1];
+                } else {
+                    Mmax = max(Mmax, preSum(i - L - 1) - preSum[i - M - L - 1]);
+                }
+
+                res = max({res,
+                        Lmax + preSum[i - 1] - preSum[i - M - 1],
+                        Mmax + preSum[i - 1] - preSum[i - L - 1]})
+            }
+            return res;
+        }
+    };
+    ```
+
+=== "DP solution"
+
+```c++
 //TODO
 ```
 
@@ -2402,7 +2474,7 @@ public:
   subarray?
 * Remember this trick that you can use the `atMostKDistinct(A, K) - atMostKDistinct(A, K - 1)`.
 
-```C++
+```c++
 class Solution {
 public:
     int subarraysWithKDistinct(vector<int>& A, int K) {
@@ -2504,7 +2576,7 @@ public:
 
 Solution 1 O(n) one pass to find the minimum and in the meantime, find the max profit.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int maxProfit(vector<int> &prices) {
@@ -2527,7 +2599,7 @@ public:
 
 Solution 1 Greedy since you can buy as many times as you can
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int maxProfit(vector<int> &prices) {
@@ -2557,7 +2629,7 @@ Solution 1 Dynamic programming
             4. hold the second
             5. sell the second <-- or at this stage, bought twice.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int maxProfit(vector<int> &A) {
@@ -2616,7 +2688,7 @@ T[i][1][0] = max(T[i - 1][1][0], T[i - 1][1][1] + prices[i - 1]);
 T[i][1][1] = max(T[i - 1][1][1], T[i - 1][0][0] - prices[i - 1]);
 ```
 
-Think: How to ensure you fourmular cover all the possible values?
+Think: How to ensure you fourmular to cover all the possible values?
 
 ### 188. Best Time to Buy and Sell Stock IV
 

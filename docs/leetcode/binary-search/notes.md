@@ -910,7 +910,7 @@ Binary Search
     };
     ```
 
-### [410. Split Array Largest Sum](../../array/notes/#split-array-largest-sum)
+### [410. Split Array Largest Sum](../../array/notes/#410-split-array-largest-sum)
 
 ### 1482. Minimum Number of Days to Make m Bouquets
 
@@ -1847,25 +1847,27 @@ public:
 
 ### 360. Sort Transformed Array
 
-### 410. Split Array Largest Sum
-
-Solution
-
 ### 1231. Divide Chocolate
 
 Solution Binary search
 
-1. The key difference between this problem and [410. Split Array Largest Sum](./#)
-   is this problem is asking for maximizing the smallest sum (sweetness). The
-   greedy condition in [410. Split Array Largest Sum](./#) cannot apply directly here.
+1. The key difference between this problem and
+   [410. Split Array Largest Sum](../../array/notes/#410-split-array-largest-sum)
+   is this problem asks for maximizing the smallest sweetness of the pieces,
+   whereas the [410. Split Array Largest Sum](../../array/notes/#410-split-array-largest-sum)
+   asks minimizing the largest piece. Support `k` cuts generate `m` outcomes
+   $S = \{s_1^{|k|}, s_2^{|k|}, \cdots, s_m^{|k|}\}$, this problem is to find
+   the value of $\operatorname*{argmax}_m (\operatorname*{argmax}_k (S))$.
 2. Imagine you guessed a value `m`, which is the maximum sweetness you can get
    from the smallest sweetness piece of all cuts. How to test whether the value
    `m` is possible? If possible, we will increase it to maximize it; if not,
     we will still keep it a candidate.
 
-=== "binary search" hl_lines="8, 19-23"
+Same problem as [183. Wood cut](./#183-wood-cut-lintcode).
 
-```c++
+=== "Binary Search"
+
+```c++  hl_lines="8 19-23"
 class Solution {
 public:
     int maximizeSweetness(vector<int>& sweetness, int K) {
@@ -1896,30 +1898,7 @@ public:
 };
 ```
 
-### Copy books (lintcode)
-
-Description
-
-Given n books and the ith book has `A[i]` pages. You are given `k` people to
-copy the `n` books. the `n` books list in a row and each person can claim
-a continuous range of the `n` books. For example, one copier can copy the books
-from ith to jth continuously, but he can not copy the 1st book, 2nd book and 4th
- book (without the 3rd book).
-
-They start copying books at the same time and they all cost 1 minute to copy 1
-page of a book. What's the best strategy to assign books so that the slowest
-copier can finish at the earliest time?
-
-Example
-
-Given array A = [3,2,4], k = 2. Return 5 (First person spends 5 minutes to copy
-book 1 and book 2 and the second person spends 4 minutes to copy book 3.)
-
-Solution 1 Binary search
-
-```C++
-
-```
+### [Copy books (lintcode)](../../array/notes/#copy-books-lintcode)
 
 ### 183. Wood cut (lintcode)
 
@@ -1933,13 +1912,13 @@ float length. If you couldn't get >= k pieces, return 0.
 
 Solution 1 Binary search
 
-* It requires to get equal or more than k pieces of wood with same length. So
-  you have to cut the wood to fulfill the requirement. However, you need to
-  promise that each of the k wood is the longest that is possible.
-* Imagine that you are given bunch of wood to cut. How would you do it? You
+* It requires getting equal or more than `k` pieces of wood with the same length.
+  So you have to cut the wood to fulfill the requirement. However, you need to
+  promise that each of the `k` wood is the longest that is possible.
+* Imagine that you are given a bunch of wood to cut. How would you do it? You
   probably want to try to make one cut and see whether you can make it or not.
-  If not, you may want to try make two cuts, and so on. But how could you
-  program such a solution. It is very hard.
+  If not, you may want to make two cuts, and so on. But how could you program
+  such a solution? It is very hard.
 * Start thinking about the length seems a good option. Suppose you know your
   final maximum length. You would be able to make the cut accordingly. Now given
   a length out of guessing, can you verify whether it going to work or not? Yes,
@@ -1979,8 +1958,8 @@ public:
 
 Solution 1 Binary search
 
-* It is very similar to the problem [Wood cut](#wood-cut). You just need to
-  take care of the accuracy of the results, namely also the int/double casts.
+* It is very similar to the problem [Wood cut](#183-wood-cut-lintcode). You just
+  need to take care of the accuracy of the results, namely also the int/double casts.
   It is also the hard part of the problem.
 * Notice the `count` variable is int type, you should test your solution
   expecially for the line `count += dist[i] / mid`;
