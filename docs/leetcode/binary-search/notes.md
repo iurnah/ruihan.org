@@ -853,14 +853,14 @@ Binary search the neighboring heaters get max of min
 
 Naive Solution
 
-* using multiple variable and keep loop invariant.
+* using multiple variables and keep loop invariant.
 
 Binary Search
 
 * Observe the relation: total missing positives before `A[m]` is `A[m] -  1 - m`
   because the index `m` and `A[m]` is related to the missing positives thus can
   be used for counting.
-* the bisection condition can be intepreted as boolean predicate: "whether the
+* the bisection condition can be interpreted as a boolean predicate: "whether the
   number of missing positives before `A[m]` is __no less__ than `k`?"
 
 === "Naive Solution"
@@ -1887,6 +1887,10 @@ public:
             }
 
             if (cuts > K) {
+                // because >= mid above guarentee the "no less than" the guess.
+                // if cuts > K, mid could be the right answer and should be returned.
+                // Remember the binary search invariance requies not miss any
+                // answer in each iteration.
                 start = mid;
             } else {
                 end = mid - 1;
@@ -1897,6 +1901,12 @@ public:
     }
 };
 ```
+
+!!! Note
+    Compare the binary search solution of problem of [1231. Divide Chocolate](#1231-divide-chocolate)
+    and [410. Split Array Largest Sum](../../array/notes/#410-split-array-largest-sum).
+    Notice how different in checking the number of cuts. It exceeds the limit `K`,
+    for max and min case, it indicate a very trivial difference in meaning.
 
 ### [Copy books (lintcode)](../../array/notes/#copy-books-lintcode)
 

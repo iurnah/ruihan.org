@@ -1403,11 +1403,11 @@ Binary Search solution
 * The goal is to "minimize the largest sub-array sum". It is different from
   [Divide Chocolate](./#divide-chocolate), which is maximize the smallest sum.
 * The bisection condition is not `A[m] < target` any more. It is a function to
-  check whether the constrain can meet given a guesss value `mid`.
+  check whether the constrain can meet given a guess value `mid`.
 
 === "C++ DP"
 
-    ```C++
+    ```c++
     /**
     * equivalent to the lintcode copy books problem
     *
@@ -1436,7 +1436,7 @@ Binary Search solution
                 for (int i = 1; i <= n; i++) {
                     sum = 0;
                     f[k][i] = INT_MAX;
-                    for (int j = i; j >= 0; j--) {//j = i, mean sum = 0.
+                    for (int j = i; j >= 0; j--) { //j = i, mean sum = 0.
                         f[k][i] = min(f[k][i], max(f[k - 1][j], sum));
                         if (j > 0) {
                             sum += nums[j - 1];
@@ -1484,7 +1484,7 @@ Binary Search solution
             int sum = 0;
             for (int num: nums) {
                 if (num > mid) return false;
-                else if (sum + num <= mid) sum += num;
+                else if (sum + num <= mid) sum += num; // each cut is greedy
                 else { // cut is ok so far
                     m--;
                     if (m < 0) return false; // more element after all cuts.
@@ -1494,6 +1494,43 @@ Binary Search solution
             }
 
             return true;
+        }
+    };
+    ```
+=== "C++ binary search (count the # of cuts)"
+
+    ```c++
+    class Solution {
+    public:
+        int splitArray(vector<int>& nums, int m) {
+            int l = *max_element(nums.begin(), nums.end());
+            int r = accumulate(nums.begin(), nums.end(), 0);
+            
+            while (l < r) {
+                int mid = l + (r - l) / 2;
+                int s = 0;
+                int c = 0;
+                
+                // count the possible cuts
+                for (int n : nums) {
+                    if ((s += n) > mid) {
+                        s = n;
+                        if (++c > m - 1) {
+                            break;
+                        }
+                    }
+                }
+                
+                if (c > m - 1) {
+                    l = mid + 1;
+                } else {
+                    // the "> mid" above guarantee the "no greater than"
+                    // the guess value, if c == m - 1, mid could be the result
+                    r = mid;
+                }
+            }
+            
+            return l;
         }
     };
     ```
@@ -2163,7 +2200,7 @@ Binary Indexed Tree solution
 We use 2D version of Binary Index Tree. Some of the explaination can be found at
 [Topcoder tutorial](https://www.topcoder.com/community/competitive-programming/tutorials/binary-indexed-trees/)
 
-== "C++ BIT solution"
+=== "C++ BIT solution"
 
     ```c++
     class NumMatrix {
