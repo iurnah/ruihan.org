@@ -927,7 +927,7 @@ prefix sum and previous prefix sum &quot;sum - k&quot;
         <span class=k>return</span> <span class=nb>false</span><span class=p>;</span>
     <span class=p>}</span>
 <span class=p>};</span>
-</code></pre></div> </div> </div> <h3 id=410-split-array-largest-sum>410. Split Array Largest Sum<a class=headerlink href=#410-split-array-largest-sum title="Permanent link">&para;</a></h3> <p>Similar problems:</p> <ul> <li><a href=./#copy-books-lintcode>Copy Books (linktcode)</a>.</li> </ul> <p>DP solution</p> <ul> <li>Notice the edge case: <code>[1, INT_MAX]</code>, use <code>double</code> can avoid integer overflow.</li> </ul> <p>Binary Search solution</p> <ul> <li>This is a greedy search solution that use binary search to accelerate the search speed</li> <li>The goal is to "minimize the largest sub-array sum". It is different from <a href=./#divide-chocolate>Divide Chocolate</a>, which is maximize the smallest sum.</li> <li>The bisection condition is not <code>A[m] &lt; target</code> any more. It is a function to check whether the constrain can meet given a guesss value <code>mid</code>.</li> </ul> <div class=tabbed-set data-tabs=12:2><input checked=checked id=__tabbed_12_1 name=__tabbed_12 type=radio><label for=__tabbed_12_1>C++ DP</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=cm>/**</span>
+</code></pre></div> </div> </div> <h3 id=410-split-array-largest-sum>410. Split Array Largest Sum<a class=headerlink href=#410-split-array-largest-sum title="Permanent link">&para;</a></h3> <p>Similar problems:</p> <ul> <li><a href=./#copy-books-lintcode>Copy Books (linktcode)</a>.</li> </ul> <p>DP solution</p> <ul> <li>Notice the edge case: <code>[1, INT_MAX]</code>, use <code>double</code> can avoid integer overflow.</li> </ul> <p>Binary Search solution</p> <ul> <li>This is a greedy search solution that use binary search to accelerate the search speed</li> <li>The goal is to "minimize the largest sub-array sum". It is different from <a href=./#divide-chocolate>Divide Chocolate</a>, which is maximize the smallest sum.</li> <li>The bisection condition is not <code>A[m] &lt; target</code> any more. It is a function to check whether the constrain can meet given a guess value <code>mid</code>.</li> </ul> <div class=tabbed-set data-tabs=12:3><input checked=checked id=__tabbed_12_1 name=__tabbed_12 type=radio><label for=__tabbed_12_1>C++ DP</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=cm>/**</span>
 <span class=cm>* equivalent to the lintcode copy books problem</span>
 <span class=cm>*</span>
 <span class=cm>* last step: mth subarray A[j], ..., A[i - 1].</span>
@@ -955,7 +955,7 @@ prefix sum and previous prefix sum &quot;sum - k&quot;
             <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=n>n</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
                 <span class=n>sum</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
                 <span class=n>f</span><span class=p>[</span><span class=n>k</span><span class=p>][</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>INT_MAX</span><span class=p>;</span>
-                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>i</span><span class=p>;</span> <span class=n>j</span> <span class=o>&gt;=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span><span class=o>--</span><span class=p>)</span> <span class=p>{</span><span class=c1>//j = i, mean sum = 0.</span>
+                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>i</span><span class=p>;</span> <span class=n>j</span> <span class=o>&gt;=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span><span class=o>--</span><span class=p>)</span> <span class=p>{</span> <span class=c1>//j = i, mean sum = 0.</span>
                     <span class=n>f</span><span class=p>[</span><span class=n>k</span><span class=p>][</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>min</span><span class=p>(</span><span class=n>f</span><span class=p>[</span><span class=n>k</span><span class=p>][</span><span class=n>i</span><span class=p>],</span> <span class=n>max</span><span class=p>(</span><span class=n>f</span><span class=p>[</span><span class=n>k</span> <span class=o>-</span> <span class=mi>1</span><span class=p>][</span><span class=n>j</span><span class=p>],</span> <span class=n>sum</span><span class=p>));</span>
                     <span class=k>if</span> <span class=p>(</span><span class=n>j</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
                         <span class=n>sum</span> <span class=o>+=</span> <span class=n>nums</span><span class=p>[</span><span class=n>j</span> <span class=o>-</span> <span class=mi>1</span><span class=p>];</span>
@@ -967,47 +967,37 @@ prefix sum and previous prefix sum &quot;sum - k&quot;
         <span class=k>return</span> <span class=n>f</span><span class=p>[</span><span class=n>m</span><span class=p>][</span><span class=n>n</span><span class=p>];</span>
     <span class=p>}</span>
 <span class=p>};</span>
-</code></pre></div> </div> <input id=__tabbed_12_2 name=__tabbed_12 type=radio><label for=__tabbed_12_2>C++ binary search</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
+</code></pre></div> </div> <input id=__tabbed_12_2 name=__tabbed_12 type=radio><label for=__tabbed_12_2>C++ binary search</label><div class=tabbed-content></div> <input id=__tabbed_12_3 name=__tabbed_12 type=radio><label for=__tabbed_12_3>C++ binary search (count the # of cuts)</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
 <span class=k>public</span><span class=o>:</span>
     <span class=kt>int</span> <span class=n>splitArray</span><span class=p>(</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>nums</span><span class=p>,</span> <span class=kt>int</span> <span class=n>m</span><span class=p>)</span> <span class=p>{</span>
-        <span class=kt>int</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
-        <span class=kt>int</span> <span class=n>mx</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
-        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=nl>num</span><span class=p>:</span> <span class=n>nums</span><span class=p>)</span> <span class=p>{</span>
-            <span class=n>total</span> <span class=o>+=</span> <span class=n>num</span><span class=p>;</span>
-            <span class=n>mx</span> <span class=o>=</span> <span class=n>max</span><span class=p>(</span><span class=n>mx</span><span class=p>,</span> <span class=n>num</span><span class=p>);</span>
-        <span class=p>}</span>
+        <span class=kt>int</span> <span class=n>l</span> <span class=o>=</span> <span class=o>*</span><span class=n>max_element</span><span class=p>(</span><span class=n>nums</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span> <span class=n>nums</span><span class=p>.</span><span class=n>end</span><span class=p>());</span>
+        <span class=kt>int</span> <span class=n>r</span> <span class=o>=</span> <span class=n>accumulate</span><span class=p>(</span><span class=n>nums</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span> <span class=n>nums</span><span class=p>.</span><span class=n>end</span><span class=p>(),</span> <span class=mi>0</span><span class=p>);</span>
 
-        <span class=kt>int</span> <span class=n>l</span> <span class=o>=</span> <span class=n>mx</span><span class=p>,</span> <span class=n>r</span> <span class=o>=</span> <span class=n>total</span><span class=p>;</span>
         <span class=k>while</span> <span class=p>(</span><span class=n>l</span> <span class=o>&lt;</span> <span class=n>r</span><span class=p>)</span> <span class=p>{</span>
             <span class=kt>int</span> <span class=n>mid</span> <span class=o>=</span> <span class=n>l</span> <span class=o>+</span> <span class=p>(</span><span class=n>r</span> <span class=o>-</span> <span class=n>l</span><span class=p>)</span> <span class=o>/</span> <span class=mi>2</span><span class=p>;</span>
+            <span class=kt>int</span> <span class=n>s</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+            <span class=kt>int</span> <span class=n>c</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
 
-            <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>canCut</span><span class=p>(</span><span class=n>nums</span><span class=p>,</span> <span class=n>mid</span><span class=p>,</span> <span class=n>m</span> <span class=o>-</span> <span class=mi>1</span><span class=p>))</span> <span class=p>{</span>
+            <span class=c1>// count the possible cuts</span>
+            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=nl>n</span> <span class=p>:</span> <span class=n>nums</span><span class=p>)</span> <span class=p>{</span>
+                <span class=k>if</span> <span class=p>((</span><span class=n>s</span> <span class=o>+=</span> <span class=n>n</span><span class=p>)</span> <span class=o>&gt;</span> <span class=n>mid</span><span class=p>)</span> <span class=p>{</span>
+                    <span class=n>s</span> <span class=o>=</span> <span class=n>n</span><span class=p>;</span>
+                    <span class=k>if</span> <span class=p>(</span><span class=o>++</span><span class=n>c</span> <span class=o>&gt;</span> <span class=n>m</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+                        <span class=k>break</span><span class=p>;</span>
+                    <span class=p>}</span>
+                <span class=p>}</span>
+            <span class=p>}</span>
+
+            <span class=k>if</span> <span class=p>(</span><span class=n>c</span> <span class=o>&gt;</span> <span class=n>m</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
                 <span class=n>l</span> <span class=o>=</span> <span class=n>mid</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span>
             <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+                <span class=c1>// the &quot;&gt; mid&quot; above guarantee the &quot;no greater than&quot;</span>
+                <span class=c1>// the guess value, if c == m - 1, mid could be the result</span>
                 <span class=n>r</span> <span class=o>=</span> <span class=n>mid</span><span class=p>;</span>
             <span class=p>}</span>
         <span class=p>}</span>
 
         <span class=k>return</span> <span class=n>l</span><span class=p>;</span>
-    <span class=p>}</span>
-
-    <span class=c1>// whether m cuts are possible, notice the greedy property of this check</span>
-    <span class=c1>// you should notice that if not possible, it is because mid is too small,</span>
-    <span class=c1>// not because it is too large.</span>
-    <span class=kt>bool</span> <span class=n>canCut</span><span class=p>(</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>nums</span><span class=p>,</span> <span class=kt>int</span> <span class=n>mid</span><span class=p>,</span> <span class=kt>int</span> <span class=n>m</span><span class=p>)</span> <span class=p>{</span>
-        <span class=kt>int</span> <span class=n>sum</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
-        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=nl>num</span><span class=p>:</span> <span class=n>nums</span><span class=p>)</span> <span class=p>{</span>
-            <span class=k>if</span> <span class=p>(</span><span class=n>num</span> <span class=o>&gt;</span> <span class=n>mid</span><span class=p>)</span> <span class=k>return</span> <span class=nb>false</span><span class=p>;</span>
-            <span class=k>else</span> <span class=nf>if</span> <span class=p>(</span><span class=n>sum</span> <span class=o>+</span> <span class=n>num</span> <span class=o>&lt;=</span> <span class=n>mid</span><span class=p>)</span> <span class=n>sum</span> <span class=o>+=</span> <span class=n>num</span><span class=p>;</span>
-            <span class=k>else</span> <span class=p>{</span> <span class=c1>// cut is ok so far</span>
-                <span class=n>m</span><span class=o>--</span><span class=p>;</span>
-                <span class=k>if</span> <span class=p>(</span><span class=n>m</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=k>return</span> <span class=nb>false</span><span class=p>;</span> <span class=c1>// more element after all cuts.</span>
-
-                <span class=n>sum</span> <span class=o>=</span> <span class=n>num</span><span class=p>;</span> <span class=c1>// init the next group sum</span>
-            <span class=p>}</span>
-        <span class=p>}</span>
-
-        <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>
     <span class=p>}</span>
 <span class=p>};</span>
 </code></pre></div> </div> </div> <h3 id=copy-books-lintcode>Copy books (lintcode)<a class=headerlink href=#copy-books-lintcode title="Permanent link">&para;</a></h3> <p>Description</p> <p>Given n books and the ith book has <code>A[i]</code> pages. You are given <code>k</code> people to copy the <code>n</code> books. the <code>n</code> books list in a row and each person can claim a continuous range of the <code>n</code> books. For example, one copier can copy the books from ith to jth continuously, but he can not copy the 1st book, 2nd book and 4th book (without the 3rd book).</p> <p>They start copying books at the same time and they all cost 1 minute to copy 1 page of a book. What's the best strategy to assign books so that the slowest copier can finish at the earliest time?</p> <p>Example</p> <p>Given array A = [3,2,4], k = 2. Return 5 (First person spends 5 minutes to copy book 1 and book 2 and the second person spends 4 minutes to copy book 3.)</p> <p>Solution 1 Binary search</p> <p>See the solution for <a href=#410-split-array-largest-sum>410. Split Array Largest Sum</a></p> <p>Solution 2 DP solution</p> <p>There are <code>i</code> books, consider the last copier, he can copy <code>A[j], ..., A[i-1]</code>. The first <code>k-1</code> copier copy <code>A[0], ..., A[j - 1]</code>.</p> <ul> <li>Define state: <code>f[k][i]</code>, meaning the k-th copier copy <code>i</code> books.</li> <li>State transition equation: <span><span class=MathJax_Preview>f[k][i] = \min_{0 \le j \le i} \max(f[k - 1][j], A[j] + ... + A[i - 1])</span><script type=math/tex>f[k][i] = \min_{0 \le j \le i} \max(f[k - 1][j], A[j] + ... + A[i - 1])</script></span></li> </ul> <div class=tabbed-set data-tabs=13:1><input checked=checked id=__tabbed_13_1 name=__tabbed_13 type=radio><label for=__tabbed_13_1>C++ DP solution</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
@@ -1499,69 +1489,67 @@ prefix sum and previous prefix sum &quot;sum - k&quot;
 <span class=cm> * NumMatrix obj = new NumMatrix(matrix);</span>
 <span class=cm> * int param_1 = obj.sumRegion(row1,col1,row2,col2);</span>
 <span class=cm> */</span>
-</code></pre></div> <div class="admonition note"> <p class=admonition-title>Note</p> <p>This version is a little complex. However, the way it was written reflects a very important practice when operating on a 2d array, that is: to check the validation of the array.</p> </div> <h3 id=range-sum-query-2d-mutable_1>Range Sum Query 2D - Mutable<a class=headerlink href=#range-sum-query-2d-mutable_1 title="Permanent link">&para;</a></h3> <p>Binary Indexed Tree solution</p> <p>We use 2D version of Binary Index Tree. Some of the explaination can be found at <a href=https://www.topcoder.com/community/competitive-programming/tutorials/binary-indexed-trees/ >Topcoder tutorial</a></p> <p>== "C++ BIT solution"</p> <div class=highlight><pre><span></span><code>```c++
-class NumMatrix {
-private:
-    vector&lt;vector&lt;int&gt; &gt; nums;
-    vector&lt;vector&lt;int&gt; &gt; tree;
-    int m;
-    int n;
+</code></pre></div> <div class="admonition note"> <p class=admonition-title>Note</p> <p>This version is a little complex. However, the way it was written reflects a very important practice when operating on a 2d array, that is: to check the validation of the array.</p> </div> <h3 id=range-sum-query-2d-mutable_1>Range Sum Query 2D - Mutable<a class=headerlink href=#range-sum-query-2d-mutable_1 title="Permanent link">&para;</a></h3> <p>Binary Indexed Tree solution</p> <p>We use 2D version of Binary Index Tree. Some of the explaination can be found at <a href=https://www.topcoder.com/community/competitive-programming/tutorials/binary-indexed-trees/ >Topcoder tutorial</a></p> <div class=tabbed-set data-tabs=18:1><input checked=checked id=__tabbed_18_1 name=__tabbed_18 type=radio><label for=__tabbed_18_1>C++ BIT solution</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>NumMatrix</span> <span class=p>{</span>
+<span class=k>private</span><span class=o>:</span>
+    <span class=n>vector</span><span class=o>&lt;</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=o>&gt;</span> <span class=n>nums</span><span class=p>;</span>
+    <span class=n>vector</span><span class=o>&lt;</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=o>&gt;</span> <span class=n>tree</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>m</span><span class=p>;</span>
+    <span class=kt>int</span> <span class=n>n</span><span class=p>;</span>
 
-public:
-    NumMatrix(vector&lt;vector&lt;int&gt;&gt; matrix) {
-        if (matrix.size() == 0 || matrix[0].size() == 0)
-            return;
-        m = matrix.size();
-        n = matrix[0].size();
+<span class=k>public</span><span class=o>:</span>
+    <span class=n>NumMatrix</span><span class=p>(</span><span class=n>vector</span><span class=o>&lt;</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&gt;</span> <span class=n>matrix</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>matrix</span><span class=p>.</span><span class=n>size</span><span class=p>()</span> <span class=o>==</span> <span class=mi>0</span> <span class=o>||</span> <span class=n>matrix</span><span class=p>[</span><span class=mi>0</span><span class=p>].</span><span class=n>size</span><span class=p>()</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+            <span class=k>return</span><span class=p>;</span>
+        <span class=n>m</span> <span class=o>=</span> <span class=n>matrix</span><span class=p>.</span><span class=n>size</span><span class=p>();</span>
+        <span class=n>n</span> <span class=o>=</span> <span class=n>matrix</span><span class=p>[</span><span class=mi>0</span><span class=p>].</span><span class=n>size</span><span class=p>();</span>
 
-        tree.resize(m + 1, vector&lt;int&gt;(n + 1, 0));
-        nums.resize(m, vector&lt;int&gt;(n, 0));
+        <span class=n>tree</span><span class=p>.</span><span class=n>resize</span><span class=p>(</span><span class=n>m</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>(</span><span class=n>n</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>));</span>
+        <span class=n>nums</span><span class=p>.</span><span class=n>resize</span><span class=p>(</span><span class=n>m</span><span class=p>,</span> <span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>(</span><span class=n>n</span><span class=p>,</span> <span class=mi>0</span><span class=p>));</span>
 
-        for (int i = 0; i &lt; m; i++) {
-            for (int j = 0; j &lt; n; j++) {
-                update(i, j, matrix[i][j]);
-            }
-        }
-    }
+        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>m</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+                <span class=n>update</span><span class=p>(</span><span class=n>i</span><span class=p>,</span> <span class=n>j</span><span class=p>,</span> <span class=n>matrix</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]);</span>
+            <span class=p>}</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
 
-    void update(int row, int col, int val) {
-        if (m == 0 || n == 0) return;
-        int diff = val - nums[row][col];
-        nums[row][col] = val;
-        for (int i = row + 1; i &lt;= m; i += i &amp; (-i)) {
-            for (int j = col + 1; j &lt;= n; j += j &amp; (-j)) {
-                tree[i][j] += diff;
-            }
-        }
-    }
+    <span class=kt>void</span> <span class=n>update</span><span class=p>(</span><span class=kt>int</span> <span class=n>row</span><span class=p>,</span> <span class=kt>int</span> <span class=n>col</span><span class=p>,</span> <span class=kt>int</span> <span class=n>val</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>m</span> <span class=o>==</span> <span class=mi>0</span> <span class=o>||</span> <span class=n>n</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
+        <span class=kt>int</span> <span class=n>diff</span> <span class=o>=</span> <span class=n>val</span> <span class=o>-</span> <span class=n>nums</span><span class=p>[</span><span class=n>row</span><span class=p>][</span><span class=n>col</span><span class=p>];</span>
+        <span class=n>nums</span><span class=p>[</span><span class=n>row</span><span class=p>][</span><span class=n>col</span><span class=p>]</span> <span class=o>=</span> <span class=n>val</span><span class=p>;</span>
+        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>row</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=n>m</span><span class=p>;</span> <span class=n>i</span> <span class=o>+=</span> <span class=n>i</span> <span class=o>&amp;</span> <span class=p>(</span><span class=o>-</span><span class=n>i</span><span class=p>))</span> <span class=p>{</span>
+            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>col</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;=</span> <span class=n>n</span><span class=p>;</span> <span class=n>j</span> <span class=o>+=</span> <span class=n>j</span> <span class=o>&amp;</span> <span class=p>(</span><span class=o>-</span><span class=n>j</span><span class=p>))</span> <span class=p>{</span>
+                <span class=n>tree</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span> <span class=o>+=</span> <span class=n>diff</span><span class=p>;</span>
+            <span class=p>}</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
 
-    int sumRegion(int row1, int col1, int row2, int col2) {
-        if (m == 0 || n == 0)
-            return 0;
+    <span class=kt>int</span> <span class=n>sumRegion</span><span class=p>(</span><span class=kt>int</span> <span class=n>row1</span><span class=p>,</span> <span class=kt>int</span> <span class=n>col1</span><span class=p>,</span> <span class=kt>int</span> <span class=n>row2</span><span class=p>,</span> <span class=kt>int</span> <span class=n>col2</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=n>m</span> <span class=o>==</span> <span class=mi>0</span> <span class=o>||</span> <span class=n>n</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+            <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
 
-        return getSum(row2 + 1, col2 + 1) - getSum(row1, col2 + 1) - getSum(row2 + 1, col1) + getSum(row1, col1);
-    }
+        <span class=k>return</span> <span class=nf>getSum</span><span class=p>(</span><span class=n>row2</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=n>col2</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span> <span class=o>-</span> <span class=n>getSum</span><span class=p>(</span><span class=n>row1</span><span class=p>,</span> <span class=n>col2</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span> <span class=o>-</span> <span class=n>getSum</span><span class=p>(</span><span class=n>row2</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=n>col1</span><span class=p>)</span> <span class=o>+</span> <span class=n>getSum</span><span class=p>(</span><span class=n>row1</span><span class=p>,</span> <span class=n>col1</span><span class=p>);</span>
+    <span class=p>}</span>
 
-    int getSum(int row, int col) {
-        int sum = 0;
-        for (int i = row; i &gt; 0; i -= i &amp; (-i)) {
-            for (int j = col; j &gt; 0; j -= j &amp; (-j)) {
-                sum += tree[i][j];
-            }
-        }
+    <span class=kt>int</span> <span class=n>getSum</span><span class=p>(</span><span class=kt>int</span> <span class=n>row</span><span class=p>,</span> <span class=kt>int</span> <span class=n>col</span><span class=p>)</span> <span class=p>{</span>
+        <span class=kt>int</span> <span class=n>sum</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>row</span><span class=p>;</span> <span class=n>i</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>-=</span> <span class=n>i</span> <span class=o>&amp;</span> <span class=p>(</span><span class=o>-</span><span class=n>i</span><span class=p>))</span> <span class=p>{</span>
+            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>col</span><span class=p>;</span> <span class=n>j</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>-=</span> <span class=n>j</span> <span class=o>&amp;</span> <span class=p>(</span><span class=o>-</span><span class=n>j</span><span class=p>))</span> <span class=p>{</span>
+                <span class=n>sum</span> <span class=o>+=</span> <span class=n>tree</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>];</span>
+            <span class=p>}</span>
+        <span class=p>}</span>
 
-        return sum;
-    }
-};
+        <span class=k>return</span> <span class=n>sum</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>};</span>
 
-/**
-* Your NumMatrix object will be instantiated and called as such:
-* NumMatrix obj = new NumMatrix(matrix);
-* obj.update(row,col,val);
-* int param_2 = obj.sumRegion(row1,col1,row2,col2);
-*/
-```
-</code></pre></div> <h3 id=count-of-range-sum>Count of Range Sum<a class=headerlink href=#count-of-range-sum title="Permanent link">&para;</a></h3> <p>Solution 1 Merge sort using <code>inplace_merge()</code></p> <ol> <li>The core is to figure out how to calculate the result while merging. It is based on the fact that the left half and right half are all sorted. Using the ordering information we are able to locate two points in the right half <code>j</code> and <code>k</code>, between which will fulfill the requirement.</li> <li>Several important points need to be made. 1) calculation of prefix sum of the array. The length is <code>n + 1</code> not <code>n</code>? 2) the range passed to the merge subroutine are open-end <code>[start, end)</code>.</li> <li>The base case of the subrouine. It return zero becuase the case has been counted in the for loop, we don't need to count it again. Not because the base case is <code>0</code>.</li> </ol> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
+<span class=cm>/**</span>
+<span class=cm>* Your NumMatrix object will be instantiated and called as such:</span>
+<span class=cm>* NumMatrix obj = new NumMatrix(matrix);</span>
+<span class=cm>* obj.update(row,col,val);</span>
+<span class=cm>* int param_2 = obj.sumRegion(row1,col1,row2,col2);</span>
+<span class=cm>*/</span>
+</code></pre></div> </div> </div> <h3 id=count-of-range-sum>Count of Range Sum<a class=headerlink href=#count-of-range-sum title="Permanent link">&para;</a></h3> <p>Solution 1 Merge sort using <code>inplace_merge()</code></p> <ol> <li>The core is to figure out how to calculate the result while merging. It is based on the fact that the left half and right half are all sorted. Using the ordering information we are able to locate two points in the right half <code>j</code> and <code>k</code>, between which will fulfill the requirement.</li> <li>Several important points need to be made. 1) calculation of prefix sum of the array. The length is <code>n + 1</code> not <code>n</code>? 2) the range passed to the merge subroutine are open-end <code>[start, end)</code>.</li> <li>The base case of the subrouine. It return zero becuase the case has been counted in the for loop, we don't need to count it again. Not because the base case is <code>0</code>.</li> </ol> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
 <span class=k>public</span><span class=o>:</span>
     <span class=kt>int</span> <span class=n>countRangeSum</span><span class=p>(</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>nums</span><span class=p>,</span> <span class=kt>int</span> <span class=n>lower</span><span class=p>,</span> <span class=kt>int</span> <span class=n>upper</span><span class=p>)</span> <span class=p>{</span>
         <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>nums</span><span class=p>.</span><span class=n>size</span><span class=p>();</span>
@@ -1657,7 +1645,7 @@ sum is in [lower, upper]. Notice k should not be included.
         <span class=k>return</span> <span class=n>count</span><span class=p>;</span>
     <span class=p>}</span>
 <span class=p>};</span>
-</code></pre></div> <p>Solution 3 BST</p> <p>Solution 4 BIT</p> <h3 id=maximum-sum-of-two-non-overlapping-subarrays>Maximum Sum of Two Non-Overlapping Subarrays<a class=headerlink href=#maximum-sum-of-two-non-overlapping-subarrays title="Permanent link">&para;</a></h3> <div class=tabbed-set data-tabs=18:3><input checked=checked id=__tabbed_18_1 name=__tabbed_18 type=radio><label for=__tabbed_18_1>Brute Force Iterate</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
+</code></pre></div> <p>Solution 3 BST</p> <p>Solution 4 BIT</p> <h3 id=maximum-sum-of-two-non-overlapping-subarrays>Maximum Sum of Two Non-Overlapping Subarrays<a class=headerlink href=#maximum-sum-of-two-non-overlapping-subarrays title="Permanent link">&para;</a></h3> <div class=tabbed-set data-tabs=19:3><input checked=checked id=__tabbed_19_1 name=__tabbed_19 type=radio><label for=__tabbed_19_1>Brute Force Iterate</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
 <span class=k>public</span><span class=o>:</span>
     <span class=kt>int</span> <span class=n>maxSumTwoNoOverlap</span><span class=p>(</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>A</span><span class=p>,</span> <span class=kt>int</span> <span class=n>L</span><span class=p>,</span> <span class=kt>int</span> <span class=n>M</span><span class=p>)</span> <span class=p>{</span>
         <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>A</span><span class=p>.</span><span class=n>size</span><span class=p>();</span>
@@ -1703,7 +1691,7 @@ sum is in [lower, upper]. Notice k should not be included.
         <span class=k>return</span> <span class=n>res</span><span class=p>;</span>
     <span class=p>}</span>
 <span class=p>};</span>
-</code></pre></div> </div> <input id=__tabbed_18_2 name=__tabbed_18 type=radio><label for=__tabbed_18_2>One pass</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
+</code></pre></div> </div> <input id=__tabbed_19_2 name=__tabbed_19 type=radio><label for=__tabbed_19_2>One pass</label><div class=tabbed-content> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
 <span class=k>public</span><span class=o>:</span>
     <span class=kt>int</span> <span class=n>maxSumTwoNoOverlap</span><span class=p>(</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>A</span><span class=p>,</span> <span class=kt>int</span> <span class=n>L</span><span class=p>,</span> <span class=kt>int</span> <span class=n>M</span><span class=p>)</span> <span class=p>{</span>
         <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>A</span><span class=p>.</span><span class=n>size</span><span class=p>();</span>
@@ -1742,7 +1730,7 @@ sum is in [lower, upper]. Notice k should not be included.
         <span class=k>return</span> <span class=n>res</span><span class=p>;</span>
     <span class=p>}</span>
 <span class=p>};</span>
-</code></pre></div> </div> <input id=__tabbed_18_3 name=__tabbed_18 type=radio><label for=__tabbed_18_3>DP solution</label><div class=tabbed-content></div> </div> <div class=highlight><pre><span></span><code><span class=c1>//TODO</span>
+</code></pre></div> </div> <input id=__tabbed_19_3 name=__tabbed_19 type=radio><label for=__tabbed_19_3>DP solution</label><div class=tabbed-content></div> </div> <div class=highlight><pre><span></span><code><span class=c1>//TODO</span>
 </code></pre></div> <h3 id=maximum-sum-of-3-non-overlapping-subarrays>Maximum Sum of 3 Non-Overlapping Subarrays<a class=headerlink href=#maximum-sum-of-3-non-overlapping-subarrays title="Permanent link">&para;</a></h3> <h3 id=longest-substring-without-repeating-characters><a href=../../string/notes/#longest-substring-without-repeating-characters>Longest Substring Without Repeating Characters</a><a class=headerlink href=#longest-substring-without-repeating-characters title="Permanent link">&para;</a></h3> <h3 id=longest-substring-with-at-most-two-distinct-characters><a href=../../string/notes/#longest-substring-with-at-most-two-distinct-characters>Longest Substring with At Most Two Distinct Characters</a><a class=headerlink href=#longest-substring-with-at-most-two-distinct-characters title="Permanent link">&para;</a></h3> <h3 id=longest-substring-with-at-most-k-distinct-characters><a href=../../string/notes/#longest-substring-with-at-most-k-distinct-characters>Longest Substring with At Most K Distinct Characters</a><a class=headerlink href=#longest-substring-with-at-most-k-distinct-characters title="Permanent link">&para;</a></h3> <h3 id=subarrays-with-k-different-integers>Subarrays with K Different Integers<a class=headerlink href=#subarrays-with-k-different-integers title="Permanent link">&para;</a></h3> <ul> <li>If you use sliding window to solve this problem, there are lots of corner cases.</li> <li>for example: <code>[1, 1, 2, 1, 2, 1, 3, 1], K = 2</code>, how can you ensure you count all the subarray?</li> <li>Remember this trick that you can use the <code>atMostKDistinct(A, K) - atMostKDistinct(A, K - 1)</code>.</li> </ul> <div class=highlight><pre><span></span><code><span class=k>class</span> <span class=nc>Solution</span> <span class=p>{</span>
 <span class=k>public</span><span class=o>:</span>
     <span class=kt>int</span> <span class=n>subarraysWithKDistinct</span><span class=p>(</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>A</span><span class=p>,</span> <span class=kt>int</span> <span class=n>K</span><span class=p>)</span> <span class=p>{</span>
