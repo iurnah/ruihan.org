@@ -1534,6 +1534,42 @@ Binary Search solution
         }
     };
     ```
+=== "C++ binary search alternative"
+
+    ```c++
+    class Solution {
+    public:
+        int splitArray(vector<int>& nums, int m) {
+            int l = *max_element(nums.begin(), nums.end());
+            int r = accumulate(nums.begin(), nums.end(), 0);
+
+            while (l < r) {
+                int mid = l + (r - l) / 2;
+                int s = 0;
+                int c = 1;
+
+                // count the possible cuts
+                for (int n : nums) {
+                    if (s + n > mid) { // voilate the constrains
+                        s = 0;
+                        c++;
+                    }
+                    s += n;
+                }
+
+                if (c > m) {
+                    l = mid + 1;
+                } else {
+                    // the "> mid" above guarantee the "no greater than"
+                    // the guess value, if c == m, mid could be the result
+                    r = mid;
+                }
+            }
+
+            return l;
+        }
+    };
+    ```
 
 ### Copy books (lintcode)
 

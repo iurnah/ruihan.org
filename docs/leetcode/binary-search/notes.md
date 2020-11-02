@@ -6,7 +6,7 @@
    info is available, either explicitly (sorted array) or implicitly (partially
    sorted or other special info).
 2. monotony pattern. If the ordering info isn't available, but you can exclude
-   "all" the possible cases from left or right by a condition camparing `f(mid)`
+   "all" the possible cases from left or right by a condition comparing `f(mid)`
    to the `target`.
 
 ## Binary search problem solving techniques
@@ -37,9 +37,9 @@
 
 1. `lower_bound`: return iterator point to the element __no less__ than the target.
 2. `upper_bound`: return iterator point to the element __greater__ than the target.
-3. `equal_range`: return a pair of iterators, first of which is `lower_bound`,
-   second is `upper_bound`.
-4. `binary_search`: return true if an element equivalent to val is found, and
+3. `equal_range`: return a pair of iterators, the first of which is `lower_bound`,
+   the second is `upper_bound`.
+4. `binary_search`: return true if an element equivalent to `val` is found, and
    false otherwise.
 
 ## Caveat of binary search implementation
@@ -52,9 +52,9 @@
 5. The "bisection": `start = mid + 1`, `start = mid`, or `end = mid - 1` or `end = mid`?
 6. Where is the result? `start`? `end`? How to make sure?
 
-## A "universial" binary search implementation
+## A "universal" binary search implementation
 
-Despite the above caveas, just remember that there are two version of binary
+Despite the above caveats, just remember that there are two versions of binary
 search one can write based on the range `[begin, end)` and `[begin, end]`.
 Iterator type in C++ using the former, it have many benefits in reduce the code
 complexity. Among all the binary search implementation you have seen, the
@@ -144,7 +144,7 @@ size_t binary_search(int x, vector<int>& array, size_t n)
 6. If we use `end = mid + 1`. Try test case `[1, 3, 5, 7]`, with `x = 0`. deadloop
    will accur. i.e. `begin = 0, mid = 1, end = 2`.
 
-## Category 1 Binary search basics and binary search on special array (i.e. rotated sorted)
+## Category 1 Binary search on sorted arrays
 
 To solve this type of binary search problem. You should focus on the following:
 
@@ -651,354 +651,6 @@ public:
 };
 ```
 
-### 374. Guess Number Higher or Lower
-
-=== "C++ binary search"
-
-    ```c++ 
-    // Forward declaration of guess API.
-    // @param num, your guess
-    // @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
-    int guess(int num);
-
-    class Solution {
-    public:
-        int guessNumber(int n) {
-            int start = 1, end = n;
-            while(start < end) {
-                int mid = start + (end - start) / 2;
-                if (guess(mid) == 0)
-                    return mid;
-
-                if (guess(mid) == 1) {
-                    start = mid + 1;
-                } else {
-                    end = mid;
-                }
-            }
-
-            return start;
-        }
-    };
-    ```
-=== "Python"
-
-    ```python
-    # The guess API is already defined for you.
-    # @param num, your guess
-    # @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
-    # def guess(num):
-
-    class Solution(object):
-        def guessNumber(self, n):
-            """
-            :type n: int
-            :rtype: int
-            """
-            begin = 0
-            end = n
-
-            while begin != end:
-                mid = begin + (end - begin) / 2
-                if guess(mid) == 0:
-                    return mid
-
-                if guess(mid) == 1:
-                    begin = mid + 1
-                else:
-                    end = mid
-
-            return begin
-    ```
-
-### 475. Heaters
-
-Sort then brute force
-
-1. The solution we are looking for is the max value of the smallest house-heater distance.
-2. Think through what is the distance you want to keep, min or max
-
-=== "C++"
-
-    ```c++
-    class Solution {
-    public:
-        int findRadius(vector<int>& houses, vector<int>& heaters) {
-            int m = houses.size();
-            int n = heaters.size();
-            sort(houses.begin(), houses.end());
-            sort(heaters.begin(), heaters.end());
-
-            int res = INT_MIN;
-            int i, j = 0;
-            for (i = 0; i < m; ++i) {
-                while (j < n - 1 && abs(heaters[j + 1] - houses[i]) <= abs(heaters[j] - houses[i])) {
-                    j++;
-                }
-
-                res = max(res, abs(houses[i] - heaters[j]));
-            }
-
-            return res;
-        }
-    };
-    ```
-
-=== "Python"
-
-    ```python
-    class Solution(object):
-        def findRadius(self, houses, heaters):
-            """
-            :type houses: List[int]
-            :type heaters: List[int]
-            :rtype: int
-            """
-            m = len(houses)
-            n = len(heaters)
-
-            houses.sort()
-            heaters.sort()
-
-            i = 0
-            j = 0
-            res = 0
-            for i in range(m):
-                while j < n - 1 and abs(heaters[j + 1] - houses[i]) <= abs(heaters[j] -  houses[i]):
-                    j += 1
-
-                res = max(res, abs(houses[i] - heaters[j]))
-
-            return res
-    ```
-
-Binary search the neighboring heaters get max of min
-
-1. Notice we cannot sort hourses and then search each heater's position. A special
-   cases `[1, 2, 3] 2`, the result is `0` whereis it should be `1`.
-
-=== "C++"
-
-    ```c++
-    class Solution {
-    public:
-        int findRadius(vector<int>& houses, vector<int>& heaters) {
-            int n = heaters.size();
-
-            sort(heaters.begin(), heaters.end());
-
-            int res = INT_MIN;
-            for (int house : houses) {
-                int start = 0, end = n;
-
-                while (start < end) {
-                    int mid = start + (end - start) / 2;
-                    if (heaters[mid] < house)
-                        start = mid + 1;
-                    else
-                        end = mid;
-                }
-
-                int dist1 = (start == n) ? INT_MAX : heaters[start] - house;
-                int dist2 = (start == 0) ? INT_MAX : house - heaters[start - 1];
-                res = max(res, min(dist1, dist2));
-            }
-
-            return res;
-        }
-    };
-    ```
-
-=== "Python"
-
-    ```python
-    class Solution(object):
-        def findRadius(self, houses, heaters):
-            """
-            :type houses: List[int]
-            :type heaters: List[int]
-            :rtype: int
-            """
-            m = len(houses)
-            n = len(heaters)
-
-            heaters.sort()
-
-            i = 0
-            j = 0
-            res = float('-inf')
-            for i in range(m):
-                start = 0
-                end = n
-                while start != end:
-                    mid = start + (end - start) / 2
-                    if heaters[mid] < houses[i]:
-                        start = mid + 1
-                    else:
-                        end = mid
-
-                dist1 = float('inf')
-                dist2 = float('inf')
-                if start != n:
-                    dist1 = heaters[start] - houses[i]
-                if start != 0:
-                    dist2 = houses[i] - heaters[start - 1]
-
-                res = max(res, min(dist1, dist2))
-
-            return res
-    ```
-
-### 1539. Kth Missing Positive Number
-
-Naive Solution
-
-* using multiple variables and keep loop invariant.
-
-Binary Search
-
-* Observe the relation: total missing positives before `A[m]` is `A[m] -  1 - m`
-  because the index `m` and `A[m]` is related to the missing positives thus can
-  be used for counting.
-* the bisection condition can be interpreted as a boolean predicate: "whether the
-  number of missing positives before `A[m]` is __no less__ than `k`?"
-
-=== "Naive Solution"
-
-    ```c++ 
-    class Solution {
-    public:
-        int findKthPositive(vector<int>& arr, int k) {
-            if (arr.empty()) return k;
-            int missing_cnt = arr[0] - 1;
-            if (missing_cnt >= k) return k;
-            int prev = arr[0];
-            for (int i = 1;  i < arr.size(); ++i ) {
-                if (!(arr[i] == prev || arr[i] == prev + 1)) {
-                    int skip = arr[i] - prev - 1;
-                    if (missing_cnt + skip >= k) {
-                        return prev + k - missing_cnt;
-                    }
-                    missing_cnt +=skip;
-                }
-                prev = arr[i];
-            }
-            return (prev + k - missing_cnt);
-        }
-    };
-    ```
-
-=== "Binary Search"
-
-    ```c++
-    class Solution {
-    public:
-        int findKthPositive(vector<int>& arr, int k) {
-            int l = 0, r = arr.size();
-            while (l < r) {
-                int m = l + (r - l) / 2;
-
-                if (arr[m] - 1 - m < k) {
-                    l = m + 1;
-                } else {
-                    r = m;
-                }
-            }
-
-            return l + k;
-        }
-    };
-    ```
-
-### [410. Split Array Largest Sum](../../array/notes/#410-split-array-largest-sum)
-
-### 1482. Minimum Number of Days to Make m Bouquets
-
-Solution Binary Search
-
-* Use a subroutine to compute whether the constrain can be meet or not.
-* The search is looking for the whether m bouquets is possible, meet the binary
-  pattern "no less than". So that we use `if(cnt_m < m)` and the return values is l.
-
-=== "C++ binary search"
-
-```c++
-class Solution {
-public:
-    int minDays(vector<int>& bloomDay, int m, int k) {
-        int l = *min_element(bloomDay.begin(), bloomDay.end());
-        int r = *max_element(bloomDay.begin(), bloomDay.end());
-
-        if (bloomDay.size() < m * k) return -1;
-
-        while (l < r) {
-            int mid = l + (r - l) / 2;
-
-            int cnt_k = 0;
-            int cnt_m = 0;
-            for (int d: bloomDay) {
-                if (d > mid) {
-                    cnt_k = 0;
-                } else {
-                    cnt_k++;
-                    if (cnt_k == k) {
-                        cnt_m++;
-                        cnt_k = 0;
-                    }
-                }
-            }
-
-            if (cnt_m < m) {
-                l = mid + 1;
-            } else {
-                r = mid;
-            }
-        }
-
-        return l;
-    }
-};
-```
-
-### 1283. Find the Smallest Divisor Given a Threshold
-
-Solution Binary search
-
-* Notice the specific divisor calculation. under this divisor operation, no matter
-  how large the divisor is, the sum is always greater than `nums.size()`, if not,
-  the solution is not guaranteed. so the threshold cannot smaller than `nums.size()`.
-  This also indicate that the minimum divisor is less than or eaual to `max(nums)`.
-* in the bsection predicate, notice this time the condition becomes `if (res > target)`
-  essentially, the `if (f(mid) < target)` in the binary search templates is saying
-  `mid` and `f(mid)` are positive correlation. here the `mid` and `res` are negative
-  correlation.
-
-=== "C++ binary search"
-
-    ```c++  hl_lines="13"
-    class Solution {
-    public:
-        int smallestDivisor(vector<int>& nums, int threshold) {
-            int l = 1;
-            int r = *max_element(nums.begin(), nums.end());
-
-            while (l < r) {
-                int m = l + (r - l) / 2;
-                int res = 0;
-                for (int num: nums) {
-                    res += (num + m - 1) / m;
-                }
-                if (res > threshold) {
-                    l = m + 1;
-                } else {
-                    r = m;
-                }
-            }
-
-            return l;
-        }
-    };
-    ```
 
 ### 74. Search a 2D Matrix
 
@@ -1768,7 +1420,7 @@ public:
 };
 ```
 
-## Category 3 Using ordering abstration (counter as a gueesing guage)
+## Category 3 Using ordering abstration (monotonicity)
 
 ### 287. Find the Duplicate Number
 
@@ -1776,11 +1428,11 @@ Solution 1 Binary search
 
 * The problem asking for better than `O(n^2)` we could check to see whether
   binary search will work.
-* If you count how many value `<=` the mid elements of `[1, ..., n-1]`, it will
-  give you enough information to discard part of the array elements.
-* Here you should distinguish what will be halfed and what will be searched. The
-  answer to that is the `[1, ..., n-1]` sequence, not the given array. The
-  simple proof of why it works can be put in this the following way.
+* If you count how many values `<=` the mid elements of `[1, ..., n-1]`, it will
+  give you enough information to discard part of the array.
+* Here you should distinguish what will be split and what will be searched. The
+  answer is the `[1, ..., n-1]` sequence, not the given array. The simple proof
+  of why it works can be put in this the following way.
 * If the count of elements that `<=mid` in the array is less than `mid`, we can
   learn that the duplicate is in the higher end. If the count is greater, we can
   know that the duplicate element is in the lower end of the sequence `[1, ..., n-1]`.
@@ -1847,6 +1499,473 @@ public:
 
 ### 360. Sort Transformed Array
 
+### 374. Guess Number Higher or Lower
+
+=== "C++ binary search"
+
+    ```c++ 
+    // Forward declaration of guess API.
+    // @param num, your guess
+    // @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
+    int guess(int num);
+
+    class Solution {
+    public:
+        int guessNumber(int n) {
+            int start = 1, end = n;
+            while(start < end) {
+                int mid = start + (end - start) / 2;
+                if (guess(mid) == 0)
+                    return mid;
+
+                if (guess(mid) == 1) {
+                    start = mid + 1;
+                } else {
+                    end = mid;
+                }
+            }
+
+            return start;
+        }
+    };
+    ```
+=== "Python"
+
+    ```python
+    # The guess API is already defined for you.
+    # @param num, your guess
+    # @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
+    # def guess(num):
+
+    class Solution(object):
+        def guessNumber(self, n):
+            """
+            :type n: int
+            :rtype: int
+            """
+            begin = 0
+            end = n
+
+            while begin != end:
+                mid = begin + (end - begin) / 2
+                if guess(mid) == 0:
+                    return mid
+
+                if guess(mid) == 1:
+                    begin = mid + 1
+                else:
+                    end = mid
+
+            return begin
+    ```
+
+### 475. Heaters
+
+Sort then brute force
+
+1. The solution we are looking for is the max value of the smallest house-heater distance.
+2. Think through what is the distance you want to keep, min or max
+
+=== "C++"
+
+    ```c++
+    class Solution {
+    public:
+        int findRadius(vector<int>& houses, vector<int>& heaters) {
+            int m = houses.size();
+            int n = heaters.size();
+            sort(houses.begin(), houses.end());
+            sort(heaters.begin(), heaters.end());
+
+            int res = INT_MIN;
+            int i, j = 0;
+            for (i = 0; i < m; ++i) {
+                while (j < n - 1 && abs(heaters[j + 1] - houses[i]) <= abs(heaters[j] - houses[i])) {
+                    j++;
+                }
+
+                res = max(res, abs(houses[i] - heaters[j]));
+            }
+
+            return res;
+        }
+    };
+    ```
+
+=== "Python"
+
+    ```python
+    class Solution(object):
+        def findRadius(self, houses, heaters):
+            """
+            :type houses: List[int]
+            :type heaters: List[int]
+            :rtype: int
+            """
+            m = len(houses)
+            n = len(heaters)
+
+            houses.sort()
+            heaters.sort()
+
+            i = 0
+            j = 0
+            res = 0
+            for i in range(m):
+                while j < n - 1 and abs(heaters[j + 1] - houses[i]) <= abs(heaters[j] -  houses[i]):
+                    j += 1
+
+                res = max(res, abs(houses[i] - heaters[j]))
+
+            return res
+    ```
+
+Binary search the neighboring heaters get max of min
+
+1. Notice we cannot sort hourses and then search each heater's position. A special
+   cases `[1, 2, 3] 2`, the result is `0` whereis it should be `1`.
+
+=== "C++"
+
+    ```c++
+    class Solution {
+    public:
+        int findRadius(vector<int>& houses, vector<int>& heaters) {
+            int n = heaters.size();
+
+            sort(heaters.begin(), heaters.end());
+
+            int res = INT_MIN;
+            for (int house : houses) {
+                int start = 0, end = n;
+
+                while (start < end) {
+                    int mid = start + (end - start) / 2;
+                    if (heaters[mid] < house)
+                        start = mid + 1;
+                    else
+                        end = mid;
+                }
+
+                int dist1 = (start == n) ? INT_MAX : heaters[start] - house;
+                int dist2 = (start == 0) ? INT_MAX : house - heaters[start - 1];
+                res = max(res, min(dist1, dist2));
+            }
+
+            return res;
+        }
+    };
+    ```
+
+=== "Python"
+
+    ```python
+    class Solution(object):
+        def findRadius(self, houses, heaters):
+            """
+            :type houses: List[int]
+            :type heaters: List[int]
+            :rtype: int
+            """
+            m = len(houses)
+            n = len(heaters)
+
+            heaters.sort()
+
+            i = 0
+            j = 0
+            res = float('-inf')
+            for i in range(m):
+                start = 0
+                end = n
+                while start != end:
+                    mid = start + (end - start) / 2
+                    if heaters[mid] < houses[i]:
+                        start = mid + 1
+                    else:
+                        end = mid
+
+                dist1 = float('inf')
+                dist2 = float('inf')
+                if start != n:
+                    dist1 = heaters[start] - houses[i]
+                if start != 0:
+                    dist2 = houses[i] - heaters[start - 1]
+
+                res = max(res, min(dist1, dist2))
+
+            return res
+    ```
+
+### [410. Split Array Largest Sum](../../array/notes/#410-split-array-largest-sum)
+
+### 1011. Capacity To Ship Packages Within D Days
+
+Binary solution
+
+Same as the [410. Split Array Largest Sum](../../array/notes/#410-split-array-largest-sum)
+
+```c++
+class Solution {
+public:
+    int shipWithinDays(vector<int>& weights, int D) {
+        int n = weights.size();
+        if (n < D) return 0;
+
+        int l = *max_element(weights.begin(), weights.end());
+        int h = accumulate(weights.begin(), weights.end(), 0);
+
+        while (l < h) {
+            int m = (l + h) / 2;
+
+            int c = 1; // need cut D-1 times
+            int sum = 0;
+            for (int w: weights) {
+                if (sum + w > m) {
+                    sum = 0;
+                    c++;
+                }
+                sum += w;
+            }
+
+            if (c > D) {
+                l = m + 1;
+            } else {
+                h = m;
+            }
+        }
+
+        return l;
+    }
+};
+```
+
+### 875. Koko Eating Bananas
+
+Binary search
+
+Using the monotonic guessing approach, notice the trick in counting whether the
+given guess value is possible.
+
+=== "C++ binary search"
+
+    ```c++
+    class Solution {
+    public:
+        int minEatingSpeed(vector<int>& piles, int H) {
+            int N = piles.size();
+            if (N > H)
+                return 0;
+
+            int l = 1;
+            long r = 10e9;
+
+            while (l < r) {
+                int k = l + (r - l) / 2;
+
+                int hour = 0;
+                for (int p : piles) {
+                    if (k >= p) {
+                        hour++;
+                    } else {
+                        hour += (p + k - 1) / k;
+                    }
+                }
+
+                if (hour > H) { // K is too large,
+                    l = k + 1;
+                } else {
+                    r = k;
+                }
+            }
+
+            return l;
+        }
+    };
+    ```
+
+=== "C++ binary search simplified"
+
+    ```c++
+    class Solution {
+    public:
+        int minEatingSpeed(vector<int>& piles, int H) {
+            int N = piles.size();
+            if (N > H)
+                return 0;
+
+            int l = 1;
+            long r = 10e9;
+
+            while (l < r) {
+                int k = l + (r - l) / 2;
+
+                int hour = 0;
+                for (int p : piles) {
+                    hour += (p + k - 1) / k;
+                }
+
+                if (hour > H) { // K is too large,
+                    l = k + 1;
+                } else {
+                    r = k;
+                }
+            }
+
+            return l;
+        }
+    };
+    ```
+
+### 1539. Kth Missing Positive Number
+
+Naive Solution
+
+* using multiple variables and keep loop invariant.
+
+Binary Search
+
+* Observe the relation: total missing positives before `A[m]` is `A[m] -  1 - m`
+  because the index `m` and `A[m]` is related to the missing positives thus can
+  be used for counting.
+* the bisection condition can be interpreted as a boolean predicate: "whether the
+  number of missing positives before `A[m]` is __no less__ than `k`?"
+
+=== "Naive Solution"
+
+    ```c++ 
+    class Solution {
+    public:
+        int findKthPositive(vector<int>& arr, int k) {
+            if (arr.empty()) return k;
+            int missing_cnt = arr[0] - 1;
+            if (missing_cnt >= k) return k;
+            int prev = arr[0];
+            for (int i = 1;  i < arr.size(); ++i ) {
+                if (!(arr[i] == prev || arr[i] == prev + 1)) {
+                    int skip = arr[i] - prev - 1;
+                    if (missing_cnt + skip >= k) {
+                        return prev + k - missing_cnt;
+                    }
+                    missing_cnt +=skip;
+                }
+                prev = arr[i];
+            }
+            return (prev + k - missing_cnt);
+        }
+    };
+    ```
+
+=== "Binary Search"
+
+    ```c++
+    class Solution {
+    public:
+        int findKthPositive(vector<int>& arr, int k) {
+            int l = 0, r = arr.size();
+            while (l < r) {
+                int m = l + (r - l) / 2;
+
+                if (arr[m] - 1 - m < k) {
+                    l = m + 1;
+                } else {
+                    r = m;
+                }
+            }
+
+            return l + k;
+        }
+    };
+    ```
+
+### 1482. Minimum Number of Days to Make m Bouquets
+
+Solution Binary Search
+
+* Use a subroutine to compute whether the constrain can be meet or not.
+* The search is looking for the whether m bouquets is possible, meet the binary
+  pattern "no less than". So that we use `if(cnt_m < m)` and the return values is l.
+
+=== "C++ binary search"
+
+    ```c++
+    class Solution {
+    public:
+        int minDays(vector<int>& bloomDay, int m, int k) {
+            int l = *min_element(bloomDay.begin(), bloomDay.end());
+            int r = *max_element(bloomDay.begin(), bloomDay.end());
+
+            if (bloomDay.size() < m * k) return -1;
+
+            while (l < r) {
+                int mid = l + (r - l) / 2;
+
+                int cnt_k = 0;
+                int cnt_m = 0;
+                for (int d: bloomDay) {
+                    if (d > mid) {
+                        cnt_k = 0;
+                    } else {
+                        cnt_k++;
+                        if (cnt_k == k) {
+                            cnt_m++;
+                            cnt_k = 0;
+                        }
+                    }
+                }
+
+                if (cnt_m < m) {
+                    l = mid + 1;
+                } else {
+                    r = mid;
+                }
+            }
+
+            return l;
+        }
+    };
+    ```
+
+### 1283. Find the Smallest Divisor Given a Threshold
+
+Solution Binary search
+
+* Notice the specific divisor calculation. under this divisor operation, no matter
+  how large the divisor is, the sum is always greater than `nums.size()`, if not,
+  the solution is not guaranteed. so the threshold cannot smaller than `nums.size()`.
+  This also indicate that the minimum divisor is less than or eaual to `max(nums)`.
+* in the bsection predicate, notice this time the condition becomes `if (res > target)`
+  essentially, the `if (f(mid) < target)` in the binary search templates is saying
+  `mid` and `f(mid)` are positive correlation. here the `mid` and `res` are negative
+  correlation.
+
+=== "C++ binary search"
+
+    ```c++  hl_lines="13"
+    class Solution {
+    public:
+        int smallestDivisor(vector<int>& nums, int threshold) {
+            int l = 1;
+            int r = *max_element(nums.begin(), nums.end());
+
+            while (l < r) {
+                int m = l + (r - l) / 2;
+                int res = 0;
+                for (int num: nums) {
+                    res += (num + m - 1) / m;
+                }
+                if (res > threshold) {
+                    l = m + 1;
+                } else {
+                    r = m;
+                }
+            }
+
+            return l;
+        }
+    };
+    ```
+
 ### 1231. Divide Chocolate
 
 Solution Binary search
@@ -1867,40 +1986,40 @@ Same problem as [183. Wood cut](./#183-wood-cut-lintcode).
 
 === "Binary Search"
 
-```c++  hl_lines="8 19-23"
-class Solution {
-public:
-    int maximizeSweetness(vector<int>& sweetness, int K) {
-        int start = *min_element(sweetness.begin(), sweetness.end());
-        int end = accumulate(sweetness.begin(), sweetness.end(), 0);
+    ```c++  hl_lines="8 19-23"
+    class Solution {
+    public:
+        int maximizeSweetness(vector<int>& sweetness, int K) {
+            int start = *min_element(sweetness.begin(), sweetness.end());
+            int end = accumulate(sweetness.begin(), sweetness.end(), 0);
 
-        while (start < end) {
-            int mid = (start + end + 1) / 2;
-            int sum = 0;
-            int cuts = 0;
-            for (int s: sweetness) {
-                if ((sum += s) >= mid) {
-                    sum = 0;
-                    if (++cuts > K)
-                        break;
+            while (start < end) {
+                int mid = (start + end + 1) / 2;
+                int sum = 0;
+                int cuts = 0;
+                for (int s: sweetness) {
+                    if ((sum += s) >= mid) {
+                        sum = 0;
+                        if (++cuts > K)
+                            break;
+                    }
+                }
+
+                if (cuts > K) {
+                    // because >= mid above guarentee the "no less than" the guess.
+                    // if cuts > K, mid could be the right answer and should be returned.
+                    // Remember the binary search invariance requies not miss any
+                    // answer in each iteration.
+                    start = mid;
+                } else {
+                    end = mid - 1;
                 }
             }
 
-            if (cuts > K) {
-                // because >= mid above guarentee the "no less than" the guess.
-                // if cuts > K, mid could be the right answer and should be returned.
-                // Remember the binary search invariance requies not miss any
-                // answer in each iteration.
-                start = mid;
-            } else {
-                end = mid - 1;
-            }
+            return start;
         }
-
-        return start;
-    }
-};
-```
+    };
+    ```
 
 !!! Note
     Compare the binary search solution of problem of [1231. Divide Chocolate](#1231-divide-chocolate)
