@@ -82,6 +82,8 @@ nav:
     - Public Key Cryptography and PKI: seedlabs/public-key-cryptography-and-pki/notes.md
   - System Design:
     - Index: system-design/index.md
+    - How Browser Works: system-design/browser/notes.md
+    - Concurrency and Synchronization: system-design/concurrency/notes.md
     - Distributed System Concepts: system-design/concepts/notes.md
     - Design Patterns: system-design/patterns/notes.md
     - How to Design TinyUrl: system-design/problems/tinyurl/notes.md

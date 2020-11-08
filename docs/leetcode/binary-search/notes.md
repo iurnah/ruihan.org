@@ -2129,25 +2129,33 @@ public:
 
 ### 644. Maximum Average Subarray II
 
-* Notice the great trick you used to test whether there is a subarray of length
-  greater than `k` whose average is larger than current `mid`.
-* The trick is calculate the `diff[i] = nums[i] - mid`,  and then calculate the
-  prefix sum of the `diff` array, and compare to another prefix sum of the same
-  array `diff`, the two prefix sum are calculated at two position at least `k`
-  distant apart. We actually compare the prefix sum to the smallest prefix sum
-  k distant apart.
+* First try to understand why the constrain is "greater than or equal than k".
+  You find that this constrain will ensure the solution exists and the problem
+  is interesting.
+* Notice the monotonicity of the "average sum" values, namely for a given value,
+  if it doesn't fulfill the constrain (length >= k & max(avg)), you can eliminate
+  half of the values from the solution space.
+* Your binary search predicate will be to test whether there exists a subarray
+  with length greater than `k` and an average value is larger than the `mid`.
+* We use a trick to verify the constrains. The tricky thing is that the two
+  constrains are not checked separately, they need to be work together in order
+  to achieve better complexity. The length constrain is ensured partly by the
+  "skip" indexing (`i - k`), partly by keeping the smallest average before the
+  current considered subarray.
+
+!!! Note "Key Math Insight"
+    \begin{align*}
+    \mu_k = \frac{a_i + a_{i+1} + \cdots, + a_j}{j-i+1} & >= Mid \\
+    a_i + a_{i+1} + \cdots, + a_j & >= Mid \times (j-i+1) \\
+    (a_i - Mid) + (a_{i+1} - Mid) + \cdots, + (a_j - Mid) & >= 0
+    \end{align*}
 
 ```c++
 class Solution {
 public:
     double findMaxAverage(vector<int>& nums, int k) {
-        int n = nums.size();
-        double upper = INT_MIN, lower = INT_MAX;
-
-        for (auto num : nums) {
-            upper = max(upper, (double)num);
-            lower = min(lower, (double)num);
-        }
+        double start = *min_element(nums.begin(), nums.end());
+        double end = *max_element(nums.begin(), nums.end());
 
         while (lower + 0.00001 < upper) {
             double mid = lower + (upper - lower) / 2;
@@ -2169,18 +2177,18 @@ public:
             sums += nums[i] - mid;
         }
 
+        // we keep looking for whether a subarray sum of length >= k in array
+        // "sums" is possible to be greater than zero. If such a subarray exist,
+        // it means that the target average value is greater than the "mid" value.
         if (sums >= 0) {
             return true;
         }
 
-        /* we keep looking for whether a subarray sum of length >= k in array "sums"
-         * is possible to be greater than zero. If such a subarray exist, it means
-         * that the target average value is greater than the "mid" value.
-         * we look at the front part of sums that at least k element apart from i.
-         * If we can find the minimum of the sums[0, 1, ..., i - k] and check if
-         * sums[i] - min(sum[0, 1, ..., i - k]) >= 0. If this is the case, it indicate
-         * there exist a subarray of length >= k with sum greater than 0 in sums,
-         * we can return ture, otherwise, it return false. */
+        // we look at the front part of sums that at least k element apart from i.
+        // If we can find the minimum of the sums[0], sums[1], ..., sums[i - k]
+        // and check if sums[i] - min(sums[0], sums[1], ..., sums[i - k]) >= 0.
+        // If this is the case, it indicate, there exist a subarray of length >= k
+        // with sum greater than 0 in sums. we can return ture.
         for (int i = k; i < n; i++) {
             sums += nums[i] - mid;
             prev += nums[i - k] - mid;
@@ -2382,8 +2390,8 @@ Solution 1 Binary search
    to have close to k numbers in the range of `[1, mid]`.
 4. When `being == end`, we've located the kth number desired. In case `k > m*n`,
    we will got `begin == end < k`, which is not a solution.
-5. In counting how many element less than mid, you have to be clever a bit by using
-   the feature that this matrix is multiplicative table. That is for row `i`, you
+5. In counting how many elements less than mid, you have to be clever a bit by using
+   the feature that this matrix is a multiplicative table. That is for row `i`, you
    can at most have `x/i` number smaller than `x`, why?
 6. Follow up: Does the kth element will be in the range of `[1, m*n]`?
 
@@ -2440,7 +2448,7 @@ public:
 Solution 2 Binary search
 
 1. Similar to Problem 668. Kth Smallest Number in Multiplication Table.
-2. The problem is complicated at firt glass. A brute force solutoin generates all
+2. The problem is complicated at first glance. A brute force solution generates all
    the absolute distances and then sort to find the kth smallest one.
 3. We found it is potentially a searchable senario if we sort the elements. We
    have range `[min_distance, max_distance]`. We search a distance in this range

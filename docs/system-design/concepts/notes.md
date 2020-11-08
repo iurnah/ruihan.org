@@ -84,7 +84,7 @@ BASE database may be a better choice.
 
 ## Cuckoo filter
 
-## Colaborate filtering
+## Collaborate filtering
 
 ## Cassandra
 
