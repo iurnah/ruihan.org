@@ -52,6 +52,7 @@ nav:
     - Nine Chapter Dynamic Programming: courses/9chap-dynamic-prog/notes.md
     - Functional Programming Principles in Scala: courses/func-prog-in-scala/notes.md
     - Applied Scrum for Agile Project Management: courses/applied-scrum-for-agile/notes.md
+    - Concurrent Programming in Java: courses/concurrent-prog-java/notes.md
   - Leetcode: 
     - Index: leetcode/index.md
     - Array: leetcode/array/notes.md

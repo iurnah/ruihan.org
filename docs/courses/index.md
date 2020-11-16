@@ -18,6 +18,7 @@
 ## Distributed Systems
 
 * [ ] [Nine Chapter System Design](./9chap-system-design/notes.md)
+* [ ] [Concurrent Programming in Java](./concurrent-prog-java/notes.md)
 
 ## Project Management
 
