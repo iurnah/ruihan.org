@@ -38,11 +38,11 @@
 
 ### Coin Change
 
-* Imagine the last coin you can use and the minimum solution is found can be
+* Imagine the last coin you can use and the minimum solution to found can be
   represented as `f[amount]`. It can be solved by solving the smaller problem
-  first. we have `f[amount] = min(f[amount], f[amount - last\_coin] + 1)`.
+  first. we have `f[amount] = min(f[amount], f[amount - last_coin] + 1)`.
 * The problem is we don't know which coin will be selected for the last one to
-  reach the solution, so we have to iterate throught the coins to check every
+  reach the solution, so we have to iterate through the coins to check every
   one of them. We expecting to see two `for` loops in our code.
 * DP 4 ingredient:
     1. size of the dp array `f[amount + 1]`
@@ -50,63 +50,67 @@
     3. subproblem: `f[amount] = min(f[amount], f[amount - last\_coin] + 1)`.
     4. results: `f[amount]`
 
-```C++ tab=
-class Solution {
-public:
-    int coinChange(vector<int>& coins , int amount) {
-        int n = coins.size();
-        int f[amount + 1];
-        f[0] = 0;
+=== "DP solution"
 
-        /* calculate the f[1], f[2], ... f[amount] */
-        for (int i = 1; i <= amount; i++) {
-            f[i] = INT_MAX;  /* small trick, set to invalid first */
-            for (int j = 0; j < n; j++) { /* update states */
-                /* f[i] can select coins[j] && f[i - coins[j]] is possible && coins[j] is last coin */
-                if (i >= coins[j] && f[i - coins[j]] != INT_MAX && f[i - coins[j]] + 1 < f[i]) {
-                    f[i] = f[i - coins[j]] + 1;
+    ```c++
+    class Solution {
+    public:
+        int coinChange(vector<int>& coins , int amount) {
+            int n = coins.size();
+            int f[amount + 1];
+            f[0] = 0;
+
+            /* calculate the f[1], f[2], ... f[amount] */
+            for (int i = 1; i <= amount; i++) {
+                f[i] = INT_MAX;  /* small trick, set to invalid first */
+                for (int j = 0; j < n; j++) { /* update states */
+                    /* f[i] can select coins[j] && f[i - coins[j]] is possible && coins[j] is last coin */
+                    if (i >= coins[j] && f[i - coins[j]] != INT_MAX && f[i - coins[j]] + 1 < f[i]) {
+                        f[i] = f[i - coins[j]] + 1;
+                    }
                 }
             }
+
+            return f[amount] == INT_MAX ? -1 : f[amount];
         }
+    };
+    ```
 
-        return f[amount] == INT_MAX ? -1 : f[amount];
-    }
-};
-```
+=== "Alternative Solution"
 
-```C++ tab="Alternative Solution"
-class Solution {
-public:
-    int coinChange(vector<int>& coins, int amount) {
-        int n = coins.size();
-        int f[amount+1];
-        // f[i] represent the minimum counts to make up i amount
-        // use INT_MAX to represent impossible case.
-        f[0] = 0;
-        for (int i = 1; i <= amount; i++) {
-            f[i] = INT_MAX;
-            for (int j = 0; j < n; j++) {
-                if (i >= coins[j] && f[i - coins[j]] != INT_MAX) {
-                    f[i] = min(f[i], f[i - coins[j]] + 1);
+    ```c++
+    class Solution {
+    public:
+        int coinChange(vector<int>& coins, int amount) {
+            int n = coins.size();
+            int f[amount+1];
+            // f[i] represent the minimum counts to make up i amount
+            // use INT_MAX to represent impossible case.
+            f[0] = 0;
+            for (int i = 1; i <= amount; i++) {
+                f[i] = INT_MAX;
+                for (int j = 0; j < n; j++) {
+                    if (i >= coins[j] && f[i - coins[j]] != INT_MAX) {
+                        f[i] = min(f[i], f[i - coins[j]] + 1);
+                    }
                 }
             }
-        }
 
-        return f[amount] == INT_MAX ? -1 : f[amount];
-    }
-};
-```
+            return f[amount] == INT_MAX ? -1 : f[amount];
+        }
+    };
+    ```
 
 ### Unique Paths
 
 * Solving smaller problem first than by accumulating the results from the smaller
-  problems, we can solve the the overall problem.
+  problems, we can solve the overall problem.
 * Use a 2-d array to record the result the smaller problem, we know for the
-  position `f[i][j] = f[i - 1][j] + f[i][j - 1]`, which which mean the summation
-  of number of path from above and from left.
+  position `f[i][j] = f[i - 1][j] + f[i][j - 1]`, which means the summation of
+  number of path from above and from left.
 * The initial state is the first row and the first column are all equal to `1`.  
 
-```C++ tab=
+```c++
 class Solution {
 public:
     /**
@@ -149,7 +153,7 @@ Solution 1 DP
   whether can jump to each step `j`. inner loop check each step before `j`, namely
   the smaller size problem.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     bool canJump(vector<int>& nums) {
@@ -176,10 +180,10 @@ public:
 
 Solution 2 Greedy
 
-* Use a variable `cur_max` to maintain the possible maximum jump position, if the
-  current position is less than the maximum possible jump, return flase.
+* Use a variable `cur_max` to maintain the possible maximum jump position, if
+  the current position is less than the maximum possible jump, return flase.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     bool canJump(vector<int>& nums) {
@@ -231,120 +235,126 @@ public:
 
 ### Unique Paths II
 
-```C++ tab="C++ Naive DP"
-class Solution {
-public:
-    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
-        int m = obstacleGrid.size();
-        int n = obstacleGrid[0].size();
-        int i = 0;
-        int j = 0;
-        int flag = 0;
-        vector<vector<int>> f(m, vector<int>(n));
-        if (m == 0 || n == 0) {
-            return 0;
-        }
+=== "C++ Naive DP"
 
-        if (obstacleGrid[0][0] == 1) {
-            return 0;
-        }
-
-        f[0][0] = 1;
-        for (i = 1; i < m; i++) {
-            if (obstacleGrid[i][0] == 1) {
-                f[i][0] = 0;
-            } else {
-                f[i][0] = f[i-1][0];
+    ```c++ 
+    class Solution {
+    public:
+        int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+            int m = obstacleGrid.size();
+            int n = obstacleGrid[0].size();
+            int i = 0;
+            int j = 0;
+            int flag = 0;
+            vector<vector<int>> f(m, vector<int>(n));
+            if (m == 0 || n == 0) {
+                return 0;
             }
-        }
-        for (j = 1; j < n; j++) {
-            if (obstacleGrid[0][j] == 1) {
-                f[0][j] = 0;
-            } else {
-                f[0][j] = f[0][j-1];
-            }
-        }
 
-        for (i = 1; i < m; i++) {
+            if (obstacleGrid[0][0] == 1) {
+                return 0;
+            }
+
+            f[0][0] = 1;
+            for (i = 1; i < m; i++) {
+                if (obstacleGrid[i][0] == 1) {
+                    f[i][0] = 0;
+                } else {
+                    f[i][0] = f[i-1][0];
+                }
+            }
             for (j = 1; j < n; j++) {
-                if (obstacleGrid[i][j] == 1) {
-                    f[i][j] = 0;
+                if (obstacleGrid[0][j] == 1) {
+                    f[0][j] = 0;
                 } else {
-                    f[i][j] = f[i][j-1] + f[i-1][j];
+                    f[0][j] = f[0][j-1];
                 }
             }
-        }
 
-        return f[m-1][n-1];
-    }
-};
-```
-
-```C++ tab="C++ Naive DP Refactored"
-class Solution {
-public:
-    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
-        int m = obstacleGrid.size();
-        int n = m > 0 ? obstacleGrid[0].size() : 0;
-        if (m == 0 && n == 0) {
-            return 0;
-        }
-
-        vector<vector<int>> f(m, vector<int>(n, 0));
-
-        f[0][0] = 1;
-
-        if (obstacleGrid[0][0] == 1) {
-            return 0;
-        }
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (obstacleGrid[i][j] == 1) {
-                    f[i][j] = 0;
-                } else {
-                    // whenever available
-                    if (i > 0) {
-                        f[i][j] += f[i - 1][j];
-                    }
-
-                    if (j > 0) {
-                        f[i][j] += f[i][j - 1];
+            for (i = 1; i < m; i++) {
+                for (j = 1; j < n; j++) {
+                    if (obstacleGrid[i][j] == 1) {
+                        f[i][j] = 0;
+                    } else {
+                        f[i][j] = f[i][j-1] + f[i-1][j];
                     }
                 }
             }
+
+            return f[m-1][n-1];
         }
+    };
+    ```
 
-        return f[m - 1][n - 1];
-    }
-};
-```
+=== "C++ Naive DP Refactored"
 
-```Java tab="Java O(n) space"
-// Optimized using a rolling array or single row dp array instead of m x n.
-class Solution {
-    public int uniquePathsWithObstacles(int[][] a) {
-        int m = a.length;
-        int n = a[0].length;
+    ```c++ 
+    class Solution {
+    public:
+        int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+            int m = obstacleGrid.size();
+            int n = m > 0 ? obstacleGrid[0].size() : 0;
+            if (m == 0 && n == 0) {
+                return 0;
+            }
 
-        int dp[] = new int[n];
-        dp[0] = 1;
+            vector<vector<int>> f(m, vector<int>(n, 0));
 
-        //T[i][j] = T[i-1][j] + T[i][j-1]
-        for(int i = 0; i < m; i++){
-            for(int j = 0; j < n; j++){
-                if(a[i][j] == 1){
-                    dp[j] = 0;
-                }else if(j > 0){
-                    dp[j] += dp[j-1];
+            f[0][0] = 1;
+
+            if (obstacleGrid[0][0] == 1) {
+                return 0;
+            }
+
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (obstacleGrid[i][j] == 1) {
+                        f[i][j] = 0;
+                    } else {
+                        // whenever available
+                        if (i > 0) {
+                            f[i][j] += f[i - 1][j];
+                        }
+
+                        if (j > 0) {
+                            f[i][j] += f[i][j - 1];
+                        }
+                    }
                 }
             }
-        }
 
-        return dp[n-1];
+            return f[m - 1][n - 1];
+        }
+    };
+    ```
+
+=== "Java O(n) space"
+
+    ```java 
+    // Optimized using a rolling array or single row dp array instead of m x n.
+    class Solution {
+        public int uniquePathsWithObstacles(int[][] a) {
+            int m = a.length;
+            int n = a[0].length;
+
+            int dp[] = new int[n];
+            dp[0] = 1;
+
+            //T[i][j] = T[i-1][j] + T[i][j-1]
+            for(int i = 0; i < m; i++){
+                for(int j = 0; j < n; j++){
+                    if(a[i][j] == 1){
+                        dp[j] = 0;
+                    }else if(j > 0){
+                        dp[j] += dp[j-1];
+                    }
+                }
+            }
+
+            return dp[n-1];
+        }
     }
-}
-```
+    ```
 
 ### Paint House
 
@@ -358,7 +368,7 @@ class Solution {
 * The state transition fomular: $f[i][k] = f[i - 1][\ell]_{\ell != k} + costs[i - 1][k]$
 * The result is minimum of the: $f[i][0],\ f[i][1],\ f[i][2]$
 
-```C++
+```c++
 class Solution {
 public:
     int minCost(vector<vector<int>>& costs) {
@@ -412,69 +422,75 @@ public:
     [Bomb Enemy](#bomb-enemy), [Unique Paths II](#unique-paths-ii), and
     [Minimum Path Sum](#minimum-path-sum).
 
-```C++ tab="C++ DP"
-class Solution {
-public:
-    int numDecodings(string s) {
-        int n = s.length();
-        int f[n + 1] = {0};
-        if (n == 0)
-            return 0;
+=== "C++ DP"
 
-        f[0] = 1;
-        for (int i = 1; i <= n; i++) {
-            int t = s[i - 1] - '0';
-            if (t > 0 && t <= 9) {
-                f[i] += f[i - 1];
-            }
+    ```c++ 
+    class Solution {
+    public:
+        int numDecodings(string s) {
+            int n = s.length();
+            int f[n + 1] = {0};
+            if (n == 0)
+                return 0;
 
-            if (i > 1){
-                int q = (s[i - 2] - '0') * 10 + t;
-                if (q >= 10 && q <= 26) {
-                    f[i] += f[i - 2];
+            f[0] = 1;
+            for (int i = 1; i <= n; i++) {
+                int t = s[i - 1] - '0';
+                if (t > 0 && t <= 9) {
+                    f[i] += f[i - 1];
+                }
+
+                if (i > 1){
+                    int q = (s[i - 2] - '0') * 10 + t;
+                    if (q >= 10 && q <= 26) {
+                        f[i] += f[i - 2];
+                    }
                 }
             }
+
+            return f[n];
         }
+    };
+    ```
 
-        return f[n];
-    }
-};
-```
+=== "C++ DP O(1)"
 
-```C++ tab="C++ DP O(1)"
-class Solution {
-public:
-    int numDecodings(string s) {
-        if (!s.size() || s.front() == '0') return 0;
-        // r2: decode ways of s[0, i-2] , r1: decode ways of s[0, i-1]
-        int r1 = 1, r2 = 1;
+    ```c++
+    class Solution {
+    public:
+        int numDecodings(string s) {
+            if (!s.size() || s.front() == '0') return 0;
+            // r2: decode ways of s[0, i-2] , r1: decode ways of s[0, i-1]
+            int r1 = 1, r2 = 1;
 
-        // think it as a coordinate bases, not sequence based dp
-        for (int i = 1; i < s.size(); i++) {
-            // last char in s[0, i] is 0, cannot decode
-            if (s[i] == '0') r1 = 0;
+            // think it as a coordinate bases, not sequence based dp
+            for (int i = 1; i < s.size(); i++) {
+                // last char in s[0, i] is 0, cannot decode
+                if (s[i] == '0') r1 = 0;
 
-            // two-digit letter, add r2 to r1, r2 get the previous r1
-            if (s[i - 1] == '1' || s[i - 1] == '2' && s[i] <= '6') {
-                r1 = r2 + r1;
-                r2 = r1 - r2;
-            } else { // one-digit letter, r2 get the previous r1
-                r2 = r1;
+                // two-digit letter, add r2 to r1, r2 get the previous r1
+                if (s[i - 1] == '1' || s[i - 1] == '2' && s[i] <= '6') {
+                    r1 = r2 + r1;
+                    r2 = r1 - r2;
+                } else { // one-digit letter, r2 get the previous r1
+                    r2 = r1;
+                }
             }
-        }
 
-        return r1;
-    }
-};
-```
+            return r1;
+        }
+    };
+    ```
 
 ### Longest Increasing Continuous Subsequence
 
 4 ingredients:
 
 1. Last step, last element `a[n-1]` could be in the result or not in the result.
-2. subproblem, suppose we have the LICS of the first `n - 1` elements. represented as `f[n-1]`.
-3. base case and boundary condition, when no char in the string: `f[0] = 1`. empty string have LICS length of 1.
+2. subproblem, suppose we have the LICS of the first `n - 1` elements.
+   represented as `f[n-1]`.
+3. base case and boundary condition, when no char in the string: `f[0] = 1`.
+   empty string has LICS length of 1.
 4. order of calculation, calculate small index first.
 
 !!! Note "Not a leetcode"
@@ -485,7 +501,9 @@ public:
     Avoid using both index `i - 1` and `i + 1` in a loop invariance, otherwise
     you'll have problem in keeping the loop invariance. Compare the followings.
 
-    ```C++ tab="Incorrect"
+=== "Incorrect"
+
+    ```c++
     for (int i = n - 1; i >= 0; i--) {
         f[i] = 1;
         if (i < n - 1 && i > 0 && A[i - 1] > A[i]) {
@@ -495,7 +513,9 @@ public:
     }
     ```
 
-    ```C++ tab="Correct"
+=== "Correct"
+
+    ```c++
     for (int i = n - 1; i >= 0; i--) {
         f[i] = 1;
         if (i < n - 1 && A[i] > A[i + 1]) {
@@ -505,7 +525,9 @@ public:
     }
     ```
 
-    ```C++ tab="Correct"
+=== "Correct"
+
+    ```c++
     for (int i = 0; i < n; i++) {
         f[i] = 1;
         if (i > 0 && A[i - 1] > A[i]) {
@@ -515,36 +537,38 @@ public:
     }
     ``` 
 
-```C++ tab="C++ DP solution"
-class Solution {
-public:
-    int longestIncreasingContinuousSubsequence(vector<int>& A) {
-        // Write your code here
-        int n = A.size();
-        int f[n];
-        int res1 = 0;
-        int res2 = 0;
+=== "C++ DP solution"
 
-        for (int i = 0; i < n; i++) {
-            f[i] = 1;
-            if (i > 0 && A[i - 1] < A[i]) {
-                f[i] = f[i - 1] + 1;
+    ```c++
+    class Solution {
+    public:
+        int longestIncreasingContinuousSubsequence(vector<int>& A) {
+            // Write your code here
+            int n = A.size();
+            int f[n];
+            int res1 = 0;
+            int res2 = 0;
+
+            for (int i = 0; i < n; i++) {
+                f[i] = 1;
+                if (i > 0 && A[i - 1] < A[i]) {
+                    f[i] = f[i - 1] + 1;
+                }
+                res1 = max(res1, f[i]);
             }
-            res1 = max(res1, f[i]);
-        }
 
-        for (int i = n - 1; i >= 0; i--) {
-            f[i] = 1;
-            if (i < n - 1 && A[i] > A[i + 1]) {
-                f[i] = f[i + 1] + 1;
+            for (int i = n - 1; i >= 0; i--) {
+                f[i] = 1;
+                if (i < n - 1 && A[i] > A[i + 1]) {
+                    f[i] = f[i + 1] + 1;
+                }
+                res2 = max(res2, f[i]);
             }
-            res2 = max(res2, f[i]);
-        }
 
-        return max(res1, res2);
-    }
-};
-```
+            return max(res1, res2);
+        }
+    };
+    ```
 
 Here we don't have to explicitly wirte `f[i] = max(1, f[i - 1] + 1)`, since we
 have the condition `A[i - 1] < A[i]`, we know the `A[i]` will be added to the
@@ -556,80 +580,84 @@ have the condition `A[i - 1] < A[i]`, we know the `A[i]` will be added to the
 * Calculate `f[i][j]` from top to down and from left to right for each row. Space can be optimized.
 * Notice we can do the init and first row and first column in nested loops, do not need use multiple for loops.
 
-```C++ tab="C++ DP"
-class Solution {
-public:
-    int minPathSum(vector<vector<int> > &grid) {
-        int m = grid.size();
-        int n = grid[0].size();
-        if (m == 0 || n == 0)
-            return 0;
+=== "C++ DP"
 
-        int f[m][n];
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i == 0 && j == 0) {
-                    f[i][j] = grid[i][j];
-                }
-
-                if (i == 0 && j > 0) {
-                    f[i][j] = f[i][j - 1] + grid[i][j];
-                }
-
-                if (j == 0 && i > 0) {
-                    f[i][j] = f[i - 1][j] + grid[i][j];
-                }
-
-                if (i > 0 && j > 0) {
-                    f[i][j] = min(f[i - 1][j], f[i][j - 1]) + grid[i][j];
+    ```c++
+    class Solution {
+    public:
+        int minPathSum(vector<vector<int> > &grid) {
+            int m = grid.size();
+            int n = grid[0].size();
+            if (m == 0 || n == 0)
+                return 0;
+    
+            int f[m][n];
+    
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i == 0 && j == 0) {
+                        f[i][j] = grid[i][j];
+                    }
+    
+                    if (i == 0 && j > 0) {
+                        f[i][j] = f[i][j - 1] + grid[i][j];
+                    }
+    
+                    if (j == 0 && i > 0) {
+                        f[i][j] = f[i - 1][j] + grid[i][j];
+                    }
+    
+                    if (i > 0 && j > 0) {
+                        f[i][j] = min(f[i - 1][j], f[i][j - 1]) + grid[i][j];
+                    }
                 }
             }
+    
+            return f[m - 1][n - 1];
         }
+    };
+    ```
 
-        return f[m - 1][n - 1];
-    }
-};
-```
+=== "C++ DP Space O(n)"
 
-```C++ tab="C++ DP Space O(n)"
-class Solution {
-public:
-    int minPathSum(vector<vector<int> > &grid) {
-        int m = grid.size();
-        int n = grid[0].size();
-        if (m == 0 || n == 0)
-            return 0;
+    ```c++
+    class Solution {
+    public:
+        int minPathSum(vector<vector<int> > &grid) {
+            int m = grid.size();
+            int n = grid[0].size();
+            if (m == 0 || n == 0)
+                return 0;
 
-        int f[2][n]; /* only two rows of status */
-        int prev = 1;
-        int curr = 1;
-        for (int i = 0; i < m; i++) {
-            // rolling the f array when move to a new row
-            prev = curr;
-            curr = 1 - curr;  
-            for (int j = 0; j < n; j++) {
-                f[curr][j] = grid[i][j];
+            int f[2][n]; /* only two rows of status */
+            int prev = 1;
+            int curr = 1;
+            for (int i = 0; i < m; i++) {
+                // rolling the f array when move to a new row
+                prev = curr;
+                curr = 1 - curr;  
+                for (int j = 0; j < n; j++) {
+                    f[curr][j] = grid[i][j];
 
-                if (i == 0 && j > 0) {
-                    f[i][j] += f[i][j - 1];
+                    if (i == 0 && j > 0) {
+                        f[i][j] += f[i][j - 1];
+                    }
+
+                    if (j == 0 && i > 0) {
+                        f[curr][j] += f[prev][j];
+                    }
+
+                    if (i > 0 && j > 0) {
+                        f[curr][j] += min(f[prev][j], f[curr][j - 1]);
+                    }
+
                 }
-
-                if (j == 0 && i > 0) {
-                    f[curr][j] += f[prev][j];
-                }
-
-                if (i > 0 && j > 0) {
-                    f[curr][j] += min(f[prev][j], f[curr][j - 1]);
-                }
-
             }
-        }
 
-        return f[curr][n - 1];
-    }
-};
-```
+            return f[curr][n - 1];
+        }
+    };
+    ```
 
 !!! Note
     1. 在处理二维坐标型DP问题的时候，对于第一行或者第一列的计算我们可以把它放到loop中。但是要加一个条件。
@@ -644,7 +672,7 @@ public:
 * Take the special steps (i.e. different properties of the cell) as normal ones
   in the loop, deal with the special step when doing the calculation.
 
-```C++
+```c++
 class Solution {
 public:
     int maxKilledEnemies(vector<vector<char>>& grid) {
@@ -768,7 +796,7 @@ public:
 | 25 | 3 |
 | 50 | 3 |
 
-```C++
+```c++
 class Solution {
 public:
     vector<int> countBits(int num) {
@@ -811,19 +839,20 @@ public:
 
 ### Paint House II
 
-* the solution could be the same as the first verison, but it is $O(n\cdot k^2)$. how to make it $O(n\cdot k)$?
+* the solution could be the same as the first version, but it is $O(n\cdot k^2)$.
+  how to make it $O(n\cdot k)$?
 * By analyzing the state transition equation, we observed that we want to find a
-  minimum value of a set of numbers except one for each house. Put it in english,
+  minimum value of a set of numbers except one for each house. Put it in English,
   the min cost to paint `i - 1`th house with color `k`, we want to have the min
   cost of painting all previous `i - 1` houses and the `i-1`th house cannot be
   painted as color `k`.
 
-    ```C++
-    f[i][1] = min{f[i-1][2] + cost[i-1][1], f[i-1][3] + cost[i-1][1], ..., f[i-1][K] + cost[i-1][1]}
-    f[i][2] = min{f[i-1][1] + cost[i-1][2], f[i-1][3] + cost[i-1][2], ..., f[i-1][K] + cost[i-1][2]}
-    ...
-    f[i][K] = min{f[i-1][1] + cost[i-1][K], f[i-1][2] + cost[i-1][K], ..., f[i-1][K-1] + cost[i-1][K]}
-    ```
+```c++
+f[i][1] = min{f[i-1][2] + cost[i-1][1], f[i-1][3] + cost[i-1][1], ..., f[i-1][K] + cost[i-1][1]}
+f[i][2] = min{f[i-1][1] + cost[i-1][2], f[i-1][3] + cost[i-1][2], ..., f[i-1][K] + cost[i-1][2]}
+...
+f[i][K] = min{f[i-1][1] + cost[i-1][K], f[i-1][2] + cost[i-1][K], ..., f[i-1][K-1] + cost[i-1][K]}
+```
 
 * We could optimize the solution upon this. Basically, we can maintain the first
   two minimum value of the set `f[i-1][1], f[i-1][2], f[i-1][3], ..., f[i-1][K]`,
@@ -834,109 +863,113 @@ public:
     2. The second case is that we paint the i-1th house with color other than the
        color corresponding to the minimum cost to pain, we can update using the minimum value.
 
-```C++ tab="C++ O(nk)"
-class Solution {
-public:
-    /**
-     * @param costs n x k cost matrix
-     * @return an integer, the minimum cost to paint all houses
-     */
-    int minCostII(vector<vector<int>>& costs) {
-        int m = costs.size();
-        if (m == 0) return 0;
-        int k = costs[0].size();
-        if (k == 0) return 0;
+=== "C++ O(nk)"
 
-        int f[m + 1][k];
+    ```c++ 
+    class Solution {
+    public:
+        /**
+        * @param costs n x k cost matrix
+        * @return an integer, the minimum cost to paint all houses
+        */
+        int minCostII(vector<vector<int>>& costs) {
+            int m = costs.size();
+            if (m == 0) return 0;
+            int k = costs[0].size();
+            if (k == 0) return 0;
 
-        int min1;
-        int min2;
-        int j1 = 0, j2 = 0;
+            int f[m + 1][k];
 
-        /* init, 0 house cost nothing. */
-        for (int j = 0; j < k; j++)
-            f[0][j] = 0;
+            int min1;
+            int min2;
+            int j1 = 0, j2 = 0;
 
-        for (int i = 1; i <= m; i++) {
-            min1 = min2 = INT_MAX; 
-            /* from all the colors, find the min1 and min2 */
-            for (int j = 0; j < k; j++) {
-                /* get the min1 and min2 first */
-                if (f[i - 1][j] < min1) {
-                    min2 = min1;
-                    j2 = j1;
-                    min1 = f[i - 1][j];
-                    j1 = j;
-                } else if (f[i - 1][j] < min2) {
-                    min2 = f[i - 1][j];
-                    j2 = j;
-                }
-            }
+            /* init, 0 house cost nothing. */
+            for (int j = 0; j < k; j++)
+                f[0][j] = 0;
 
-            /* update the states based on the min1 and min2 */
-            for (int j = 0; j < k; j++) {
-                if (j != j1) {
-                    f[i][j] = f[i - 1][j1] + costs[i - 1][j];
-                } else {
-                    f[i][j] = f[i - 1][j2] + costs[i - 1][j];
-                }
-            }
-        }
-
-        int res = INT_MAX;
-        for (int j = 0; j < k; j++) {
-            if (f[m][j] < res)
-                res = f[m][j];
-        }
-
-        return res;
-    }
-};
-```
-
-```C++ tab="C++ O(nk^2)"
-class Solution {
-public:
-    int minCostII(vector<vector<int>>& costs) {
-        int n = costs.size();
-        int k = n > 0 ? costs[0].size() : 0;
-        if (n == 0 && k == 0)
-            return 0;
-
-        if (n == 1 && k == 1)
-            return costs[0][0];
-
-        vector<vector<int>> f(n + 1, vector<int>(k, 0));
-
-        for (int i = 0; i < k; i++) {
-            f[0][i] = 0; // 0 cost for 0 paint
-        }
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 0; j < k; j++) {
-                f[i][j] = INT_MAX;
-                for (int c = 0; c < k; c++) {
-                    if (j == c) {
-                        continue;
+            for (int i = 1; i <= m; i++) {
+                min1 = min2 = INT_MAX; 
+                /* from all the colors, find the min1 and min2 */
+                for (int j = 0; j < k; j++) {
+                    /* get the min1 and min2 first */
+                    if (f[i - 1][j] < min1) {
+                        min2 = min1;
+                        j2 = j1;
+                        min1 = f[i - 1][j];
+                        j1 = j;
+                    } else if (f[i - 1][j] < min2) {
+                        min2 = f[i - 1][j];
+                        j2 = j;
                     }
+                }
 
-                    if (f[i][j] > f[i - 1][c] + costs[i - 1][j]) {
-                        f[i][j] = f[i - 1][c] + costs[i - 1][j];
+                /* update the states based on the min1 and min2 */
+                for (int j = 0; j < k; j++) {
+                    if (j != j1) {
+                        f[i][j] = f[i - 1][j1] + costs[i - 1][j];
+                    } else {
+                        f[i][j] = f[i - 1][j2] + costs[i - 1][j];
                     }
                 }
             }
-        }
 
-        int res = INT_MAX;
-        for (int i = 0; i < k; i++) {
-            if (f[n][i] < res)
-                res = f[n][i];
-        }
+            int res = INT_MAX;
+            for (int j = 0; j < k; j++) {
+                if (f[m][j] < res)
+                    res = f[m][j];
+            }
 
-        return res;
-    }
-};
-```
+            return res;
+        }
+    };
+    ```
+
+=== "C++ O(nk^2)"
+
+    ```c++ 
+    class Solution {
+    public:
+        int minCostII(vector<vector<int>>& costs) {
+            int n = costs.size();
+            int k = n > 0 ? costs[0].size() : 0;
+            if (n == 0 && k == 0)
+                return 0;
+
+            if (n == 1 && k == 1)
+                return costs[0][0];
+
+            vector<vector<int>> f(n + 1, vector<int>(k, 0));
+
+            for (int i = 0; i < k; i++) {
+                f[0][i] = 0; // 0 cost for 0 paint
+            }
+
+            for (int i = 1; i <= n; i++) {
+                for (int j = 0; j < k; j++) {
+                    f[i][j] = INT_MAX;
+                    for (int c = 0; c < k; c++) {
+                        if (j == c) {
+                            continue;
+                        }
+
+                        if (f[i][j] > f[i - 1][c] + costs[i - 1][j]) {
+                            f[i][j] = f[i - 1][c] + costs[i - 1][j];
+                        }
+                    }
+                }
+            }
+
+            int res = INT_MAX;
+            for (int i = 0; i < k; i++) {
+                if (f[n][i] < res)
+                    res = f[n][i];
+            }
+
+            return res;
+        }
+    };
+    ```
 
 ### House Robber
 
@@ -949,58 +982,61 @@ public:
     1. `f[i][0]` represent "the maximum money for robbing the first `i` houses and the last house __hasn't__ been robbed."
     2. `f[i][1]` represent "the maximum money for robbing the first `i` houses and the last house __has__ been robbed."
 * state transition equations:
-
     ```text
     f[i][0] = max(f[i-1][0], f[i-1][1])
     f[i][1] = f[i-1][0] + a[i-1]
     ```
 
-```C++ tab="C++"
-class Solution {
-public:
-    int rob(vector<int>& nums) {
-        int n = nums.size();
-        if (n == 0)
-            return 0;
-        int f[n + 1][2] = {0};
+=== "C++"
 
-        for (int i = 1; i <= n; i++) {
-            f[i][0] = max(f[i - 1][0], f[i - 1][1]);
-            f[i][1] = f[i - 1][0] + nums[i - 1];
+    ```c++
+    class Solution {
+    public:
+        int rob(vector<int>& nums) {
+            int n = nums.size();
+            if (n == 0)
+                return 0;
+            int f[n + 1][2] = {0};
+
+            for (int i = 1; i <= n; i++) {
+                f[i][0] = max(f[i - 1][0], f[i - 1][1]);
+                f[i][1] = f[i - 1][0] + nums[i - 1];
+            }
+
+            return max(f[n][0], f[n][1]);
         }
+    };
+    ```
 
-        return max(f[n][0], f[n][1]);
-    }
-};
-```
+=== "C++ optimized"
 
-```C++ tab="C++ optimized"
-class Solution {
-public:
-    long long houseRobber(vector<int> A) {
-        int n = A.size();
-        if (n == 0) return 0;
-        long long f[n+1];
+    ```c++
+    class Solution {
+    public:
+        long long houseRobber(vector<int> A) {
+            int n = A.size();
+            if (n == 0) return 0;
+            long long f[n+1];
 
-        /* init */
-        f[0] = 0;
-        f[1] = A[0];
+            /* init */
+            f[0] = 0;
+            f[1] = A[0];
 
-        for (int i = 2; i <= n; i++) {
-            f[i] = max(f[i - 1], f[i - 2] + A[i - 1]);
+            for (int i = 2; i <= n; i++) {
+                f[i] = max(f[i - 1], f[i - 2] + A[i - 1]);
+            }
+
+            return f[n];
         }
-
-        return f[n];
-    }
-};
-```
+    };
+    ```
 
 Solution 2
 
 * `yes` - first `i` days, robber last day,
 * `no` - first `i` days, not robber at last day.
 
-```C++ tab=
+```c++
 class Solution {
 public:
     int rob(vector<int>& nums) {
@@ -1028,7 +1064,7 @@ public:
     1. house `0` is robbed and house `i-1` is not.
     2. house `i - 1` is robbed and house `0` is not.
 
-```C++
+```c++
 class Solution {
 public:
     int rob(vector<int>& nums) {
@@ -1068,7 +1104,7 @@ private:
 * Force youself to do it by only one pass. You'll find that you need two variables
   to record the minimum value currently found and the maximum profit currently found.
 
-```C++
+```c++
 class Solution {
 public:
     int maxProfit(vector<int> &prices) {
@@ -1097,34 +1133,38 @@ public:
 * We can just buy and sell when ever the price is increased in a day.
 * Once you can proof the day-by-day subproblem can form the solution. The solution becomes so easy.
 
-```C++ tab="C++"
-class Solution {
-public:
-    int maxProfit(vector<int> &prices) {
-        int res = 0;
-        for (int i = 1; i < prices.size(); i++) {
-            if (prices[i - 1] < prices[i])
-                res += prices[i] - prices[i - 1];
+=== "C++"
+
+    ```c++
+    class Solution {
+    public:
+        int maxProfit(vector<int> &prices) {
+            int res = 0;
+            for (int i = 1; i < prices.size(); i++) {
+                if (prices[i - 1] < prices[i])
+                    res += prices[i] - prices[i - 1];
+            }
+
+            return res;
         }
+    };
+    ```
 
-        return res;
-    }
-};
-```
+=== "C++ Alternative"
 
-```C++ tab="C++ Alternative"
-class Solution {
-public:
-    int maxProfit(vector<int> &prices) {
-        int res = 0;
-        for (int i = 1; i < prices.size(); i++) {
-            res += max(prices[i] - prices[i - 1], 0)
+    ```c++ 
+    class Solution {
+    public:
+        int maxProfit(vector<int> &prices) {
+            int res = 0;
+            for (int i = 1; i < prices.size(); i++) {
+                res += max(prices[i] - prices[i - 1], 0)
+            }
+
+            return res;
         }
-
-        return res;
-    }
-};
-```
+    };
+    ```
 
 ### Best Time to Buy and Sell Stock III
 
@@ -1132,7 +1172,7 @@ public:
 
 ![buy-sell-stock-iii-sol](fig/buy-sell-stock-iii-sol.png)
 
-```C++ tab=""
+```c++
 class Solution {
 public:
     /**
@@ -1186,7 +1226,7 @@ public:
 * If `k` is larger then `n/2`, it is equivalent to the II.
 * This is a generalized solution from [Best Time to Buy and Sell Stock III](#best-time-to-buy-and-sell-stock-iii).
 
-```C++
+```c++
 class Solution {
 public:
     int maxProfit(int K, vector<int> &A) {
@@ -1253,33 +1293,35 @@ public:
 
 Solution 1 DP O(n^2)
 
-```C++ tab="DP"
-class Solution {
-public:
-    int lengthOfLIS(vector<int>& nums) {
-        int n = nums.size();
-        if (n == 0)
-            return 0;
+=== "DP"
 
-        int res = 0;
-        int f[n] = {0};
+    ```c++ 
+    class Solution {
+    public:
+        int lengthOfLIS(vector<int>& nums) {
+            int n = nums.size();
+            if (n == 0)
+                return 0;
 
-        for (int j = 0; j < n; j++) {
-            /* case 1: a[j] is the subsequence */
-            f[j] = 1;
+            int res = 0;
+            int f[n] = {0};
 
-            /* case 2: LIS from a[0],...a[i] plus a[j] */
-            for (int i = 0; i < j; i++) {
-                if (nums[i] < nums[j] && f[i] + 1 > f[j])
-                    f[j] = f[i] + 1;
+            for (int j = 0; j < n; j++) {
+                /* case 1: a[j] is the subsequence */
+                f[j] = 1;
+
+                /* case 2: LIS from a[0],...a[i] plus a[j] */
+                for (int i = 0; i < j; i++) {
+                    if (nums[i] < nums[j] && f[i] + 1 > f[j])
+                        f[j] = f[i] + 1;
+                }
+                res = max(res, f[j]);
             }
-            res = max(res, f[j]);
-        }
 
-        return res;
-    }
-};
-```
+            return res;
+        }
+    };
+    ```
 
 Solution 2 DP with binary search O(nlogn)
 
@@ -1290,54 +1332,56 @@ Solution 2 DP with binary search O(nlogn)
 * use the state `f[i]` to record the LIS of the array `A[0], ... A[i -1]`. If we
   are at `f[j], j > i`, we are looking for the largest `f[i]` value that have the smallest `A[i]`.
 
-```C++ tab="DP with binary search"
-class Solution {
-public:
-    int longestIncreasingSubsequence(vector<int> nums) {
-        int n = nums.size();
-        if (n == 0)
-            return 0;
+=== "DP with binary search"
 
-        //int f[n];
-        // b[i]: when f value is i, smallest a value (ending value)
-        int b[n + 1];
+    ```c++
+    class Solution {
+    public:
+        int longestIncreasingSubsequence(vector<int> nums) {
+            int n = nums.size();
+            if (n == 0)
+                return 0;
 
-        int top = 0;
-        b[0] = INT_MIN;
-        // O(n)
-        for (int i = 0; i < n; i++) {
-            // b[0] ~ b[top]
-            // last value b[j] which is smaller than A[i]
-            int start = 0, end = top;
-            int mid;
-            int j;
+            //int f[n];
+            // b[i]: when f value is i, smallest a value (ending value)
+            int b[n + 1];
 
-            // O(lgn)
-            while (start <= end) {
-                mid = start + (end - start) / 2;
-                if (b[mid] < nums[i]) {
-                    j = mid;
-                    start = mid + 1;
-                } else {
-                    end = mid - 1;
+            int top = 0;
+            b[0] = INT_MIN;
+            // O(n)
+            for (int i = 0; i < n; i++) {
+                // b[0] ~ b[top]
+                // last value b[j] which is smaller than A[i]
+                int start = 0, end = top;
+                int mid;
+                int j;
+
+                // O(lgn)
+                while (start <= end) {
+                    mid = start + (end - start) / 2;
+                    if (b[mid] < nums[i]) {
+                        j = mid;
+                        start = mid + 1;
+                    } else {
+                        end = mid - 1;
+                    }
+                }
+                // b[i]: length is j (f value is j), smallest ending value.
+                // A[i] is after it.
+                // f[i] = j + 1
+                // b[j + 1]: length is (j + 1), smallest ending value.
+                // A[i]
+                // B[j + 1] >= A[i]
+                b[j + 1] = nums[i];
+                if (j + 1 > top) {
+                    top = j + 1;
                 }
             }
-            // b[i]: length is j (f value is j), smallest ending value.
-            // A[i] is after it.
-            // f[i] = j + 1
-            // b[j + 1]: length is (j + 1), smallest ending value.
-            // A[i]
-            // B[j + 1] >= A[i]
-            b[j + 1] = nums[i];
-            if (j + 1 > top) {
-                top = j + 1;
-            }
+            // b[top] stores the smallest ending value for an LIS
+            return top;
         }
-        // b[top] stores the smallest ending value for an LIS
-        return top;
-    }
-};
-```
+    };
+    ```
 
 Solution 3 DP with binary search refactored
 
@@ -1348,61 +1392,67 @@ Solution 3 DP with binary search refactored
 * The index i of elements in b related to the length of a LIS whose last element
   is `a[i]`. specifically, `i + 1 = length(LIS)`.
 
-```C++ tab="DP with binary search refactored"
-class Solution {
-public:
-    int lengthOfLIS(vector<int>& nums) {
-        vector<int> b;
+=== "DP with binary search refactored"
 
-        for (int i = 0; i < nums.size(); ++i) {
-            int begin = 0, end = b.size();
-            while (begin != end) {
-                int mid = begin + (end - begin) / 2;
-                if (b[mid] < nums[i]) {
-                    begin = mid + 1;
-                } else {
-                    end = mid;
+    ```c++ 
+    class Solution {
+    public:
+        int lengthOfLIS(vector<int>& nums) {
+            vector<int> b;
+
+            for (int i = 0; i < nums.size(); ++i) {
+                int begin = 0, end = b.size();
+                while (begin != end) {
+                    int mid = begin + (end - begin) / 2;
+                    if (b[mid] < nums[i]) {
+                        begin = mid + 1;
+                    } else {
+                        end = mid;
+                    }
                 }
+
+                if (begin == b.size()) // nums[i] greater than all element in b
+                    b.push_back(nums[i]);
+                else // begin point to next element no less than the target nums[i].
+                    b[begin] = nums[i];
             }
 
-            if (begin == b.size()) // nums[i] greater than all element in b
-                b.push_back(nums[i]);
-            else // begin point to next element no less than the target nums[i].
-                b[begin] = nums[i];
+            return b.size();
         }
-
-        return b.size();
-    }
-};
-```
+    };
+    ```
 
 Solution 4 C++ using lower_bound
 
 * we can use the lower_bound to replace the binary search routine in the above solution.
 
-```C++ tab="C++ using lower_bound"
-class Solution {
-public:
-    int lengthOfLIS(vector<int>& nums) {
-        vector<int> b;
-        for (auto a : nums) {
-            auto it = lower_bound(b.begin(), b.end(), a);
-            if (it == b.end()) b.push_back(a);
-            else *it = a;
-        }
+=== "C++ using lower_bound"
 
-        return b.size();
-    }
-};
-```
+    ```c++ 
+    class Solution {
+    public:
+        int lengthOfLIS(vector<int>& nums) {
+            vector<int> b;
+            for (auto a : nums) {
+                auto it = lower_bound(b.begin(), b.end(), a);
+                if (it == b.end()) b.push_back(a);
+                else *it = a;
+            }
+
+            return b.size();
+        }
+    };
+    ```
 
 ### Russian Doll Envelopes
 
-```C++
-
-```
-
 ## Lecture 4
+
+### Backpack
+
+- Give `n` items with size `A[i]` and backpack size: `M`. Find the max total size
+  that can fit in the backpack.
+- 
 
 ### Copy Books
 
@@ -1416,7 +1466,9 @@ public:
   which help to improve the complexity.
 * But the best solution is to use a map to keep all the possible steps for a stone.
 
-```C++ tab="C++ map to set"
+=== "C++ map to set"
+
+```c++ 
 class Solution {
 public:
     bool canCross(vector<int>& stones) {

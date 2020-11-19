@@ -5,6 +5,509 @@
 1. 如何在分析最后一步时选择正确角度并考虑所有可能情况，进而写出状态转化方程.
    i.e. Buy and Shell stock, Edit distance, Longest Increasing Subsequence.
 
+## Knapsack problems
+
+[背包问题九讲](https://www.kancloud.cn/kancloud/pack/70125)
+
+The knapsack problems often given the follow conditions
+
+1. `N`, the number of items
+2. `M`, the size of the knapsack
+3. `s[i]`, the size of the item `i`.
+4. `v[i]`, the value of the item `i`.
+5. `c[i]`, the maximum time item `i` can be used. `c[i]` could be an all `1` array,
+   hence 0-1 knapsack problem. `c[i]` could also be `inf`, meaning the items can
+   be used as many time as you want (bounded by the size of the knapsack).
+
+The question it ask could be
+
+1. Whether the given items can fit into the size of the knapsack.
+2. Find the maximum capacity the items can occupy the knapsack.
+3. Find the maximum value of items that can fit into the knapsack.
+4. Find the total number of ways the given item can fit into the size of the knapsack.
+   (reuse is allowed)
+
+## Knapsack I
+
+- Given `N`, `M`, `s[i]`, find the maximum size you can put into the Knapsack.
+
+=== "DP O(nm)"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackI(int m, vector<int> A) {
+            int n = A.size();
+            if (n == 0) return 0;
+
+            bool f[n + 1][m + 1];
+
+            f[0][0] = true;
+            for (int j = 1; j <= m; ++j) {
+                f[0][j] = false;
+            }
+
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 0; j <= m; ++j) {
+                    f[i][j] = f[i - 1][j];
+                    if (j >= A[i - 1]) {
+                        f[i][j] = f[i][j] || f[i - 1][j - A[i - 1]];
+                    }
+                }
+            }
+
+            for (int j = m; j >= 0; --j) {
+                if (f[n][j] == true)
+                    return j;
+            }
+
+            return 0;
+        }
+    }
+    ```
+
+=== "DP O(m) space"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackI(int m, vector<int> A) {
+            int n = A.size();
+            if (n == 0) return 0;
+
+            bool f[m + 1];
+
+            f[0] = true;
+
+            for (int i = 1; i <= n; ++i) {
+                for (int j = m; j >= 0; --j) {
+                    f[j] = f[j - 1]
+                    if (j >= A[i - 1]) {
+                        f[j] = f[j] || f[j - A[i - 1]];
+                    }
+                }
+            }
+
+            for (int j = m; j >= 0; --j) {
+                if (f[j] == true)
+                    return j;
+            }
+
+            return 0;
+        }
+    }
+    ```
+
+## Knapsack II
+
+- Given `N`, `M`, `s[i]`, `v[i]`, find the maximum value you can put into the
+  Knapsack.
+
+- 思考方式任然是从最后一个物品选还是不选，只是我们现在考虑的是价值。此时状态就不能是可行性(Backpack)或者多少种了(Backpack V), 我们要纪录总价值。
+- state `f[i][w]`: 表示前i个物品能拼成重量w的总价值(V)。
+- state transition equaltion: `f[i][w] = max(f[i−1][w], f[i−1][w−A[i−1]]+V[i−1]|w≥A[i−1]且 f[i−1][w−A[i−1]]≠−1)`
+- Initialization: f[0][0] = 0, f[0][1] = -1, ... f[0][w] = -1. -1 代表不能被拼出。
+
+=== "DP O(mn)"
+
+    ```c++
+    class Solution {
+    public:
+        /**
+        * f[i][w]: 前i个物品能够拼成w的总价值
+        * f[i][w] = max(f[i - 1][w], f[i - 1][w - A[i - 1]] + V[i - 1])
+        */
+        int backPackII(int m, vector<int> A, vector<int> V) {
+            int n = A.size();
+            if (n == 0) {
+                return 0;
+            }
+
+            int f[n + 1][m + 1];
+
+            /* init */
+            f[0][0] = 0;
+            for (int j = 1; j <= m; j++) {
+                f[0][j] = -1;
+            }
+
+            for (int i = 1; i <= n; i++) {
+                for (int j = 0; j <= m; j++) {
+                    f[i][j] = f[i - 1][j]; /* 此处必须初始化 */
+                    if (f[i - 1][j - A[i - 1]] != -1 && j >= A[i - 1]) {
+                        f[i][j] = max(f[i][j], f[i - 1][j - A[i - 1]] + V[i - 1]);
+                    }
+                }
+            }
+
+            int res = 0;
+            for (int j = 0; j <= m; j++) {
+                if (f[n][j] != -1 && f[n][j] > res) {
+                    res = f[n][j];
+                }
+            }
+
+            return res;
+        }
+    };
+    ```
+
+=== "DP O(M)"
+
+    ```c++
+    class Solution {
+    public:
+        /**
+        * f[i][w]: 前i个物品能够拼成w的总价值
+        * f[i][w] = max(f[i - 1][w], f[i - 1][w - A[i - 1]] + V[i - 1])
+        */
+        int backPackII(int m, vector<int> A, vector<int> V) {
+            // write your code here
+            int n = A.size();
+            if (n == 0) {
+                return 0;
+            }
+
+            int f[m + 1];
+
+            /* init */
+            f[0] = 0;
+            for (int j = 1; j <= m; j++) {
+                f[j] = -1;
+            }
+
+            for (int i = 1; i <= n; i++) {
+                for (int j = m; j >= 0; j--) {
+                    if (f[j - A[i - 1]] != -1 && j >= A[i - 1]) {
+                        f[j] = max(f[j], f[j - A[i - 1]] + V[i - 1]);
+                    }
+                }
+            }
+
+            int res = 0;
+            for (int j = 0; j <= m; j++) {
+                if (f[j] != -1 && f[j] > res) {
+                    res = f[j];
+                }
+            }
+
+            return res;
+        }
+    };
+    ```
+
+## Knapsack III
+
+- Given `N`, `M`, `s[i]`, `v[i]`, find the maximum value you can put into the
+  Knapsack while **reuse is allowed**
+- Even though you can reuse, it is not limited, you can use items `i` at most
+  `m / s[i]` times. In this sense, this problem is equivalent to the problem
+  [Knapsack IV](#knapsack-iv).
+- From $O(MNK)$ to $O(MN)$: notice the third loop can be optimized by closely
+  looking for the redundant computation. Because the innermost look will always
+  look back an integer multiple of times of `s[i]` of previous row `f[i - 1]`.
+  For each `i`, we only looking for multiple times of `s[i - 1]` index before.
+  We can use previous results directly for the current calculation then add `v[i]`
+  instead of restart from `k = 0`. This way we can get rid of the inner most loop.
+  As a result, the solution code is very similar to the problem [Knapsack II](#knapsack-ii),
+  except the single difference in indexing (`i` instead of `i - 1`). but they
+  are completely different, the similarity of the code is pure a coincidence.
+
+  ```
+          j
+          0  1  2  3  4  5  6  7  8  9
+  f[i-1]  x  x  x  x  x  x  x  x  x  x
+  s[i]    v     v     v     2
+  f[i][4] = max(f[i - 1][j - 0*2], f[i - 1][j - 1*2] + 1*v[i - 1], ...)
+  f[i][6] = max(f[i - 1][j - 0*2], f[i][4] + v[i - 1])
+          = max(f[i - 1][j],       f[i][j - s[i - 1]] + v[i - 1])
+  ```
+
+- From $O(MN)$ to $O(M)$: This is from the following observation explained using
+  the figure. It is a very clever idea in noticing that the new value only
+  calculated from the the front index `j - k*s[i-1]` and the the old value
+  from the same index (hence the `j` is iterating from `0` in the $O(M)$
+  solution, in contrast, the $O(M)$ solution in [Knapsack II](#knapsack-ii)
+  iterate `j` backward).
+  ![knapsack-iii-optimization](./fig/knapsack-iii-optimization.png)
+
+=== "DP O(MNK)"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackIII(vector<int>& A, vector<int>& V, int m) {
+            int n = A.size();
+            int f[n + 1][m + 1];
+
+            f[0][0] = 0;
+            for (int j = 1; j < m; ++j) {
+                f[0][j] = -1;
+            }
+
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 1; j <= m; ++j) {
+                    f[i][j] = f[i - 1][j];
+                    for (int k = 0; k <= m / A[i - 1]; ++k) {
+                        if (f[i][j - k * A[i - 1]] != -1 && j >= k * A[i - 1]) {
+                            f[i][j] = max(f[i][j], f[i - 1][j - k * A[i - 1]] + k * V[i - 1]);
+                        }
+                    }
+                }
+            }
+
+            int res = 0;
+            for (int j = 0; j <= m; ++j) {
+                if (f[n][j] != -1 && f[n][j] > res)
+                    res = f[n][j];
+            }
+
+            return res;
+        }
+    }
+    ```
+
+=== "DP O(MN)"
+
+    ```c++ hl_lines="15"
+    class Solution {
+    public:
+        int backPackIII(vector<int>& A, vector<int>& V, int m) {
+            int n = A.size();
+            int f[n + 1][m + 1];
+
+            f[0][0] = 0;
+            for (int j = 1; j < m; ++j) {
+                f[0][j] = -1;
+            }
+
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 1; j <= m; ++j) {
+                    f[i][j] = f[i - 1][j];
+                    if (f[i][j - A[i - 1]] != -1 && j >= A[i - 1]) {
+                        f[i][j] = max(f[i][j], f[i][j - A[i - 1]] + V[i - 1]);
+                    }
+                }
+            }
+
+            int res = 0;
+            for (int j = 0; j <= m; ++j) {
+                if (f[n][j] != -1 && f[n][j] > res)
+                    res = f[n][j];
+            }
+
+            return res;
+        }
+    }
+    ```
+
+=== "DP O(M)"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackIII(vector<int>& A, vector<int>& V, int m) {
+            int n = A.size();
+            if (n == 0) {
+                return 0;
+            }
+
+            int f[m + 1];
+
+            /* init */
+            f[0] = 0;
+            for (int j = 1; j <= m; j++) {
+                f[j] = -1;
+            }
+
+            for (int i = 1; i <= n; i++) {
+                for (int j = 0; j <= m; j++) {
+                    if (f[j - A[i - 1]] != -1 && j >= A[i - 1]) {
+                        f[j] = max(f[j], f[j - A[i - 1]] + V[i - 1]);
+                    }
+                }
+            }
+
+            int res = 0;
+            for (int j = 0; j <= m; j++) {
+                if (f[j] != -1 && f[j] > res) {
+                    res = f[j];
+                }
+            }
+
+            return res;
+        }
+    };
+    ```  
+
+## Knapsack IV
+
+- Given `N`, `M`, `s[i]`, `v[i]`, `c[i]`, find the maximum value you can put
+  into the Knapsack while the max time of usage of each item is given in `c[i]`.
+
+```c++
+
+```
+
+## Knapsack V
+
+- Given `N`, `M`, `s[i]`, find the number of possible Knapsack fills if
+  **each item can be used once**.
+
+=== "DP O(nm)"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackV(vector<int>& nums, int T) {
+            int n = nums.size();
+            if (n == 0) {
+                return 0;
+            }
+
+            int f[n + 1][T + 1];
+            f[0][0] = 1;
+
+            for (int j = 1; j <= T; j++) {
+                f[0][j] = 0;
+            }
+
+            for (int i = 1; i <= n; i++) {
+                for (int j = 0; j <= T; j++) {
+                    f[i][j] = f[i - 1][j];
+                    if (j >= nums[i - 1]) {
+                        f[i][j] += f[i - 1][j - nums[i - 1]];
+                    }
+                }
+            }
+
+            return f[n][T];
+        }
+    };
+    ```
+
+=== "DP O(m)"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackV(vector<int>& nums, int T) {
+            int n = nums.size();
+            if (n == 0) {
+                return 0;
+            }
+            
+            int f[T + 1];
+            f[0] = 1;
+            
+            for (int j = 1; j <= T; j++) {
+                f[j] = 0;
+            }
+            for (int i = 1; i <= n; i++) {
+                for (int j = T; j >= 0; j--) {
+                    //f[j] = f[j - A[i - 1]] ==> f'[j]
+                    if (j >= nums[i - 1]) {
+                        // f'[j]
+                        // cover old f[j]
+                        f[j] += f[j - nums[i - 1]];
+                    }
+                }
+            }
+
+            return f[T];
+        }
+    };
+    ```
+
+## Knapsack VI
+
+- Given `N`, `M`, `s[i]`, find the number of possible Knapsack fills if
+  **each item can be used unlimited times**.
+- 这道题等同于Leetcode里 [Combinations Sum IV]()
+- 这里可以随便取，似乎题目变得无法下手，考虑“最后一步”这个技巧不能用了，因为最后一步可以是任意一个了。
+- 但仍然可以用子问题来考虑。先不管最后一步是哪一个，最后一步之前的相加的总和一定是 Target - x. 这样就转化成一个子问题可以用DP来做。
+- 具体做法我们可以对于每一个小于“总承重”的重量进行枚举最后一步x。可能的x是 A[0], ..., A[i - 1] 中任意一个.
+
+!!! Note "Compare With knapsack V, how to deal with the unlimited usage"
+
+=== "DP O(m)"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackVI(vector<int>& nums, int T) {
+            int n = nums.size();
+            if (n == 0) {
+                return 0;
+            }
+            int f[T + 1];
+            f[0] = 1;
+            /* for each sub problem */
+            for (int i = 1; i <= T; i++) {
+                f[i] = 0;
+                /* enumerate the last step */
+                for (int j = 0; j < n; j++) {
+                    if (i >= nums[j]) {
+                        f[i] += f[i - nums[j]];
+                    }
+                }
+            }
+
+            return f[T];
+        }
+    };
+    ```
+
+=== "How to print such solutions"
+
+    ```c++
+    // Suppose we also interested in print one of the possible solution. How could we change the code?
+    // f[i]: 存多少种方式
+    // pi[i]: 如果 f[i] >= 1, 最后一个数字可以是pi[i]
+    class Solution {
+    public:
+        int backPackVI(vector<int>& nums, int T) {
+            int n = nums.size();
+            if (n == 0) {
+                return 0;
+            }
+
+            int f[T + 1];
+            /* pi[i]: 如果i可拼出(f[i] >= 1), 最后一个是pi[i] */
+            int pi[T + 1];
+            f[0] = 1;
+
+            for (int i = 1; i <= T; i++) {
+                f[i] = 0;
+                for (int j = 0; j < n; j++) {
+                    if (i >= nums[j]) {
+                        f[i] += f[i - nums[j]];
+                        /* 最后一个是nums[j]的可拼出i */
+                        if (f[i - nums[j]] > 0) {
+                            /* 纪录下来 */
+                            pi[i] = nums[j];
+                        }
+                    }
+                }
+            }
+
+            if (f[T] > 0) {
+                int i = T;
+                cout << i << "=" << endl;
+                while (i != 0) {
+                    // sum is i now;
+                    // last number is pi[i]
+                    // previuos sum is i - pi[i]
+                    cout << pi[i] << endl;
+                    i -= pi[i];
+                }
+            }
+
+            return f[T];
+        }
+    };
+    ```
+
 ### Race Car
 
 waymo
@@ -50,6 +553,145 @@ waymo
 ### [Best Time to Buy and Sell Stock III](../../../courses/9chap-dynamic-prog/notes/#best-time-to-buy-and-sell-stock-iii)
 
 ### [Best Time to Buy and Sell Stock IV](../../../courses/9chap-dynamic-prog/notes/#best-time-to-buy-and-sell-stock-iv)
+
+### [Portfolio Value Optimization](https://leetcode.com/discuss/interview-question/625536/robinhood-phone-portfolio-value-optimization)
+
+There are two questions regarding this problem:
+
+[leetcode discussion](https://leetcode.com/discuss/interview-question/625536/robinhood-phone-portfolio-value-optimization)
+
+1. Can buy fractions of a stock
+2. Cannot buy fractions of a stock
+
+=== "DP solution"
+
+    ```c++
+    #include <iostream>
+    #include <vector>
+    #include <climits>
+    #include <numeric>
+    #include <algorithm>
+    using namespace std;
+
+    class Solution {
+    public:
+        int maxProfit(vector<int> curr_price, vector<int> new_price, vector<int> amount, int A) {
+            int n = curr_price.size();
+            int f[n + 1][A + 1]; // max profit of the first i stocks with payment j
+
+            // init
+            f[0][0] = 0;
+            for (int j = 1; j <= A; ++j) {
+                f[0][j] = -1;
+            }
+
+            // f[i][j] = max(f[i - 1][j], f[i - 1][j - k * curr_price[i]] + k * new_price[i])
+            for (int i = 1; i <= n; ++i) {
+                    for (int j = 0; j <= A; ++j) {
+                    f[i][j] = f[i - 1][j];
+                    for (int k = 0; k <= amount[i]; ++k) {
+                        if (f[i - 1][j - k * curr_price[i - 1]] != -1 && j >= k * curr_price[i - 1]) {
+                        f[i][j] = max(f[i][j], f[i - 1][j - k * curr_price[i - 1]] + k * new_price[i - 1]);        
+                        }
+                    }
+                }
+            }
+
+            int res = 0;
+            for (int j = A; j >= 0; --j) {
+                if (f[n][j] != -1 && f[n][j] > res) {
+                    res = f[n][j];
+                }
+            }
+
+            return res;
+        }
+    };
+
+    int main() {
+
+        // test1 res = 255
+        // vector<int> v{15, 40, 25, 30};
+        // vector<int> w{45, 50, 35, 25};
+        // vector<int> s{3, 3, 3, 4};
+        // int m = 140;
+        // test2 res = 60
+        vector<int> v{15, 20};
+        vector<int> w{30, 45};
+        vector<int> s{3, 3};
+        int m = 30;  
+        int res = 0;
+
+        Solution sol = Solution();
+
+        res = sol.maxProfit(v, w, s, m);
+        cout << res;
+    }
+    ```
+
+=== "DP space O(M)"
+
+    ```c++
+    #include <iostream>
+    #include <vector>
+    #include <climits>
+    #include <numeric>
+    #include <algorithm>
+    using namespace std;
+
+    class Solution {
+    public:
+        int maxProfit(vector<int> curr_price, vector<int> new_price, vector<int> amount, int A) {
+            int n = curr_price.size();
+            int f[A + 1]; // max profit of the first i stocks with payment j
+
+            // init
+            f[0] = 0;
+            for (int j = 1; j <= A; ++j) {
+                f[j] = -1;
+            }
+
+            // f[i][j] = max(f[i - 1][j], f[i - 1][j - k * curr_price[i]] + k * new_price[i])
+            for (int i = 1; i <= n; ++i) {
+                for (int j = A; j >= 0; --j) {
+                for (int k = 0; k <= amount[i]; ++k) {
+                    if (f[j - k * curr_price[i - 1]] != -1 && j >= k * curr_price[i - 1]) {
+                    f[j] = max(f[j], f[j - k * curr_price[i - 1]] + k * new_price[i - 1]);        
+                    }
+                }
+                }
+            }
+
+            int res = 0;
+            for (int j = A; j >= 0; --j) {
+            if (f[j] != -1 && f[j] > res) {
+                res = f[j];
+            }
+            }
+
+            return res;
+        }
+    };
+
+    int main() {
+        // test1 res = 255
+        // vector<int> v{15, 40, 25, 30};
+        // vector<int> w{45, 50, 35, 25};
+        // vector<int> s{3, 3, 3, 4};
+        // int m = 140;
+        // test2 res = 60
+        vector<int> v{15, 20};
+        vector<int> w{30, 45};
+        vector<int> s{3, 3};
+        int m = 30;  
+        int res = 0;
+
+        Solution sol = Solution();
+
+        res = sol.maxProfit(v, w, s, m);
+        cout << res;
+    }
+    ```
 
 ## 划分型
 
