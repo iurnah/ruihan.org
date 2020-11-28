@@ -490,16 +490,16 @@ public:
 2. subproblem, suppose we have the LICS of the first `n - 1` elements.
    represented as `f[n-1]`.
 3. base case and boundary condition, when no char in the string: `f[0] = 1`.
-   empty string has LICS length of 1.
+   An empty string has LICS length of 1.
 4. order of calculation, calculate small index first.
 
 !!! Note "Not a leetcode"
-    The problem is not a leetcode problem, the original problem ask for sequence
+    The problem is not a leetcode problem, the original problem ask for sequences
     that could be increase or decrease.
 
 !!! Warning "Using index in DP problems"
     Avoid using both index `i - 1` and `i + 1` in a loop invariance, otherwise
-    you'll have problem in keeping the loop invariance. Compare the followings.
+    you'll have problems in keeping the loop invariance. Compare the following.
 
 === "Incorrect"
 
@@ -1289,11 +1289,31 @@ public:
 ### Longest Increasing Subsequence
 
 * Comparing to the problem [Longest Increasing Continuous Subsequence](#longest-increasing-continuous-subsequence).
-  If the subsequence is not continous. we have to enumerate each of the previous element befor `A[j]`.
+  If the subsequence is not continuous. we have to enumerate each of the previous element before `A[j]`.
 
-Solution 1 DP O(n^2)
+Solution 2 DP with binary search O(nlogn)
 
-=== "DP"
+* To reduce the complexity, we can try to find if there is any redundant work we
+  have been done. or some how we could use some order information to avoid some of the calculation.
+* Focus on the real meaning of longest Increasing Subsequence. In fact, you are
+  looking for the smallest value before `A[i]` that leads to the longest Increasing Subsequence so far.
+* use the state `f[i]` to record the LIS of the array `A[0], ... A[i -1]`. If we
+  are at `f[j], j > i`, we are looking for the largest `f[i]` value that have the smallest `A[i]`.
+
+Solution 3 DP with binary search refactored
+
+* In observing the fact that we can use extra space to keep the "minimum elements
+  see so far from nums that is the last element of LIS for the different length of such LISes".
+* Different from the regular DP solution, our extra space b is storing element from
+  nums, and the element stored in b are not necessary in order.
+* The index i of elements in b related to the length of a LIS whose last element
+  is `a[i]`. specifically, `i + 1 = length(LIS)`.
+
+Solution 4 C++ using lower_bound
+
+* We can use the `lower_bound` to replace the binary search routine in the above solution.
+
+=== "C++ DP O(n^2)"
 
     ```c++ 
     class Solution {
@@ -1323,16 +1343,7 @@ Solution 1 DP O(n^2)
     };
     ```
 
-Solution 2 DP with binary search O(nlogn)
-
-* To reduce the complexity, we can try to find if there is any redundant work we
-  have been done. or some how we could use some order information to avoid some of the calculation.
-* Focus on the real meaning of longest Increasing Subsequence. In fact, you are
-  looking for the smallest value before `A[i]` that leads to the longest Increasing Subsequence so far.
-* use the state `f[i]` to record the LIS of the array `A[0], ... A[i -1]`. If we
-  are at `f[j], j > i`, we are looking for the largest `f[i]` value that have the smallest `A[i]`.
-
-=== "DP with binary search"
+=== "C++ DP with binary search O(nlogn)"
 
     ```c++
     class Solution {
@@ -1383,15 +1394,6 @@ Solution 2 DP with binary search O(nlogn)
     };
     ```
 
-Solution 3 DP with binary search refactored
-
-* In observing the fact that we can use extra space to keep the "minimum elements
-  see so far from nums that is the last element of LIS for the different length of such LISes".
-* Different from the regular DP solution, our extra space b is storing element from
-  nums, and the element stored in b are not necessary in order.
-* The index i of elements in b related to the length of a LIS whose last element
-  is `a[i]`. specifically, `i + 1 = length(LIS)`.
-
 === "DP with binary search refactored"
 
     ```c++ 
@@ -1422,10 +1424,6 @@ Solution 3 DP with binary search refactored
     };
     ```
 
-Solution 4 C++ using lower_bound
-
-* we can use the lower_bound to replace the binary search routine in the above solution.
-
 === "C++ using lower_bound"
 
     ```c++ 
@@ -1446,15 +1444,602 @@ Solution 4 C++ using lower_bound
 
 ### Russian Doll Envelopes
 
+* Sort the vector in ascending order and identify the subproblem, apply DP.
+* notice the sort is ascending, not descending.
+* For the `O(nlogn)` solution, think of how to optimize the longest increasing
+  subsequence for one dimension when the envelopes are sorted properly.
+* We use `b[k]` to record the **smallest** `A[i]` value that have length of `k`
+  longest increasing subsequence. The reason behind this can be illustrated by
+  the following example, when `i = 1`, we can forget `A[0] = 5`, because what
+  ever LIS `A[0] = 5` can contribute to the LIS, `A[1] = 2` will be able to contribute.
+
+    ```txt
+    A[i] 5, 2, 3, 1, 4
+    f[i] 1, 1, 2, 2, 3
+    b[k] 5       (|k| = 1, i = 0)
+    b[k] 2       (|k| = 1, i = 1)
+    b[k] 2, 3    (|k| = 2, i = 2)
+    b[k] 2, 1    (|k| = 2, i = 3)
+    b[k] 2, 1, 4 (|k| = 2, i = 4)
+    ```
+
+* In iterating of `A[i]` we binary search to find the smaller value than `A[i]`
+  in `b[k]` so far that this smaller value combined with `A[i]` will form a new
+  LIS. To keep the loop invariant, we need to change `b[k]` by either modify the
+  existing value in `b[k]` or add a new value to the end.
+
+=== "C++ DP O(n^2)"
+
+    ```c++
+    class Solution {
+    public:
+        int maxEnvelopes(vector<vector<int>>& envelopes) {
+        int n = envelopes.size();
+        int f[n];
+        int res = 0;
+
+        sort(envelopes.begin(), envelopes.end(), [](vector<int>& a, vector<int>& b){
+            if (a[0]== b[0]) {
+                return a[1] < b[1];
+            } else {
+                return a[0] < b[0];
+            }
+        });
+
+        for (int i = 0; i < n; ++i) {
+            f[i] = 1;
+            for (int j = 0; j < i; ++j) {
+                if (envelopes[j][0] < envelopes[i][0] && envelopes[j][0] < envelopes[i][0]) {
+                    f[i] = max(f[i], f[j] + 1);
+                }
+            }
+            res = max(res, f[i]);
+        }
+
+        return res;
+        }
+    };
+    ```
+
+=== "C++ DP (nlogn)"
+
+    ```c++
+    class Solution {
+    public:
+        int maxEnvelopes(vector<pair<int, int>>& envelopes) {
+            int n = envelopes.size();
+            if (n == 0)
+                return 0;
+
+            vector<int> f;
+
+            sort(envelopes.begin(), envelopes.end(), [](const pair<int, int> a, const pair<int, int> b) {
+                if (a.first == b.first) {
+                    return a.second > b.second;
+                } else {
+                    return a.first < b.first;
+                }
+            });
+
+            for (int i = 0; i < n; ++i) {
+                int t = envelopes[i].second;
+                int begin = 0, end = f.size(); // f start with empty
+
+                // when i = 0, the binary search will not happen, first value will
+                // be added to f before binary search on it.
+                while (begin < end) {
+                    int mid = begin + (end - begin) / 2;
+                    if (f[mid] < t) {
+                        begin = mid + 1;
+                    } else {
+                        end = mid;
+                    }
+                }
+
+                if (begin == f.size()) {
+                    f.push_back(t);
+                } else {
+                    f[begin] = t; // index to f is related to the result
+                }
+            }
+
+            return f.size();
+        }
+    };
+    ```
+
 ## Lecture 4
+
+| Problem | category |
+|----------------------------------------------------------|-------------- |
+| [Perfect Squares](#perfect-square)                        | 划分型／序列型 |
+| [Palindrome Partitioning II](#palindrome-partitioning-ii) | 划分型 |
+| [Copy Books](#copy-books)                                 | 划分型 |
+| [Coins in A Line](#coins-in-a-line)                       | 博弈型 |
+| [Backpack](#Backpack)                                     | 背包型 |
+| [Backpack V](#backpack-v)                                 | 背包型 |
+| [Backpack VI](#backpack-vi)                               | 背包型 |
+
+### Perfect Squares
+
+* $f[i] = \min_{1 \le j^2 \le i}(f[i - j^2] + 1)$ 整体思想就是枚举`j`.
+* 本题分析时像划分型但程序写起来像序列型。还是从最后一步入手。设最后一个是$j^2$.
+* 整体思想就是枚举最后一步`j`. 注意初始化 `f[i]`. `j*j` 可以是`i`, 这个正好对应了极端情况
+  就是 `i` 只由 `j*j` 组成.
+* if condition 无需检查 `f[i - j*j]` 是否为`INT_MAX`. 因为这里比`i`小的 `i - j*j`
+  总是可以由完全平方数1组成。相比较题目 Coin Change 这道题，这一步可能性检查必不可少，因为在
+  [Coin Change](#coin-change) 中某一面值不一定能被兑换成给定面值的硬币。我们用无穷大来标记。  
+
+=== "C++ DP"
+
+    ```c++
+    class Solution {
+    public:
+        int numSquares(int n) {
+            if (n == 0)
+                return 0;
+
+            int f[n+1] = {0};
+            f[0] = 0;
+            for (int i = 1; i <= n; i++) {
+                f[i] = INT_MAX;
+                for (int j = 1; j * j <= i; j++) {
+                    if (f[i - j*j] + 1 < f[i]) {
+                        f[i] = f[i - j*j] + 1;
+                    }
+                }
+            }
+            return f[n];
+        }
+    };
+    ```
+
+=== "C++ Python"
+
+    ```python
+    class Solution:
+        def numSquares(self, n: int) -> int:
+            if n == 0:
+                return 0
+
+            f = [0] * (n + 1)
+            for i in range(1, n + 1):
+                f[i] = float('inf')
+                for j in range(1, int(sqrt(i)) + 1):
+                    if f[i] > f[i - j*j] + 1:
+                        f[i] = f[i - j*j] + 1
+            return f[n]
+    ```
+
+### Palindrome Partitioning II
+
+* Consider the last palindrome `s[j, ..., i - 1]`, `f[i]` represent the minimum
+  number of partitions of first `i` characters.
+* State transition equation: $f[i] = \min_{0 \le j \lt i}(f[j]+1 | (s[j],..., s[i-1]) \text{ is palindrome})$
+* To know the substr `s[j, ... i-1]` is a palindrome or not, we can first find
+  and record all the panlidrome substring in `isPalin[i][j]`, each element of
+  which represents whether substr `s[i, ..., j]` is a palindrome or not.
+
+=== "C++ DP with isPalin()"
+
+```c++
+class Solution {
+public:
+    int minCut(string s) {
+        int n = s.length();
+        if (n == 0)
+            return 0;
+
+        int isPalin[n][n];
+        int f[n + 1];
+        f[0] = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                isPalin[i][j] = 0;
+            }
+        }
+
+        /* calculate palindrome */
+        for (int t = 0; t < n; t++) {
+            /* odd case */
+            int i = t;
+            int j = t;
+            while (i >= 0 && j < n && s[i] == s[j]) {
+                isPalin[i][j] = 1;
+                i--;
+                j++;
+            }
+
+            /* even case */
+            i = t;
+            j = t + 1;
+            while (i >= 0 && j < n && s[i] == s[j]) {
+                isPalin[i][j] = 1;
+                i--;
+                j++;
+            }
+        }
+
+        /* calculate the states */
+        for (int i = 1; i <= n; i++) {
+            f[i] = INT_MAX;
+            for (int j = 0; j < i; j++) {
+                if (isPalin[j][i - 1]) {
+                    f[i] = min(f[i], f[j] + 1);
+                }
+            }
+        }
+
+        return f[n] - 1;
+    }
+};
+```
+
+=== "Java isPalin()"
+
+```java
+public class Solution {
+    /**
+     * @param s a string
+     * @ f[i], minmum cut of s[0],...s[i - 1]
+     * e.g.
+     *      a a b a a
+     *    j=0 1 2 3 4
+     *i=0 a 1 1 0
+     *  1 a   1 0
+     *  2 b     1 0
+     *  3 a       1 0
+     *  4 a         1
+     *
+     * when calculate isPalin[i][j], we need to know isPalin[i + 1][j + 1].
+     * Cannot calculate from i = 0, 1, ... have to go from i = n - 1, n - 2, ... 1, 0
+     * last step: s[j],...s[i - 1]
+     * f[i] = f[j] + 1 | s[j], ... s[i - 1] is palindrome
+     */
+    public int minCut(String ss) {
+        char[] s = ss.toCharArray();
+        int n = s.length;
+        if (n == 0)
+            return 0;
+
+        boolean[][] isPalin = new boolean[n][n];
+
+        int[] f = new int[n + 1];
+
+        f[0] = -1;
+
+        for (int i = 0; i < n; i++) {
+            isPalin[i][i] = true;
+            if (i + 1 < n) {
+                isPalin[i][i + 1] = s[i] == s[i + 1];
+            }
+        }
+
+        for (int i = n - 3; i >= 0; i--) {
+            for (int j = i + 2; j < n; j++) {
+                isPalin[i][j] = isPalin[i + 1][j - 1] && s[i] == s[j];
+            }
+        }
+
+        /* calculate the states */
+        for (int i = 1; i <= n; i++) {
+            f[i] = i - 1;
+            for (int j = 0; j < i; j++) {
+                if (isPalin[j][i - 1]) {
+                    f[i] = Math.min(f[i], f[j] + 1);
+                }
+            }
+        }
+
+        return f[n];
+    }
+};
+```
+
+!!! warning
+    这个方法C++不能通过Leetcode和lintcode，主要是对于很长的string，`isPalin`会很大。类似于
+    [Best Time to Buy and Sell Stock IV](#best-time-to-buy-and-sell-stock-iv)
+    中如果k很大的时候。Java版本则可以。
+
+!!! note
+    技巧：在循环中需要某个性质，而这个性质又是可以很容易计算和记录 (isPalin) 我们就采用先计算所有并记录，在loop中去直接访问符合条件的结果即可。
+
+### Copy Books
+
+### Coins in A Line
+
+* 要有先手“必胜”和“必败”的概念。简单来讲就是当前先手面对当前局势如果有一招能使下轮先手必败
+  那么当前选手就必胜。如果当前选手面对当前局势下所有招数都会使得下轮先手必胜，那么当前选手必败。
+* `f[i]`表示当前选手必胜(True)或必败(False).
+* State transition equation: $f[i] = f[i - 1] == \text{false}\ OR\ f[i - 2] == \text{false}$
+* 此题注意初始条件和必胜和必败的概念就不会有什么差错。
+
+![coins-in-a-line](fig/coins-in-a-line.png)
+
+=== "DB solution"
+
+    ```c++
+    class Solution {
+    public:
+        bool firstWillWin(int n) {
+            if (n == 0)
+                return false;
+
+            bool f[n];
+            f[0] = false;
+
+            for (int i = 1; i <= 2; i++) {
+                f[i] = true;
+            }
+
+            for (int i = 3; i <= n; i++) {
+                f[i] =  (f[i - 1] == false) || (f[i - 2] == false);
+            }
+
+            return f[n];
+        }
+    };
+    ```
+
+=== "Math solution"
+
+    ```c++
+    // You can actualy found the pattern if you have written several states. f[i] = i % 3
+    // 0 1 2 3 4 5 6 7 8 9 10
+    // F T T F T T F T T F T
+    class Solution {
+    public:
+        bool firstWillWin(int n) {
+            return n % 3;
+        }
+    };
+    ```
 
 ### Backpack
 
-- Give `n` items with size `A[i]` and backpack size: `M`. Find the max total size
+* Give `n` items with size `A[i]` and backpack size: `M`. Find the max total size
   that can fit in the backpack.
-- 
+* We can reduce the size of f to two rolls. We can even reduce it to just one
+  dimention. same technique can also be used in Backpack II and Backpack V.
 
-### Copy Books
+=== "C++ DP"
+
+    ```c++
+    class Solution {
+    public:
+        int backPack(int m, vector<int> A) {
+            int n = A.size();
+            if (n == 0)
+                return 0;
+
+            bool f[n + 1][m + 1];
+
+            /* init */
+            f[0][0] = true;
+            for (int j = 1; j <= m; j++) {
+                f[0][j] = false;
+            }
+
+            for (int i = 1; i <= n; i++) {
+                for (int j = 0; j <= m; j++) {
+                    f[i][j] = f[i - 1][j]; /* must first init f[i][j] */
+                    if (j >= A[i - 1]) {
+                        f[i][j] = f[i][j] || f[i - 1][j - A[i - 1]];
+                        //f[i][j] = f[i - 1][j] || f[i - 1][j - A[i - 1]]; /* this is wrong */
+                    }
+                }
+            }
+
+            for (int j = m; j >= 0; j--) {
+                if (f[n][j] == true)
+                    return j;
+            }
+
+            return 0;
+        }
+    };
+    ``` 
+
+=== "C++ DP log(n) space"
+
+    ```c++
+    class Solution {
+    public:
+        int backPack(int m, vector<int> A) {
+            int n = A.size();
+            if (n == 0)
+                return 0;
+
+            bool f[m + 1];
+
+            /* init */
+            f[0] = true;
+            for (int j = 1; j <= m; j++) {
+                f[j] = false;
+            }
+
+            for (int i = 1; i <= n; i++) {
+                for (int j = m; j >= 0; j--) {
+                    if (j >= A[i - 1]) {
+                        f[j] = f[j] || f[j - A[i - 1]];
+                    }
+                }
+            }
+
+            for (int j = m; j >= 0; j--) {
+                if (f[j] == true)
+                    return j;
+            }
+
+            return 0;
+        }
+    };
+    ```
+
+### Backpack V
+
+* This problem could follow the analysis from Backpack.
+* Instead of memorize the boolean value whether first `i` items can fill the
+  weight `w`. We record in `f[i][w]` the total number of possible fills of the
+  weight `w` by first `i` items.
+* We need to initialize the state `f[i][j]` first then to update it.
+
+=== "C++ DP"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackV(vector<int>& nums, int T) {
+            int n = nums.size();
+            if (n == 0) {
+                return 0;
+            }
+
+            int f[n + 1][T + 1];
+            f[0][0] = 1;
+
+            for (int j = 1; j <= T; j++) {
+                f[0][j] = 0;
+            }
+
+            for (int i = 1; i <= n; i++) {
+                for (int j = 0; j <= T; j++) {
+                    f[i][j] = f[i - 1][j];
+                    if (j >= nums[i - 1]) {
+                        f[i][j] += f[i - 1][j - nums[i - 1]];
+                    }
+                }
+            }
+
+            return f[n][T];
+        }
+    };
+    ```
+
+=== "C++ DP log(n) space"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackV(vector<int>& nums, int T) {
+            int n = nums.size();
+            if (n == 0) {
+                return 0;
+            }
+
+            int f[T + 1];
+            f[0] = 1;
+
+            for (int j = 1; j <= T; j++) {
+                f[j] = 0;
+            }
+            for (int i = 1; i <= n; i++) {
+                for (int j = T; j >= 0; j--) {
+                    //f[j] = f[j - A[i - 1]] ==> f'[j]
+                    if (j >= nums[i - 1]) {
+                        // f'[j]
+                        // cover old f[j]
+                        f[j] += f[j - nums[i - 1]];
+                    }
+                }
+            }
+
+            return f[T];
+        }
+    };
+    ```
+
+### Backpack VI
+
+* 这道题等同于Leetcode里 Combinations Sum IV
+* 这里可以随便取，似乎题目变得无法下手，考虑“最后一步”这个技巧不能用了，因为最后一步可以是任意一个了。
+* 但仍然可以用子问题来考虑。先不管最后一步是哪一个，最后一步之前的相加的总和一定是 `Target - x`.
+  这样就转化成一个子问题可以用DP来做。 具体做法我们可以对于每一个小于“总承重”的重量进行枚举最后一步`x`.
+  可能的`x`是`A[0], ..., A[i - 1]`中任意一个.
+* Must initialize `f[i] = 0`. Because some of the state won't be updated
+  (indicate they are not possible to be fill).
+
+=== "C++ DP"
+
+    ```c++
+    class Solution {
+    public:
+        int backPackVI(vector<int>& nums, int T) {
+            int n = nums.size();
+            if (n == 0) {
+                return 0;
+            }
+            int f[T + 1];
+            f[0] = 1;
+            /* for each sub problem */
+            for (int i = 1; i <= T; i++) {
+                f[i] = 0;
+                /* enumerate the last step */
+                for (int j = 0; j < n; j++) {
+                    if (i >= nums[j]) {
+                        f[i] += f[i - nums[j]];
+                    }
+                }
+            }
+
+            return f[T];
+        }
+    };
+    ```
+
+=== "Output result"
+
+    ```c++
+    // f[i]: 存多少种方式
+    // pi[i]: 如果 f[i] >= 1, 最后一个数字可以是pi[i]
+    class Solution {
+    public:
+        int backPackVI(vector<int>& nums, int T) {
+            int n = nums.size();
+            if (n == 0) {
+                return 0;
+            }
+
+            int f[T + 1];
+            /* pi[i]: 如果i可拼出(f[i] >= 1), 最后一个是pi[i] */
+            int pi[T + 1];
+            f[0] = 1;
+
+            for (int i = 1; i <= T; i++) {
+                f[i] = 0;
+                for (int j = 0; j < n; j++) {
+                    if (i >= nums[j]) {
+                        f[i] += f[i - nums[j]];
+                        /* 最后一个是nums[j]的可拼出i */
+                        if (f[i - nums[j]] > 0) {
+                            /* 纪录下来 */
+                            pi[i] = nums[j];
+                        }
+                    }
+                }
+            }
+
+            if (f[T] > 0) {
+                int i = T;
+                cout << i << "=" << endl;
+                while (i != 0) {
+                    // sum is i now;
+                    // last number is pi[i]
+                    // previuos sum is i - pi[i]
+                    cout << pi[i] << endl;
+                    i -= pi[i];
+                }
+            }
+
+            return f[T];
+        }
+    };
+    ```
+
+## Lecture 5
+
+## Lecture 6
 
 ## Lecture 7
 
@@ -1468,30 +2053,30 @@ Solution 4 C++ using lower_bound
 
 === "C++ map to set"
 
-```c++ 
-class Solution {
-public:
-    bool canCross(vector<int>& stones) {
-        int n = stones.size();
-        unordered_map<int, unordered_set<int>> hmap;
+    ```c++ 
+    class Solution {
+    public:
+        bool canCross(vector<int>& stones) {
+            int n = stones.size();
+            unordered_map<int, unordered_set<int>> hmap;
 
-        for (int i = 0; i < stones.size(); i++) {
-            hmap[stones[i]] = unordered_set<int>();
-        }
+            for (int i = 0; i < stones.size(); i++) {
+                hmap[stones[i]] = unordered_set<int>();
+            }
 
-        hmap[stones[0]].insert(0);
+            hmap[stones[0]].insert(0);
 
-        for (int i = 0; i < stones.size(); i++) {
-            for (int k: hmap[stones[i]]) {
-                for (int s = k - 1; s <= k + 1; s++) {
-                    if (s > 0 && hmap.find(stones[i] + s) != hmap.end()) {
-                        hmap[stones[i] + s].insert(s);
+            for (int i = 0; i < stones.size(); i++) {
+                for (int k: hmap[stones[i]]) {
+                    for (int s = k - 1; s <= k + 1; s++) {
+                        if (s > 0 && hmap.find(stones[i] + s) != hmap.end()) {
+                            hmap[stones[i] + s].insert(s);
+                        }
                     }
                 }
             }
-        }
 
-        return hmap[stones[n - 1]].size() > 0;
-    }
-};
-```
+            return hmap[stones[n - 1]].size() > 0;
+        }
+    };
+    ```
