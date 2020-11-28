@@ -33,7 +33,7 @@ conditional variable
     s3;                    // computation read val x
     ```
 
-### 1.1 Lecture Summary
+1.1 Lecture Summary
 
 In this lecture, we learned the concept of threads as lower-level building
 blocks for concurrent programs. A unique aspect of Java compared to prior
@@ -54,7 +54,7 @@ a `join` on which other thread, it is possible for a programmer to erroneously
 create a deadlock cycle with `join` operations. (A deadlock occurs when two threads
 wait for each other indefinitely, so that neither can make any progress.)
 
-### 1.1 Optional Reading
+1.1 Optional Reading
 
 1. Wikipedia article on [Threads](https://en.wikipedia.org/wiki/Thread_(computing))
 2. [Tutorial on Java threads](https://docs.oracle.com/javase/tutorial/essential/concurrency/runthread.html)
@@ -116,7 +116,7 @@ wait for each other indefinitely, so that neither can make any progress.)
     }
     ```
 
-### 1.2 Lecture Summary
+1.2 Lecture Summary
 
 In this lecture, we learned about structured locks, and how they can be
 implemented using `synchronized` statements and methods in Java. Structured
@@ -138,7 +138,7 @@ when the buffer is empty, so that it is only unblocked when a producer thread
 performing an `insert()` operation calls `notify()`. Structured locks are also
 referred to as intrinsic locks or monitors.
 
-### 1.2 Optional Reading
+1.2 Optional Reading
 
 1. [Tutorial on Intrinsic Locks and Synchronization in Java](https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html)
 2. [Tutorial on Guarded Blocks in Java](https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html)
@@ -201,7 +201,7 @@ referred to as intrinsic locks or monitors.
     }
     ```
 
-### 1.3 Lecture Summary
+1.3 Lecture Summary
 
 In this lecture, we introduced unstructured locks (which can be obtained in Java
 by creating instances of `ReentrantLock()`, and used three examples to demonstrate
@@ -222,7 +222,7 @@ unstructured locks is accompanied by an extra responsibility on the part of the
 programmer, e.g., ensuring that calls to `unlock()` are not forgotten, even in the
 presence of exceptions.
 
-### 1.3 Optional Reading
+1.3 Optional Reading
 
 1. [Tutorial on Lock Objects in Java](https://docs.oracle.com/javase/tutorial/essential/concurrency/newlocks.html)
 2. [Documentation on Java’s Lock interfaces](http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/Lock.html)
@@ -279,7 +279,7 @@ presence of exceptions.
     } while (...)
     ```
 
-### 1.4 Lecture Summary
+1.4 Lecture Summary
 
 In this lecture, we studied three ways in which a parallel program may enter
 a state in which it stops making forward progress. For sequential programs,
@@ -296,7 +296,7 @@ The term "liveness" refers to a progress guarantee. The three progress
 guarantees that correspond to the absence of the conditions listed above are
 deadlock freedom, livelock freedom, and starvation freedom.
 
-### 1.4 Optional Reading
+1.4 Optional Reading
 
 1. [Deadlock example with synchronized methods in Java](https://docs.oracle.com/javase/tutorial/essential/concurrency/deadlock.html)
 2. [Starvation and Livelock examples in Java](https://docs.oracle.com/javase/tutorial/essential/concurrency/starvelive.html)
@@ -305,7 +305,7 @@ deadlock freedom, livelock freedom, and starvation freedom.
 ### 1.5 Dining Philosophers
 
 * think
-* pick up chopsticks
+* pick up chopsticks (left, right)
 * eat
 * put down chopsticks
 
@@ -348,7 +348,7 @@ deadlock freedom, livelock freedom, and starvation freedom.
     // premitive called semaphore.
     ```
 
-### 1.5 Lecture Summary
+1.5 Lecture Summary
 
 In this lecture, we studied a classical concurrent programming example that
 is referred to as the **Dining Philosophers Problem**. In this problem, there are
@@ -366,9 +366,16 @@ in which one philosopher picks up their right chopstick and their left, while
 the others pick up their left chopstick first and then their right, can guarantee
 an absence of deadlock.
 
-### 1.5 Optional Reading
+1.5 Optional Reading
 
 1. Wikipedia article on the [Dining Philosophers Problem](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
+
+### 1.6 Mini Project
+
+The mini project used Java `ReentrantLock` and `ReentrantReadWriteLock` to ensure
+the list operations are free of bugs if run by multiple threads. One practical
+tip is that when using the basic lock primitive the lock statement can be put in
+the `try` and unlock in the `finally` statement, respectively.
 
 ## Week 2
 
@@ -412,7 +419,7 @@ an absence of deadlock.
     }
     ```
 
-### 2.1 Lecture Summary
+2.1 Lecture Summary
 
 In this lecture, we learned how critical sections and the isolated construct
 can help concurrent threads manage their accesses to shared resources, at a
@@ -429,9 +436,9 @@ executing before `B` or vice versa. With the use of isolated constructs, it is
 impossible for the bank transfer example to end up in an inconsistent state
 because all the reads and writes for one isolated section must complete before
 the start of another isolated construct. Thus, the parallel program will see the
-effect of one isolated section completely before another isolated section can start.
+effect of one isolated section completed before another isolated section can start.
 
-### 2.1 Optional Reading
+2.1 Optional Reading
 
 1. Wikipedia article on [Critical Sections](https://en.wikipedia.org/wiki/Critical_section)
 2. Wikipedia article on [Atomicity](https://en.wikipedia.org/wiki/Atomicity_(database_systems))
@@ -484,7 +491,7 @@ effect of one isolated section completely before another isolated section can st
     Isolated(M2)
     ```
 
-### 2.2 Lecture Summary
+2.2 Lecture Summary
 
 In this lecture, we studied object-based isolation, which generalizes the
 isolated construct and relates to the classical concept of monitors. The
@@ -514,31 +521,403 @@ constructs with a singleton object set, `M1`. Similarly, all methods in a
 monitor object, `M2`, are executed as object-based isolated constructs with a
 singleton object set, `M2` which has an empty intersection with `M1`.
 
-### 2.2 Optional Reading
+2.2 Optional Reading
 
 1. Wikipedia article on [Monitors](https://en.wikipedia.org/wiki/Monitor_(synchronization))
 
 ### 2.3 Concurrent Spanning Tree Algorithm
 
-### 2.3 Lecture Summary
+=== "Spanning Tree Algorithm"
 
-### 2.3 Optional Reading
+    ```java
+    Compute(v) {
+      for each neighbor c of v
+        s <- MakeParent(v, c)
+        if (s)
+          Compute(c);
+    }
+
+    MakeParent(v, c) {
+      if (c.parent == Null) {
+        c.parent = v;
+        success = true;
+      } else {
+        success = false;
+        return success;
+      }
+    }
+    ```
+
+=== "Isolation Construct"
+
+    ```java
+    Compute(v) {
+      for each neighbor c of v
+        s <- MakeParent(v, c)
+        if (s)
+          Compute(c);
+    }
+
+    MakeParent(v, c) {
+      isolated(c) {
+        if (c.parent == Null) { // compare-and-set premitive
+          c.parent = v;
+          success = true;
+        } else {
+          success = false;
+          return success;
+        }
+      }
+    }
+    ```
+
+2.3 Lecture Summary
+
+In this lecture, we learned how to use object-based isolation to create a
+parallel algorithm to compute spanning trees for an undirected graph. Recall
+that a spanning tree specifies a subset of edges in the graph that form a
+tree (no cycles), and connect all vertices in the graph. A standard recursive
+method for creating a spanning tree is to perform a depth-first traversal of
+the graph (the `Compute(v)` function in our example), making the current vertex
+a parent of all its neighbors that don’t already have a parent assigned in
+the tree (the `MakeParent(v, c)` function in the example).
+
+The approach described in this lecture to parallelize the spanning tree
+computation executes recursive `Compute(c)` method calls in parallel for all
+neighbors, `c`, of the current vertex, `v`. Object-based isolation helps avoid a
+data race in the `MakeParent(v,c)` method, when two parallel threads might
+attempt to call `MakeParent(v1, c)` and `MakeParent(v2, c)` on the same vertex `c`
+at the same time. In this example, the role of object-based isolation is to
+ensure that all calls to `MakeParent(v,c)` with the same `c` value must execute
+the object-based isolated statement in mutual exclusion, whereas calls with
+different values of `c` can proceed in parallel.
+
+2.3 Optional Reading
+
+1. Wikipedia article on [Spanning Trees](https://en.wikipedia.org/wiki/Spanning_tree)
 
 ### 2.4 Atomic Variables
 
-### 2.4 Lecture Summary
+=== "Atomic Variables (Integer)"
 
-### 2.4 Optional Reading
+    ```java
+    // X[0, ... N-1]
+    do {
+      j = curr;       // curr.getAndAdd(1); atomic integer!!!.
+      cur = cur + 1;
+      if (j >= N) break;
+      process(X[j])
+    } while (true)
+    ```
+
+=== "Atomic Reference (compareAndSet)"
+
+    ```java
+    compareAndSet(expected, new) {
+      isolated (this) {
+        if (this.val == expected) {
+          this.val = new;
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    ```
+
+2.4 Lecture Summary
+
+In this lecture, we studied **Atomic Variables**, an important special case of
+object-based isolation which can be very efficiently implemented on modern
+computer systems. In the example given in the lecture, we have multiple
+threads processing an array, each using object-based isolation to safely
+increment a shared object, `cur`, to compute an index `j` which can then be used
+by the thread to access a thread-specific element of the array.
+
+However, instead of using object-based isolation, we can declare the index
+`cur` to be an **Atomic Integer** variable and use an atomic operation called
+`getAndAdd()` to atomically read the current value of cur and increment its
+value by 1. Thus, `j = cur.getAndAdd(1)` has the same semantics as `isolated
+(cur) { j = cur; cur = cur+1;}` but is implemented much more efficiently
+using hardware support on today’s machines.
+
+Another example that we studied in the lecture concerns **Atomic Reference**
+variables, which are reference variables that can be atomically read and
+modified using methods such as `compareAndSet()`. If we have an atomic
+reference `ref`, then the call to `ref.compareAndSet(expected, new)` will compare
+the value of `ref` to `expected`, and if they are the same, set the value of `ref`
+to `new` and return `true`. This all occurs in one atomic operation that cannot
+be interrupted by any other methods invoked on the `ref` object. If `ref` and
+`expected` have different values, `compareAndSet()` will not modify anything and
+will simply return false.
+
+2.4 Optional Reading
+
+1. [Tutorial on Atomic Integers in Java](https://docs.oracle.com/javase/tutorial/essential/concurrency/atomicvars.html)
+2. Article in Java theory and practice series on [Going atomic](https://www.ibm.com/developerworks/library/j-jtp11234/)
+3. Wikipedia article on [Atomic Wrapper Classes in Java](https://en.wikipedia.org/wiki/Primitive_wrapper_class#Atomic_wrapper_classes)
 
 ### 2.5 Read, Write Isolation
 
-### 2.5 Lecture Summary
+=== "Read/Write Isolation"
 
-### 2.5 Optional Reading
+    ```java
+    // T1: C.Get(k1), C.Get(k3), C.Get(k5)
+    // T2: C.Get(k1), C.Get(k3), C.Get(k5)
+    // T3: C.Put(k1)
+    isolated (read(C)) {
+      V = C.get(k1);
+    }
+
+    isolated (write(C)) {
+      C.put(k2, v2);
+    }
+    ```
+
+=== "Read/Write Isolation in LinkedList example"
+
+    ```java
+    delete (cur) {
+      isolated (write(cur.next, cur.prev), read(cur)) {
+        cur.prev.next = cur.next;
+        cur.next.prev = cur.prev;
+      }
+    }
+    ```
+
+2.5 Lecture Summary
+
+In this lecture we discussed **Read-Write Isolation**, which is a refinement of
+object-based isolation, and is a higher-level abstraction of the read-write
+locks studied earlier as part of Unstructured Locks. The main idea behind
+read-write isolation is to separate read accesses to shared objects from
+write accesses. This approach enables two threads that only read shared
+objects to freely execute in parallel since they are not modifying any shared
+objects. The need for mutual exclusion only arises when one or more threads
+attempt to enter an isolated section with write access to a shared object.
+
+This approach exposes more concurrency than object-based isolation since it
+allows read accesses to be executed in parallel. In the doubly-linked list
+example from our lecture, when deleting an object `cur` from the list by
+calling `delete(cur)`, we can replace object-based isolation on `cur` with
+read-only isolation, since deleting an object does not modify the object
+being deleted; only the previous and next objects in the list need to be
+modified.
+
+2.5 Optional Reading
+
+ 1. Wikipedia article on [Readers-writer lock](https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock)
+
+### 2.6 Mini project
 
 ## Week 3
 
 * [Akka](https://doc.akka.io/docs/akka/2.5/guide/introduction.html#how-to-get-started)
+
+### 3.1 Actors
+
+```java
+getAndAdd(){
+  j = cur;
+  cur = cur + delta;
+  return j;
+}
+
+// method doesn't doing correct isolation
+foo () {
+  cur = ...  
+}
+```
+
+**Actor** (reactive)
+
+* Mailbox
+* Method
+* Local State
+
+3.1 Lecture Summary
+
+In this lecture, we introduced the Actor Model as an even higher level of
+concurrency control than locks or isolated sections. One limitation of locks,
+and even isolated sections, is that, while many threads might correctly
+control the access to a shared object (e.g., by using object-based isolation)
+it only takes one thread that accesses the object directly to create subtle
+and hard-to-discover concurrency errors. The Actor model avoids this problem
+by forcing all accesses to an object to be isolated by default. The object is
+part of the local state of an actor, and cannot be accessed directly by any
+other actor.
+
+An Actor consists of a Mailbox, a set of Methods, and Local State. The Actor
+model is reactive, in that actors can only execute methods in response to
+messages; these methods can read/write local state and/or send messages to
+other actors. Thus, the only way to modify an object in a pure actor model is
+to send messages to the actor that owns that object as part of its local
+state. In general, messages sent to actors from different actors can be
+arbitrarily reordered in the system. However, in many actor models, messages
+sent between the same pair of actors preserve the order in which they are sent.
+
+3.1 Optional Reading
+
+1. Wikipedia article on the [Actor Model](https://en.wikipedia.org/wiki/Actor_model)
+
+2. Documentation on the [Akka Actor Library](http://doc.akka.io/docs/akka/2.5.3/java/guide/index.html)
+  (though Akka is not used in this course, it is a useful library to be aware
+  of if you are interested in using the actor model with Java and Scala
+  applications)
+
+### 3.2 Actor Examples
+
+```java
+// print actor
+process (s) { // like a callback
+  if (s == "Exit")
+    exit();
+  else
+    print s;
+}
+```
+
+![actor-example](fig/actor-example.png)
+
+3.2 Lecture Summary
+
+In this lecture, we further studied the Actor Model through two simple
+examples of using actors to implement well-known concurrent programming
+patterns. The `PrintActor` in our first example processes simple String
+messages by printing them. If an `EXIT` message is sent, then the
+`PrintActor` completes its current computation and exits. As a reminder, we
+assume that messages sent between the same pair of actors preserve the order
+in which they are sent.
+
+In the second example, we created an actor pipeline, in which one actor
+checks the incoming messages and only forwards the ones that are in lower
+case. The second actor processes the lowercase messages and only forwards the
+ones that are of even length. This example illustrates the power of the actor
+model, as this concurrent system would be much more difficult to implement
+using threads, for example, since much care would have to be taken on how to
+implement a shared mailbox for correct and efficient processing by parallel
+threads.
+
+3.2 Optional Reading
+
+1. Wikipedia article on [Pipeline Parallelism](https://en.wikipedia.org/wiki/Pipeline_(computing)).
+
+### 3.3 Sieve of Eratosthenes Algorithm
+
+![actor-example](fig/sieve-of-eratosthenes.png)
+
+3.3 Lecture Summary
+
+In this lecture, we studied how to use actors to implement a pipelined
+variant of the Sieve of Eratosthenes algorithm for generating prime numbers.
+This example illustrates the power of the Actor Model, including dynamic
+creation of new actors during a computation.
+
+To implement the Sieve of Eratosthenes, we first create an actor, Non-Mul-2,
+that receives (positive) natural numbers as input (up to some limit), and
+then filters out the numbers that are multiples of 2. After receiving a
+number that is not a multiple of 2 (in our case, the first would be 3), the
+Non-Mul-2 actor creates the next actor in the pipeline, Non-Mul-3, with the
+goal of discarding all the numbers that are multiples of 3. The Non-Mul-2
+actor then forwards all non-multiples of 2 to the Non-Mul-3 actor. Similarly,
+this new actor will create the next actor in the pipeline, Non-Mul-5, with
+the goal of discarding all the numbers that are multiples of 5. The power of
+the Actor Model is reflected in the dynamic nature of this problem, where
+pieces of the computation (new actors) are created dynamically as needed.
+
+A Java code sketch for the `process()` method for an actor responsible for
+filtering out multiples of the actor's "local prime" in the Sieve of
+Eratosthenes is as follows:
+
+```java
+public void process(final Object msg) {
+  int candidate = (Integer) msg;
+  // Check if the candidate is a non-multiple of the "local prime".
+  // For example, localPrime = 2 in the Non-Mul-2 actor
+  boolean nonMul = ((candidate % localPrime) != 0);
+  // nothing needs to be done if nonMul = false
+  if (nonMul) {
+    if (nextActor == null) {
+      . . . // create & start new actor with candidate as its local prime
+    }
+    else nextActor.send(msg); // forward message to next actor
+  }
+} // process
+```
+
+3.3 Optional Reading
+
+1. Wikipedia article on the [Sieve of Eratosthenes problem](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
+
+### 3.4 Producer-Consumer Problem
+
+```java
+// consumer thread
+while (buffer.empty()) { }
+// process item removed from buffer
+```
+
+![producer-consumer-problem](fig/producer-consumer-problem.png)
+
+3.4 Lecture Summary
+
+In this lecture, we studied the producer-consumer pattern in concurrent
+programming which is used to solve the following classical problem: how can
+we safely coordinate accesses by multiple producer tasks, $P_1$, $P_2$, $P_3$
+... and multiple consumer tasks, $C_1$, $C_2$, $C_3$​, ... to a shared buffer
+of unbounded size without giving up any concurrency? Part of the reason that
+this problem can be challenging is that we cannot assume any a priori
+knowledge about the rate at which different tasks produce and consume items
+in the buffer. While it is possible to solve this problem by using locks with
+wait-notify operations or by using object-based isolation, both approaches
+will require low-level concurrent programming techniques to ensure
+correctness and maximum performance. Instead, a more elegant solution can be
+achieved by using actors as follows.
+
+The key idea behind any actor-based solution is to think of all objects
+involved in the concurrent program as actors, which in this case implies that
+producer tasks, consumer tasks, and the shared buffer should all be
+implemented as actors. The next step is to establish the communication
+protocols among the actors. A producer actor can simply send a message to the
+buffer actor whenever it has an item to produce. The protocol for consumer
+actors is a bit more complicated. Our solution requires a consumer actor to
+send a message to the buffer actor whenever it is ready to process an item.
+Thus, whenever the buffer actor receives a message from a producer, it knows
+which consumers are ready to process items and can forward the produced item
+to any one of them. Thus, with the actor model, all concurrent interactions
+involving the buffer can be encoded in messages, instead of using locks or
+isolated statements.
+
+### 3.5 Bounded Buffer Problem
+
+![bounded-buffer-problem](fig/bounded-buffer-problem.png)
+
+3.5 Lecture Summary
+
+A major simplification made in the previous lecture was to assume that the
+shared buffer used by producer and consumer tasks can be unbounded in size.
+However, in practice, it is also important to consider a more realistic
+version of the the producer-consumer problem in which the buffer has a
+bounded size. In fact, the classical producer-consumer problem statement
+usually assumes a bounded buffer by default. In this lecture, we studied how
+the actor-based solution to the unbounded buffer case can be extended to
+support a bounded buffer.
+
+The main new challenge with bounding the size of the shared buffer is to
+ensure that producer tasks are not permitted to send items to the buffer when
+the buffer is full. Thus, the buffer actor needs to play a master role in the
+protocol by informing producer actors when they are permitted to send data.
+This is akin to the role played by the buffer/master actor with respect to
+consumer actors, even in the unbounded buffer case (in which the consumer
+actor informed the buffer actor when it is ready to consume an item). Now,
+the producer actor will only send data when requested to do so by the buffer
+actor. Though, this actor-based solution appears to be quite simple, it
+actually solves a classical problem that has been studied in advanced
+operating system classes for decades.
+
+3.5 Optional Reading
+
+Wikipedia article on the [Producer-Consumer problem](https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem)
 
 ## Week 4
 
@@ -574,7 +953,7 @@ class AutomicInteger {
 }
 ```
 
-### 4.1 Lecture Summary
+4.1 Lecture Summary
 
 In this lecture, we studied the optimistic concurrency pattern, which can be
 used to improve the performance of concurrent data structures. In practice, this
@@ -610,7 +989,7 @@ that return false will be very small, and the optimistic concurrency approach ca
 perform much better in practice (but at the cost of more complex code logic) than
 using locks, isolation, or actors.
 
-### 4.1 Optional Reading
+4.1 Optional Reading
 
 1. Wikipedia article on [Optimistic concurrency control](https://en.wikipedia.org/wiki/Optimistic_concurrency_control)
 2. [Documentation on Java’s AtomicInteger class](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/AtomicInteger.html)
@@ -652,7 +1031,7 @@ Queue {
 }
 ```
 
-### 4.2 Lecture Summary
+4.2 Lecture Summary
 
 In this lecture, we studied concurrent queues, an extension of the popular queue
 data structure to support concurrent accesses. The most common operations on a
@@ -674,14 +1053,14 @@ for more efficient implementations of `enq()` and `deq()`, as are typically
 developed by concurrency experts. A popular implementation of concurrent queues
 available in Java is `java.util.concurrent.ConcurrentLinkedQueue`.
 
-### 4.2 Optional Reading
+4.2 Optional Reading
 
 1. [Documentation on Java’s AtomicReference class](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/AtomicReference.html)
 2. [Documentation on Java's ConcurrentLinkedQueue class](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentLinkedQueue.html)
 
 ### 4.3 Linearizability
 
-### 4.3 Lecture Summary
+4.3 Lecture Summary
 
 In this lecture, we studied an important correctness property of concurrent
 objects that is called Linearizability. A concurrent object is a data structure
@@ -713,7 +1092,7 @@ by using whatever combination of constructs (e.g., locks, isolated, actors, opti
 concurrency) is deemed appropriate to ensure correctness while giving the
 maximum performance.
 
-### 4.3 Optional Reading
+4.3 Optional Reading
 
 1. [Wikipedia article on the Linearizability](https://en.wikipedia.org/wiki/Linearizability)
 
@@ -730,7 +1109,7 @@ java.util.concurrent.ConcurrentLinkedQueue
 java.util.concurrent.ConcurrentSkipListSet
 ```
 
-### 4.4 Lecture Summary
+4.4 Lecture Summary
 
 In this lecture, we studied the `ConcurrentHashMap` data structure, which is
 available as part of the `java.util.concurrent` standard library in Java. A
@@ -751,7 +1130,7 @@ Motivated by the large number of concurrent data structures available in the
 use libraries such as `ConcurrentHashMap` rather than try to implement your own
 version.
 
-### 4.4 Optional Reading
+4.4 Optional Reading
 
 1. [Documentation on Java’s ConcurrentHashMap class](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ConcurrentHashMap.html)
 2. Wikipedia article on [Java’s ConcurrentMap interface](https://en.wikipedia.org/wiki/Java_ConcurrentMap)
@@ -773,7 +1152,7 @@ while (size() > 1) {
 }
 ```
 
-### 4.5 Lecture Summary
+4.5 Lecture Summary
 
 In this lecture, we discussed how to apply concepts learned in this course to
 design a concurrent algorithm that solves the problem of finding a minimum-cost
@@ -801,7 +1180,7 @@ possibility of deadlock or livelock situations. A key challenge with calling
 it also helps to use a concurrent queue data structure to keep track of nodes
 that are available for processing.
 
-### 4.5 Optional Reading
+4.5 Optional Reading
 
 1. Wikipedia article on [Borvka’s algorithm](https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm)
    for finding a minimum cost spanning tree of an undirected graph
