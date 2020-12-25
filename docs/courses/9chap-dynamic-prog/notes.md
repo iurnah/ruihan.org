@@ -2037,13 +2037,1412 @@ public class Solution {
     };
     ```
 
+## Summary Dynamic Programming Types
+
+### 划分型动态规划特点
+
+* 给定长度为N的序列或字符串，要求划分成若干段
+    1. 段数不限，或指定K段
+    2. 每一段满足一定的性质
+* 类似于序列型动态规划，但是通常要加上段数信息
+    1. 类似于序列型动态规划，但是通常要加上段数信息
+    2. 一般用`f[i][j]`记录前i个元素(元素0~i-1)分成j段的性质，如最小代价
+    3. 把状态`f[i]`或`f[i][j]`初始化为极大值或极小值。一方面，这样有利于在更新状态时计算最
+       大或最小值；另一方面，在更新状态是可以通过查看子状态是否为极值来判断当前一步更新是否有意义。
+       典型题目：1. Perfect Squares, 全部状态都有意义，可省略检查。2. Coin Change 有些
+       数额是无法用给定面值的硬币兑换，更新前需检查状态是否为极致以判断当前更新是否有意义。
+* 划分性动态规划总结
+    1. 要求将一个序列或字符串划分成若干满足要求的片段
+    2. 解决方法：最后一步/最后一段
+    3. 枚举最后一段的起点
+    4. 如果题目不指定段数，用 f[i] 表示前 i 个元素分段后的可行性/最值，可行性，方式数： Perfect Squares, Palindrome Partition II
+    5. 如果题目指定段数，用 f[i][j]表示前 i 个元素分成 j 段后的可行性/最值，可行性，方式数：Copy Books
+* 背包型动态规划类型
+    1. 布尔值
+    2. 计数
+    3. 最值
+    4. 单一物品
+    5. 无限多物品
+* 背包型动态规划空间优化
+    1. 滚动数组
+    2. 单个数组
+* 背包型动态规划总结
+  * 背包问题的数组大小与总承重有关
+  * Backpack 可行性背包
+    1. 要求不超过Target时能拼出的最大重量
+    2. 记录前i个物品能不能拼出重量w
+* Backpack V, Backpack VI, 计数型背包
+    1. 要求有多少种方式拼出重量Target
+    2. Backpack V：记录前i个物品有多少种方式拼出重量w
+    3. Backpack VI：记录有多少种方式(可重复)拼出重量w
+* 关键点
+  * 最后一步
+    1. **最后一个背包内的物品是哪个**
+    2. **最后一个物品有没有进背包**
+
+!!! note
+    注意在loop中要先初始化`f[i][j]`, 然后再去更新，否者如果if语句判断false的时候是没法更新`f[i][j]`的。例如题目：Backpack 和 Backpack V
+
 ## Lecture 5
+
+| Problem | Category |
+|---------------------------------------------------------------------|-------|
+| [Backpack II](#backpack-ii)                                         | 背包型 |
+| [Backpack III](#backpack-iii)                                       | 背包型 |
+| [Coins in A Line III](#coins-in-a-line-iii)                         | 博弈型 |
+| [Longest Palindromic Subsequence](#longest-palindromic-subsequence) | 区间型 |
+| [Burst Balloons](#burst-balloons)                                   | 区间型 |
+| [Scramble String](#scramble-string)                                 | 区间型 |
+
+### Backpack II
+
+Given `n` items with size `A[i]` and value `V[i]`, and a backpack with size `m`.
+What's the maximum value can you put into the backpack?
+
+Example
+
+Given 4 items with size `[2, 3, 5, 7]` and value `[1, 5, 2, 4]`, and a backpack
+with size 10. The maximum value is 9.
+
+* 思考方式任然是从最后一个物品选还是不选，只是我们现在考虑的是价值。此时状态就不能是可行性
+  [Backpack](#backpack)或者多少种了[Backpack V](#backpack-v), 我们要纪录总价值。
+* State: `f[i][w]` represent the value of the first `i` items that weight `w`.
+* State transition equation: $f[i][w] = max(f[i - 1][w],\ f[i - 1][w - A[i - 1]] + V[i - 1] | w ≥ A[i-1] \text{且}\ f[i-1][w-A[i-1]] \neq -1)$
+* Initialization: `f[0][0] = 0`, `f[0][1] = -1, ... f[0][w] = -1`. `-1` 代表不能被拼出。
+
+=== "C++ DP O(n^2) space"
+
+```c++
+class Solution {
+public:
+    int backPackII (vector<int> A, vector<int> V, int m) {
+        int n = A.szie();
+
+        if (n == 0) return 0;
+
+        int f[n + 1][m + 1];
+        f[0][0] = 0;
+        for (int j = 1; j < m; ++j) {
+            f[0][j] = -1;
+        }
+
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= m; ++j) {
+                f[i][j] = f[i - 1][j];
+                if (f[i - 1][j - A[i - 1]] != -1 && j >= A[i - 1]) {
+                    f[i][j] = max(f[i][j], f[i - 1][j - A[i - 1]] + V[i - 1]);
+                }
+            }
+        }
+
+        int res = 0;
+        for (int j = 0; j <= m; ++j) {
+            if(f[n][j] != -1 && f[n][j] > res) {
+                res = f[n][j];
+            }
+        }
+
+        return res;
+    }
+};
+```
+
+=== "C++ DP O(n) space"
+
+```c++
+class Solution {
+public:
+    int backPackII (vector<int> A, vector<int> V, int m) {
+        int n = A.szie();
+
+        if (n == 0) return 0;
+
+        int f[m + 1];
+        f[0] = 0;
+        for (int j = 1; j < m; ++j) {
+            f[0][j] = -1;
+        }
+
+        for (int i = 1; i <= n; ++i) {
+            for (int j = m; j >= 0; --j) {
+                if (f[j - A[i - 1]] != -1 && j >= A[i - 1]) {
+                    f[j] = max(f[j], f[j - A[i - 1]] + V[i - 1]);
+                }
+            }
+        }
+
+        int res = 0;
+        for (int j = 0; j <= m; ++j) {
+            if(f[j] != -1 && f[j] > res) {
+                res = f[j];
+            }
+        }
+
+        return res;
+    }
+};
+```
+
+### Backpack III
+
+Given `n` kind of items with size `A[i]` and value `V[i]`( each item has an
+infinite number available) and a backpack with size `m`. What's the maximum
+value can you put into the backpack?
+
+Example
+
+Given 4 items with size `[2, 3, 5, 7]` and value `[1, 5, 2, 4]`, and a backpack
+with size 10. The maximum value is 15.
+
+* We can follow the "last step" principle, assume the last item in and not in
+  the backpack. But when we do this, we notice that the last one item could
+  also be in the previous because we have infinite times of the item available.
+  We cannot proceed.
+* Instead of thinking the "last one" in the final answer, we can think the
+  "last one" that has been selected. This paradigm shift enables use to tackle
+  the problem more cleverly. We can enumerate the last type (not the last one
+  in the final result) of items we can select.
+* State: `f[i][w]`: 前 `i` **种**物品能够拼成重量为 `w` 的最大价值
+* Transition equation: $f[i][w] = \max_{k \ge 0}{f[i-1[w], f[i - 1][j - k A[i -1]] + k V[i-1]}$
+
+![Backpack III Optimization](fig/backpack-iii-optimize.png)
+
+```c++
+class Solution {
+public:
+    int backPackIII(vector<int>& A, vector<int>& V, int m) {
+        int n = A.size();
+        if (n == 0) {
+            return 0;
+        }
+
+        int f[m + 1];
+
+        /* init */
+        f[0] = 0;
+        for (int j = 1; j <= m; j++) {
+            f[j] = -1;
+        }
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                if (f[j - A[i - 1]] != -1 && j >= A[i - 1]) {
+                    f[j] = max(f[j], f[j - A[i - 1]] + V[i - 1]);
+                }
+            }
+        }
+
+        int res = 0;
+        for (int j = 0; j <= m; j++) {
+            if (f[j] != -1 && f[j] > res) {
+                res = f[j];
+            }
+        }
+
+        return res;
+    }
+};
+```
+
+!!! note
+    Notice the solution is identical to the [Backpack II](#backpack-ii) except
+    one line (line 18), but you should notice there is a long way from [Backpack II](#backpack-ii) to
+    [Backpack III](#backpack-iii). See the detailed explaination of this problem
+    in [Dynamic Programming](../../../../../leetcode/dynamic-programming/notes/#knapsack-iii)
+
+### Coins in A Line III
+
+There are `n` coins in a line. Two players take turns to take a coin from one of
+the ends of the line until there are no more coins left. The player with the
+larger amount of money wins. Could you please decide the first player will win or lose?
+
+* 这是一个博弈问题。看上去很难入手。要对题目认真审视。我开始的时候就没有懂得题意。下面是我的错误分析。
+
+    ```
+    /***************** WRONG ***************************
+    * 当前局面：a[i], ... a[j]
+    * Alice = A, Bob = B,
+    * Sa = A - B;
+    * 先手: Alice A + a[i](a[j])
+    * Bob = B,
+    * 下一轮：a[i+1], ... a[j]
+    * Alice = A' = A + a[i], Bob = B' = B,
+    * Sb = B - A';
+    * 先手：Bob B + a[i + 1] (a[j - 1])
+    * 后手：Alice: A';
+    * ...
+    *
+    * *** Sb = B - A - a[i]
+    * *** Sb = -Sa - a[i]
+    *
+    * **************** WRONG ****************************/
+    ```
+
+* 注意这道题问的是先手是否会赢。所以应该以“先手”这个关键词出发。就是第一步。这一点明确了， 再重新分析，问题迎刃而解。
+
+    ```
+    /* 注意：我们的题意是问先手是否必胜。则当考虑先手出手之前的状态
+    *
+    * 当前局面：a[0], ... a[n-1]
+    * Alice = A = 0, Bob = B = 0,
+    * delta: Sa = A - B = 0;
+    * 先手: Alice 取 a[i](或者a[j]), 目标是最大化A - B
+    * A = a[i]
+    * B = 0,
+    * 在接下来的每轮中，Bob尽最大努力去最大化B - A
+    * 最终：Alice 获得 A + a[i],
+    *        Bob 获得 B,
+    * 注意：最终结果指的是“必胜”或“必败”的法则走到最后.
+    * 必胜必败概念：先手在当前局面有一种可能性“必胜”则“必胜”，没有一种"必胜"可能性便“必败”。
+    * 我们想知道的是Sa = A + a[i] - B = -Sb + a[i]是否会大于0
+    *
+    * 我们发现 Sa = -Sb + a[i]
+    * 这是个子问题。子问题是相对于先手Alice来讲的，子问题可以看做每次轮到Alice的局面(先手), Alice 的问题规模都变小了。
+    * State: f[i][j] = Alice面对局面a[i], ... a[j]时能得到的最大的于对手的数值差。
+    * Equation: f[i][j] = max(a[i] - f[i+1][j], a[j] - f[i][j-1])
+    * Init: f[0][0] = 0;
+    *       f[i][i] = a[i];
+    * 区间型，写code应该是枚举长度
+    */
+    ```
+
+* 注意18-20行枚举长度的方法。边界情况和下标计算不能弄错。同样的code在 Longest Palindromic Subsequence 也用到。
+* 时间复杂度$O(n^2)$, 空间复杂度$O(n^2)$
+
+```c++
+class Solution {
+public:
+    bool firstWillWin(vector<int> &values) {
+        int n = values.size();
+        if ( n == 0)
+            return true;
+
+        int f[n][n];
+        f[0][0] = 0;
+
+        int j;
+        /* init */
+        for (int i = 1; i < n; i++) {
+            f[i][i] = values[i];
+        }
+
+        /* enumerate length */
+        for (int len = 2; len <= n; len++) {
+            for (int i = 0; i <= n - len; i++) {
+                j = i + len - 1;
+                f[i][j] = max(values[i] - f[i+1][j], values[j] - f[i][j-1]);
+            }
+        }
+
+        return f[0][n-1] >= 0;
+    }
+};
+```
+
+### Longest Palindromic Subsequence
+
+* 区间型动态规划，子问题是去头去尾之后规模便小。写出状态后关键在于初始化，初始化的是对角线。
+* 这道题的状态要相对好想，但是初始化和结果相对复杂。
+
+    ```
+    * last step: a[i] == a[j]
+    * state: f[i][j], LPS in string s[i], ... s[j]
+    * equation: f[i][j] = max(f[i+1][j], f[i][j - 1], f[i-1][j-1]|s[i] == s[j]);
+    * init: f[0][0] = 0, f[i][i] = 1;
+    *  if (s[i] == s[i + 1])
+    *      f[i][i+1] = 2;
+    * result: max(f[i][j])
+    ```
+
+=== "C++ DP"
+
+    ```c++
+    public class Solution {
+        public int longestPalindromeSubseq(string s) {
+            int n = s.length();
+            if (n == 0)
+                return 0;
+
+            if (n == 1)
+                return 1;
+
+            int f[n][n];
+            int i, j, len;
+            f[0][0] = 0;
+
+            for (i = 1; i < n; i++) {
+                f[i][i] = 1;
+            }
+
+            for (i = 0; i < n - 1; i++) {
+                if (s[i] == s[i + 1]) {
+                    f[i][i + 1] = 2;
+                } else {
+                    f[i][i + 1] = 1;
+                }
+            }
+
+            /* enumerate the len */
+            for (len = 3; len <= n; len++) {
+                for (i = 0; i <= n - len; i++) {
+                    j = i + len - 1;
+                    /* init */
+                    f[i][j] = f[i + 1][j];       // remove left
+
+                    if (f[i][j - 1] > f[i][j]) { // remove right
+                        f[i][j] = f[i][j - 1];
+                    }
+
+                    if (s[i] == s[j] && f[i + 1][j - 1] + 2 > f[i][j]) {
+                        f[i][j] = f[i + 1][j - 1] + 2;
+                    }
+                }
+            }
+
+            int res = 0;
+            for (i = 0; i < n; i++) {
+                for (j = i; j < n; j++) {
+                    if (f[i][j] > res) {
+                        res = f[i][j];
+                    }
+                }
+            }
+
+            return res;
+        }
+    }
+    ```
+
+=== "Java memoization"
+
+    ```java
+    public class Solution {
+        int[][] f = null;
+        char[] s = null;
+
+        public void compute() {
+            if (f[i][j] != -1)
+                return;
+
+            if (i == j) {
+                f[i][j] = (s[i] == s[j]) ? 2 : 1;
+                return;
+            }
+
+            compute(i, j - 1);
+            compute(i + 1, j);
+            compute(i + 1, j - 1);
+
+            f[i][j] = Math.max(f[i][j - 1], f[i + 1][j]);
+            if (s[i] == s[j]) {
+                f[i][j] = Math.max(f[i][j], f[i + 1][j - 1] + 2);
+            }
+        }
+
+        public int longestPalindromeSubseq(String ss) {
+            s = ss.toCharArry();
+            int n = s.length;
+            if (n == 0) {
+                return 0;
+            }
+
+            f = new int[n][n];
+
+            for (int i = 0; i < n; ++i) {
+                for (int j = i; j < n; ++j) {
+                    f[i][j] = -1;
+                }
+            }
+
+            compute(0, n 1);
+            return f[0][n - 1];
+        }
+    }
+    ```
+
+!!! note
+    划分型动态规划枚举的是长度而不是下标。
+
+### Burst Balloons
+
+* This is a hard problem. you should very carefully to analyze the problem and
+  write down the equation. Here is my first attempt, which made a mistake.
+* You should play closely attention to the boundary of the for loop and the
+  state transition equaltion.
+* The time complexity is $O(n^3)$ , and space complexity is $O(n^3)$
+
+```c++
+class Solution {
+public:
+    /**
+     * @param nums a list of integer
+     * @return an integer, maximum coins
+     */  
+    int maxCoins(vector<int>& nums) {
+        int n = nums.size();
+        if (n == 1) {
+            return nums[0];
+        }
+
+        nums.insert(nums.begin(), 1);
+        nums.push_back(1);
+        int f[n + 2][n + 2];
+        int i, j, k, len;
+
+        /* f[i][j] = maxi<k<j{f[i][k] + f[k][j] + a[i] * a[k] * a[j]} */
+        for (i = 0; i < n + 1; i++) {
+            f[i][i + 1] = 0;
+        }
+
+        for (len = 3; len <= n + 2; len++) {/*边界：长度枚举到n+2 */
+            for (i = 0; i <= n - len + 2; i++) {/*边界：i是要从0开始，j到n+1, len = j - i + 1*/
+                j = i + len - 1;
+                f[i][j] = 0;
+                for (k = i + 1; k < j; k++) {/*边界: k是要burst的气球，我们说f[i][j]是不包括nums[i]和nums[j]的maxCoins*/
+                    f[i][j] = max(f[i][j], f[i][k] + f[k][j] + nums[i] * nums[k] * nums[j]);
+                }
+            }
+        }
+
+        return f[0][n + 1];
+    }
+};
+```
+
+### Scramble String
+
+* Here is the analysis
+* 这里时间复杂度达到了$O(n^4)$, 空间复杂度通过降维处理为$O(n^3)$.
+
+```
+/*  ---------------------
+ * |  s1     |  s2      |  S
+ *  ---------------------
+ *  ---------------------
+ * |  t1     |  t2      |  T
+ *  ---------------------
+ * Last step: s1 <==> t1 && s2 <==> t2 OR s1 <==> t2 && S2 <==> t1
+ * Subproblem: s1 < S
+ * state: f[i][j][h][k] 代表是否S中从i到j的字符是由T中从h到k的字符scramble
+ * 因为长度一样，所以我们可以对状态进行降维处理。
+ * state: f[i][j][k]: 代表 s[i], ... s[i + k - 1] 是否是 t[j], ... t[j + k - * 1] scramble string.
+ * equation: f[i][j][k] = (f[i][j][w] && f[i + w][j + w] || f[i][j + k - w][w] && f[i + w][j][k - w]) for all 0 < w < k
+ * init: f[0][0][0] = ? (不重要)
+ *       if (s[i] == t[j] && k == 1) {
+ *          f[i][j][1] = true;
+ *       }
+ *
+ */
+```
+
+```c++
+class Solution {
+public:
+    /* *
+     * f[i][j][k] = OR_{0 < w < k}(f[i][j][w] && f[i+w][j+w][k-w]) OR (f[i][j+w][w] && f[i+w][j][)
+     */
+    bool isScramble(string& s1, string& s2) {
+        int m = s1.length();
+        int n = s2.length();
+        if (m != n)
+            return false;
+
+        if (m == 0)
+            return true;
+
+        int f[n][n][n + 1];
+        int i, j, k, w;
+
+        /* init */
+        for (i = 0; i < n; i++) {
+            for (j = 0; j < n; j++) {
+                f[i][j][1] = s1[i] == s2[j];
+            }
+        }
+
+        for (k = 2; k <= n; k++) {
+            for (i = 0; i <= n - k; i++) {
+                for (j = 0; j <= n - k; j++) {
+                    f[i][j][k] = false;
+                    //enumerate partition position (s1's length)
+                    for (w = 1; w < k; w++) {
+                        // case 1: no swap match
+                        if (f[i][j][w] && f[i + w][j + w][k - w]) {
+                            f[i][j][k] = true;
+                            break;
+                        }
+                        // case 2: swap match
+                        if (f[i][j + k - w][w] && f[i + w][j][k - w]) {
+                            f[i][j][k] = true;
+                            break;
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        return f[0][0][n];
+    }
+};
+```
+
+## 区间型动态规划总结
+
+* 给定一个序列/字符串，进行一些操作
+* 最后一步会将序列/字符串去头/去尾
+* 剩下的会是一个区间`[i, j]`
+* 状态自然定义为`f[i][j]`，表示面对子序列`[i, …, j]`时的最优性质
+* 写程序时注意要枚举区间长度
 
 ## Lecture 6
 
+| Problem                                             | Category |
+|-------------------------------------------------------------|--|
+| [Longest Common Subsequence](#longest-common-subsequence)   |  |
+| [Interleaving String](#interleaving-string)                 |  |
+| [Edit Distance](#edit-distance)                             |  |
+| [Distinct Subsequences](#distinct-subsequences)             |  |
+| [Regular Expression Matching](#regular-expression-matching) |  |
+| [Wildcard Matching](#wildcard-matching)                     |  |
+| [Ones and Zeroes](#ones-and-zeroes)                         |  |
+
+### Longest Common Subsequence
+
+* State: `f[i][j]`, LCS of the first `i` chars from A and the first `j` chars from B.
+* 定义状态是一定要注意下标的意义。在这里我们指的是前i个字符和前j个字符
+* notice we can initialize the base case inside the loop.
+
+```c++
+class Solution {
+public:
+    int longestCommonSubsequence(string A, string B) {
+        int m = A.length();
+        int n = B.length();
+
+        if (m == 0 || n == 0) {
+            return 0;
+        }
+
+        int f[m + 1][n + 1];
+
+        for (int i = 0; i <=m; ++i) {
+            for (int j = 0; j <=n; ++j) {
+                if (i == 0 || j == 0) {
+                    f[i][j] = 0;
+                    continue;
+                }
+
+                f[i][j] = max(f[i - 1][j], f[i][j - 1]);
+                if (A[i - 1] == B[j - 1]) {
+                    f[i][j] = max(f[i][j], f[i - 1][j - 1] + 1);
+                }
+            }
+        }
+
+        return f[m][n];
+    }
+};
+```
+
+### Interleaving String
+
+* Consider the where the last char in s3 came from, either from s1 or s2.
+* state: `f[i][j]`, whether the **first `i`** from `s1` and the **first `j`**
+  from `s2` is interleaving of the **first `i + j`** from `s3`.
+* equation: `f[i][j] = (f[i][j - 1] && s[i + j - 1] == s2[j - 1]) || (f[i - 1][j] && s[i + j - 1] == s1[i - 1])`
+* we may attempt to have 3d matrix for the DP, but we can reduce the state
+  representation by noticing the index of `s3` can be derived from index of`s1`
+  and `s2`.
+
+```c++
+/* *
+ * last step: last s3[k - 1] == s1[m - 1] || s3[k - 1] == s2[n - 1]
+ * state: f[i][j][k]: s3[0],..s[k - 1] is interleaving of s1[0], ... s[i - 1] and s2[0], .. s[j - 1]
+ * equation 1: f[i][j][k] = (f[i][j - 1][k - 1] && s3[k - 1] == s1[i - 1])
+ *  || (f[i - 1][j][k - 1] && s3[k - 1] == s2[j - 1])
+ * equation 2: f[i][j] = (f[i][j - 1] && s[i + j - 1] == s2[j - 1])
+ *  || (f[i - 1][j] && s[i + j - 1] == s1[i - 1])
+ * init: f[0][0] = 1;
+ * f[0][0] = false if k > 0
+ */
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        int m = s1.length();
+        int n = s2.length();
+        int k = s3.length();
+        if (m + n != k)
+            return false;
+
+        f[m + 1][n + 1];
+        for (int i = 0; i <= m; ++i) {
+            for (int j = 0; j <= n; ++j) {
+                if (i == 0 || j == 0) {
+                    f[i][j] = false;
+                    continue;
+                }
+
+                f[i][j] = false;
+                if (i > 0 && s1[i - 1] == s3[i + j - 1]) {
+                    f[i][j] |= f[i - 1][j];
+                }
+
+                if (j > 0 && s2[j - 1] == s3[i + j - 1]) {
+                    f[i][j] |= f[i][j - 1];
+                }
+            }
+        }
+
+        return f[m][n];
+    }
+};
+```
+
+### Edit Distance
+
+* Notice the state update is not straightforward, you need to have the correct
+  setting first and then write down the state transition equation. We define the
+  state as follows `f[i][j]` is the edit distance to make the first `i` chars in
+  `A` and first `j` chars in `B` the same.
+* To make A and B the same, their last step need to be the same. There are three
+  editing operations:
+    1. Insert a char at the end of `A`, so that `A[-1] == B[-1]`. The state
+       should be updated as `f[i][j] = f[i][j - 1] + 1`. This assignment operation
+       purely mean that I can get `f[i][j]` from subproblem result. It **doesn't**
+       indicate any of ther iteration of the string. You cannot have it like
+       `f[i][j] = f[i - 1][j - 1] + 1`.
+    2. Delete a char at the end of `A`, so that `A[-1] == B[-1]`. The state update
+       should be `f[i][j] = f[i - 1][j] + 1`.
+    3. Replace a char at the end of `A`, so that `A[-1] == B[-1]`. The state update
+        should be `f[i][j] = f[i - 1][j - 1] + 1`.
+    4. No operation is needed, the last chars of the arrays are the same, such as
+       `A[-1] == B[-1]`. The state update should be `f[i][j] = f[i - 1][j - 1]`.
+* notice the state represent the **edit distance**, don't try to correlate it to
+  the index to the string **after the edit**, no string is changed while calculating
+  the edit distance `f[i][j]`.
+
+![Edit Distance](fig/edit-distance.png)
+
+=== "C++ DP Space O(mn)"
+
+    ```c++
+    class Solution {
+    public:
+        /* *
+        * State: f[i][j] is the minimum number of steps to edit w1 to w2.
+        * f[i][j] = f[i][j - 1] + 1; insert
+        *         = f[i - 1][j] + 1; delete
+        *         = f[i - 1][j - 1] + 1; replace
+        *         = f[i - 1][j - 1]; no opration needed
+        */
+        int minDistance(string word1, string word2) {
+            int m = word1.length();
+            int n = word2.length();
+
+            int f[m + 1][n + 1];
+
+            f[0][0] = 0;
+            int i, j;
+
+            for (i = 0; i <= m; i++) {
+                for (j = 0; j <= n; j++) {
+                    /* init */
+                    if (i == 0) {
+                        f[i][j] = j;
+                        continue;
+                    }
+
+                    if (j == 0) {
+                        f[i][j] = i;
+                        continue;
+                    }
+                                // delete          // insert
+                    f[i][j] = min(f[i - 1][j] + 1, f[i][j - 1] + 1);
+                                        // replace
+                    f[i][j] = min(f[i][j], f[i - 1][j - 1] + 1);
+
+                    // no operation
+                    if (word1[i - 1] == word2[j - 1]) {
+                        f[i][j] = min(f[i][j], f[i - 1][j - 1]);
+                    }
+
+                }
+            }
+
+            return f[m][n];
+        };
+    };
+    ```
+
+=== "C++ space O(n)"
+
+    ```c++
+    class Solution {
+    public:
+        /* *
+        * State: f[i][j] is the minimum number of steps to convert w1 to w2. (len(w1) < len(w2))
+        * f[i][j] = f[i][j - 1] + 1; insert
+        *         = f[i - 1][j] + 1; delete
+        *         = f[i - 1][j - 1] + 1; replace
+        *         = f[i - 1][j - 1]; no opration needed
+        *
+        */
+        int minDistance(string word1, string word2) {
+            int m = word1.length();
+            int n = word2.length();
+
+            int f[m + 1][n + 1];
+
+            f[0][0] = 0;
+            int i, j;
+            int prev = -1;
+            int curr = 0;
+
+            for (i = 0; i <= m; i++) {
+                prev = curr;
+                curr = 1 - curr;
+                for (j = 0; j <= n; j++) {
+                    /* init */
+                    if (i == 0) {
+                        f[curr][j] = j;
+                        continue;
+                    }
+
+                    if (j == 0) {
+                        f[curr][j] = i;
+                        continue;
+                    }
+                                // delete          // insert
+                    f[curr][j] = min(f[prev][j] + 1, f[curr][j - 1] + 1);
+                                        // replace
+                    f[curr][j] = min(f[curr][j], f[prev][j - 1] + 1);
+
+                    // no operation
+                    if (word1[i - 1] == word2[j - 1]) {
+                        f[curr][j] = min(f[curr][j], f[prev][j - 1]);
+                    }
+
+                }
+            }
+
+            return f[curr][n];
+        };
+    };
+    ```
+
+!!! note
+    - When using the `prev` and `curr` to index the 2d array, don't have to
+      strictly follow the meaning of it. What you just need to make sure is the
+      two row is rolling and not going to overwrite a useful value.
+    - Notice the update of the "rolling index" is in between the two for loops. It has nothing to do with index `j`.
+
+### Distinct Subsequence
+
+* Last step, `t[n-1]` match to `s[m-1]` or doesn't match.
+* State: `f[i][j]` is the number of subsequence for `t[0:j-2]` in `s[0:i-2]`
+* state transition: `f[i][j] = f[i - 1][j - 1]|s[i - 1] == t[j - 1] + f[i - 1][j]`
+
+```c++
+class Solution {
+public:
+    /* *
+     * Last step: S[m - 1] in the
+     * S[0], ... S[m - 2], S[m - 1]
+     * T[0], ... T[n - 2], T[n - 1]
+     * State: f[i][j]: # of subsequence for the first j chars in T have in the first i chars in S
+     * Equation: f[i][j] = f[i - 1][j - 1]|S[i - 1] == T[j - 1] + f[i - 1][j]
+     * 1. S[m - 1] == T[n - 1]
+     *    1. f[i - 1][j - 1]
+     *    2. f[i - 1][j]
+     * 2. S[m - 1] != T[n - 1]
+     *    1. f[i - 1][j]
+     * Init: f[0][0] = 1;
+     *       f[0][i] = 0;
+     *       f[i][0] = 1;
+     */
+    int numDistinct(string &S, string &T) {
+        int m = S.length();
+        int n = T.length();
+
+        int f[m + 1][n + 1];
+
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 && j == 0) {
+                    f[i][j] = 1;
+                    continue;
+                }
+                if (i == 0) {
+                    f[i][j] = 0;
+                    continue;
+                }
+                if (j == 0) {
+                    f[i][j] = 1;
+                    continue;
+                }
+
+                f[i][j] = f[i - 1][j];
+                if (S[i - 1] == T[j - 1]) {
+                    f[i][j] += f[i - 1][j - 1];
+                }
+            }
+        }
+
+        return f[m][n];
+    }
+};
+```
+
+### Regular Expression Matching
+
+=== "C++ DP Solution"
+
+    ```c++
+    class Solution {
+    public:
+        /* *
+        * Last step (last char to match in the strings):
+        *      p[j - 1] != s[i - 1] ==> f[i][j] = false;
+        *      p[j - 1] == s[i - 1] ==> f[i][j] = f[i - 1][j - 1];
+        *      p[j - 1] == '.' ==> f[i][j] = f[i - 1][j - 1]
+        * 
+        *      p[j - 1] == '*',
+        * case 1   p[j - 2] == '.' ==> f[i][j] = f[i - 1][j]; ??? why not f[i][j] = true;
+        *          p[j - 2] != '.'
+        *              p[j - 2] == s[i - 1] ==> f[i][j] = f[i'][j - 2] | i' is the length not equal to p[j - 2].
+        * which one?  /
+        *             \
+        * case 2       p[j - 2] == s[i - 1] ==> f[i][j] = f[i - 1][j]
+        *              p[j - 2] != s[i - 1] ==> f[i][j] = f[i][j - 2];
+        * 
+        * We see that case 1 and case 2 could be combined and put inside one if statement.
+        * State: f[i][j]: the first i chars form s match regex the first j chars from p
+        * Equation: f[i][j] =
+        * Init: f[0][0] = 0;
+        *       f[0][j] = ture; if p[j - 1] == '*'
+        *       f[i][0] = false;
+        */
+        bool isMatch(const char *s, const char *p) {
+            int i, j;
+            int m = 0;
+            int n = 0;
+
+            while (s[m] != '\0') {
+                m++;
+            }
+
+            while (p[n] != '\0') {
+                n++;
+            }
+
+            int f[m + 1][n + 1];
+
+            for (i = 0; i <= m; i++) {
+                for (j = 0; j <= n; j++) {
+                    if (i == 0 && j == 0) {
+                        f[i][j] = true;
+                        continue;
+                    }
+
+                    if (j == 0) {
+                        f[i][j] = false;
+                        continue;
+                    }
+
+                    f[i][j] = false;
+                    if (p[j - 1] == '*') {
+                        // matched one char at end of s, s=[----]a, p=[-----]a*
+                        if (i > 0 && j > 1 && (p[j - 2] == '.' || p[j - 2] == s[i - 1])) {
+                            f[i][j] |= f[i - 1][j]; //use whole p to match s[0, ... i - 2]
+                        }
+
+                        // don't care the a* or .*,
+                        // match previous chars s=[-----a], p=[------]a*
+                        if (j > 1) {
+                            f[i][j] |= f[i][j - 2];
+                        }
+                    } else if (i > 0 && (p[j - 1] == '.' || p[j - 1] == s[i - 1])) {
+                        f[i][j] = f[i - 1][j - 1];
+                    }
+                }
+            }
+
+            return f[m][n];
+        }
+    };
+    ```
+
+=== "C++ recursive solution"
+
+    ```c++
+    // The idea is to deal with each case one by one.
+    class Solution {
+    public:
+        bool isMatch(string s, string p) {
+            /* base cases when none left or only one char left */
+            if (p.empty()) return s.empty();
+            if (p.length() == 1) {
+                return (s.length() == 1 && (s[0] == p[0] || p[0] == '.'));
+            }
+
+            if (p[1] != '*') {
+                if (s.empty()) return false;
+                return (s[0] == p[0] || p[0] == '.') && isMatch(s.substr(1), p.substr(1));
+            }
+            /* p[1] == '*' */
+            while (!s.empty() && (s[0] == p[0] || p[0] == '.')) {
+                /* consider the case: s="aaaabcd", p=".*b*cd"*/
+                if (isMatch(s, p.substr(2))) return true;
+                s = s.substr(1);
+            }
+
+            /* consider the case: s="aaaaa", p="a*" and case s="aaaaa", p="a*b" */
+            return isMatch(s, p.substr(2)); /* how comes? */
+        }
+    };
+    ```
+
+### Wildcard Matching
+
+* 不需要知道'*'最多能匹配几个字符。在当前step只需考虑用'*'去匹配一个字符或者完全不匹配就覆盖了
+  所有的情况。至于最终可以匹配几个，是在多个step中的信息。当前step并不需要关心.
+* When `p[j - 1] == '*'`, since we don't know '*' match how many chars in s? In
+  the first solution, I used a third loop to check. We can think it in this way,
+  for `p[j - 1] == '*'`, we can use '*' to match the trailing character or not
+  to use '*' to match previously. the we have `f[i][j] = f[i - 1][j] | f[i][j - 1]`.
+
+=== "C++ O(mnk)"
+
+    ```c++
+    class Solution {
+    public:
+        /* *
+        * last step:
+        *   p[j - 1] == '?'
+        *      f[i][j] = f[i - 1][j - 1]
+        *   s[i - 1] == p[j - 1]
+        *      f[i][j] = f[i - 1][j - 1]
+        *   p[j - 1] == '*', ('*' may match k of trailng characters from s, but we don't know how many)
+        *      f[i][j] = f[i][j - 1] OR f[i - 1][j - 1] OR f[i - 2][j - 1], .. f[i - k][j - 1]
+        * State: f[i][j]: the first i chars from s match the first j letters from p
+        * Equation:
+        * Init: f[0][0] = true;
+        *       f[i][0] = false;
+        *       f[0][j] = true; if (p[j - 1] == "*" && j == 1)
+        * calculate by DP:
+        *       f[0][j] = false; if (j > 1) 
+        */
+        bool isMatch(const char *s, const char *p) {
+            int m = 0;
+            int n = 0;
+            int i, j, k;
+            while (s[m] != '\0') {
+                m++;
+            }
+            while (p[n] != '\0') {
+                n++;
+            }
+
+            int f[m + 1][n + 1];
+
+            for (i = 0; i <= m; i++) {
+                for (j = 0; j <= n; j++) {
+                    if (i == 0 && j == 0) {
+                        f[i][j] = true;
+                        continue;
+                    }
+
+                    if (j == 0) {
+                        f[i][j] = false;
+                        continue;
+                    }
+
+                    f[i][j] = false;
+                    if (p[j - 1] == '*') {
+                        // k == i indicate the special case: f[0][1] (s="", p="*")
+                        for (k = 0; k <= i; k++) {
+                            f[i][j] |= f[i - k][j - 1];
+                        }
+                    } else {
+                        if (i > 0 && (p[j - 1] == '?' || s[i - 1] == p[j - 1])) {
+                            f[i][j] = f[i - 1][j - 1];
+                        }
+                    }
+                }
+            }
+
+            return f[m][n];
+        }
+    };
+    ```
+
+=== "C++ O(mn)"
+
+    ```c++
+    class Solution {
+    public:
+        bool isMatch(const char *s, const char *p) {
+            // write your code here
+            int m = 0;
+            int n = 0;
+            int i, j, k;
+            while (s[m] != '\0') {
+                m++;
+            }
+            while (p[n] != '\0') {
+                n++;
+            }
+
+            int f[m + 1][n + 1];
+
+            for (i = 0; i <= m; i++) {
+                for (j = 0; j <= n; j++) {
+                    if (i == 0 && j == 0) {
+                        f[i][j] = true;
+                        continue;
+                    }
+
+                    if (j == 0) {
+                        f[i][j] = false;
+                        continue;
+                    }
+
+                    f[i][j] = false;
+                    if (p[j - 1] == '*') {
+                        f[i][j] = f[i][j - 1]; // ignore the '*', match nothing
+                        if (i > 0) {
+                            f[i][j] |= f[i - 1][j]; // match the trailing char from s and continue
+                        }
+                    } else {
+                        if (i > 0 && (p[j - 1] == '?' || s[i - 1] == p[j - 1])) {
+                            f[i][j] = f[i - 1][j - 1];
+                        }
+                    }
+                }
+            }
+
+            return f[m][n];
+        }
+    };
+    ```
+
+### Ones and Zeroes
+
+* This is essentially a backpack problem see the backpack problem. The key to
+  solve the problem is taking the last item or do not take the last item.
+* 技巧：背包问题的“最后一步”是指最后一个“物品”在结果中或者不再结果中.
+
+=== "C++ DP O(mnk)"
+
+    ```c++
+    class Solution {
+    public:
+        /* *
+        * 背包问题，最后一个进“背包”，最后一个不进。
+        * State: f[i][j][k]: maximum of k strs can be formed by i zeros and j ones.
+        * Equation: f[i][j][k] = max(f[i][j][k - 1], f[i - a][j - b][k - 1] + 1| i > a and j > b)
+        * Init: f[i][j][0] = 0
+        *
+        */
+        int findMaxForm(vector<string>& strs, int m, int n) {
+            int len = strs.size();
+            int cnt0[len];
+            int cnt1[len];
+            int i, j, k;
+            int f[m + 1][n + 1][len + 1];
+            /* count all the zeros and ones */
+            for (k = 0; k < len; k++) {
+                cnt0[k] = 0;
+                cnt1[k] = 0;
+                for (i = 0; i < strs[k].length(); i++) {
+                    if (strs[k][i] == '0') {
+                        cnt0[k]++;
+                    } else {
+                        cnt1[k]++;
+                    }
+                }
+            }
+
+            for (i = 0; i <= m; i++) {
+                for (j = 0; j <= n; j++) {
+                    f[i][j][0] = 0;
+                }
+            }
+
+            /* k started from 1 */
+            for (k = 1; k <= len; k++) {
+                for (i = 0; i <= m; i++) {
+                    for (j = 0; j <= n; j++) {
+                        f[i][j][k] = f[i][j][k - 1];
+                        if (i >= cnt0[k - 1] && j >= cnt1[k - 1]) {
+                            f[i][j][k] = max(f[i][j][k], f[i - cnt0[k - 1]][j - cnt1[k - 1]][k - 1] + 1);
+                        }
+                    }
+                }
+            }
+
+            return f[m][n][len];
+        }
+    };
+    ```
+
+=== "C++ DP O(nk)"
+
+    ```c++
+    class Solution {
+    public:
+        int findMaxForm(vector<string>& strs, int m, int n) {
+            int len = strs.size();
+            int cnt0[len];
+            int cnt1[len];
+            int i, j, k;
+            /* count all the zeros and ones */
+            for (k = 0; k < len; k++) {
+                cnt0[k] = 0;
+                cnt1[k] = 0;
+                for (i = 0; i < strs[k].length(); i++) {
+                    if (strs[k][i] == '0') {
+                        cnt0[k]++;
+                    } else {
+                        cnt1[k]++;
+                    }
+                }
+            }
+            int f[m + 1][n + 1][len + 1];
+            int prev, curr = 0;
+
+            for (i = 0; i <= m; i++) {
+                for (j = 0; j <= n; j++) {
+                    f[i][j][curr] = 0;
+                }
+            }
+
+            /* k started from 1 */
+            for (k = 1; k <= len; k++) {
+                prev = curr;
+                curr = 1 - curr;
+                for (i = 0; i <= m; i++) {
+                    for (j = 0; j <= n; j++) {
+                        f[i][j][curr] = f[i][j][prev];
+                        if (i >= cnt0[k - 1] && j >= cnt1[k - 1]) {
+                            f[i][j][curr] = max(f[i][j][curr], f[i - cnt0[k - 1]][j - cnt1[k - 1]][prev] + 1);
+                        }
+                    }
+                }
+            }
+
+            return f[m][n][curr];
+        }
+    };
+    ```
+
+## 双序列型动态规划总结
+
+* 两个一维序列/字符串
+* 突破口
+    1. 串A和串B的最后一个字符是否匹配
+    2. 是否需要串A/串B的最后一个字符
+    3. 缩减问题规模
+* 数组下标表示序列`A`前`i`个，序列`B`前`j`个: `f[i][j]`
+* 初始条件和边界情况
+    1. 空串如何处理
+    2. 计数型(情况1+情况2+…)以及最值型(min/max{情况1，情况2，…})
+* 匹配的情况下勿忘+1(操作数多1次，匹配长度多1)
+
 ## Lecture 7
 
-### 403. Frog Jump
+| Problem                                                           | Category |
+|-------------------------------------------------------------------|----------|
+| [Minimum Adjustment Cost](#minimum-adjustment-cost)               |          |
+| [K Sum](#k-sum)                                                   | 背包型    |
+| [Longest Increasing Subsequence](#longest-increasing-subsequence) | 序列型    |
+| [K Edit Distance](#k-edit-distance)                               | 双序列 + Trie|
+| [Frog Jump](#frog-jump)                                           | 坐标 + 状态|
+| [Maximal Square](#maximal-square)                                 | 坐标      |
+| [Maximal Rectangle](#maximal-rectangle)                           |          |
+
+### Minimum Adjustment Cost
+
+* The key is how to come up the last step and the induction. The key is to come
+  up a sensable modle of the problem. See the analysis in the code comments.
+* The hard part of the problem is how to prove the the range: `1 <= B[i] <= 100`,
+  so that we can create the state array `f[n + 1][100 + 1]`
+* The initial value of this DP problem is not obvious. You have to pay
+  attention to the initial condition of this problem, it different from the
+  provious DP problems.
+
+```c++
+class Solution {
+public:
+    /**
+     * 技巧：要看作把A数组通过变化变成B数组。最后一步考虑把A[i]变成B[i].
+     *       这样比在A的基础上变化更容易考虑递推关系
+     * Last step: change A[i] to B[i], result[i] = result[i - 1] + abs(B[i] - A[i])
+     * State: f[i][j]: the cost of changing the first i element in A, 
+     *        and the last elemnet A[i - 1] changed is changed to j (j == B[i])
+     * Induction: A[i - 1] --> j, A[i - 2] --> k, |j - k| < target ==> j - target <= k <= j + target
+     * Equation: f[i][j] = min_{j - target <= k <= j + target, 1 <= k <= 100}(f[i - 1][k] + abs(j - A[i]))
+     * Init: f[0][0] = ?
+     *       f[1][k] = abs(k - A[0])
+     */
+    int MinAdjustmentCost(vector<int> A, int target) {
+        int n = A.size();
+
+        int f[n + 1][100 + 1];
+        int i, j, k;
+
+        for (j = 1; j <= 100; j++) {
+            f[1][j] = abs(j - A[0]);
+        }
+
+        for (i = 2; i <= n; i++) {
+            for (j = 1; j <= 100; j++) {
+                f[i][j] = INT_MAX;
+                for (k = j - target; k <= j + target; k++) {
+                    if (k < 1 || k > 100) {
+                        continue;
+                    }
+
+                    f[i][j] = min(f[i][j], f[i - 1][k] + abs(j - A[i - 1]));
+                }
+            }
+        }
+
+        int res = INT_MAX;
+        for (j = 1; j <= 100; j++) {
+            res = min(res, f[n][j]);
+        }
+
+        return res;
+    }
+};
+```
+
+!!! note
+    The space complexity is $O(100n)$. The time complexity is $O(1002n)$.
+
+### K Sum
+
+* This is a backpack problem which is very similar to the problem [Backpack VI](#backpack-vi)
+* 背包问题的话，总承重要进状态，也就是说`target`要进状态。其他还有什么要进状态呢？这就要求认真分析题目。
+* 对于这种类似求不放回的组合数的过程，不要尝试去用循环来决定某一个元素是否被选中。而是要结合
+  induction的想法，从某个特殊的步骤着眼，在这个步骤中考虑选中或者不选某个元素（本身带有循环的意思，
+  任何一个元素只能被选中一次，和不选一次）
+* 下面代码注释中给出了我最初的错误分析，随后又给出了正确的分析。对比二者不同，争取以后少犯类似错误。
+* 关键需要注意的是初始化。先把`f[0][q][s]`全部初始化为0，然后再初始化`f[0][0][0]`。这两个步骤不能颠倒顺序，
+* 注意也可以在for loop中初始化f[0][0][0]。
+* Time complexity $O(n \cdot k \cdot \text{target})$, space complexity $O(n \cdot k \cdot \text{target})$.
+  We can use rolling array to reduce the space complexity to $O(k \cdot \text{target})$.
+
+=== "C++ DP"
+
+    ```c++
+    class Solution {
+    public:
+        /**
+        * This is a backpack problem, 
+        * Last step: A[i] is selected or not selected.
+        * State: f[i][j]: total solution of i element can sum up to j.
+        * Equation: f[i][j] = f[i - 1][j] + f[i - 1][j - A[i - 1]]|j > A[i - 1] for all i == k.
+        * Equation: f[i][j] = sum(f[i - 1][j - A[k]] | 0 <= k <= i - 1, j > A[k]).
+        * Init: f[0][0] = 1; // ?
+        *       f[0][j] = 0
+        * ******************** WRONG *********************************
+        * ******************** CORRECT *******************************
+        * Last step: A[i - 1] is selected or not selected. 
+        *            If selected, we should select k - 1 numbers from A[0], .. A[n - 2] that sum to target - A[i - 1].
+        *            If not selected, we should select k number from A[0], .. A[n - 2] that sum to target.
+        * State: f[i][k][s]: total solution of selecting k element from first i element that sum up to j.
+        * Equation: f[i][k][s] = f[i - 1][k][s] + f[i - 1][k - 1][s - A[i - 1]]|s > A[i - 1].
+        * Init: f[0][0][0] = 1; // ?
+        *       f[0][k][s] = 0
+        * 
+        */
+        int kSum(vector<int> A, int k, int target) {
+            // wirte your code here
+            int n = A.size();
+
+            int f[n + 1][k + 1][target + 1];
+            int i, q, s;
+
+            // init
+            for (q = 0; q <= k; q++) {
+                for (s = 0; s <= target; s++) {
+                    f[0][q][s] = 0;
+                }
+            }
+
+            f[0][0][0] = 1;
+
+            for (i = 1; i <= n; i++) {
+                for (q = 0; q <= k; q++) {
+                    for (s = 0; s <= target; s++) {
+                        // not select A[i - 1]
+                        f[i][q][s] = f[i - 1][q][s];
+
+                        // select A[i - 1]
+                        if (q >= 1 && s >= A[i - 1]) {
+                            f[i][q][s] += f[i - 1][q - 1][s - A[i - 1]];
+                        }
+                    }
+                }
+            }
+
+            return f[n][k][target];
+        }
+    };
+    ```
+
+=== "C++ DP space optimized"
+
+    ```c++
+    class Solution {
+    public:
+        int kSum(vector<int> A, int k, int target) {
+            // wirte your code here
+            int n = A.size();
+
+            int f[n + 1][k + 1][target + 1];
+            int i, q, s;
+            int curr = 0, prev = 0;
+
+            // init
+            for (q = 0; q <= k; q++) {
+                for (s = 0; s <= target; s++) {
+                    f[curr][q][s] = 0;
+                }
+            }
+
+            f[curr][0][0] = 1;
+
+            for (i = 1; i <= n; i++) {
+                prev = curr;
+                curr = 1 - curr ;
+                for (q = 0; q <= k; q++) {
+                    for (s = 0; s <= target; s++) {
+                        // not select A[i - 1]
+                        f[curr][q][s] = f[prev][q][s];
+
+                        // select A[i - 1]
+                        if (q >= 1 && s >= A[i - 1]) {
+                            f[curr][q][s] += f[prev][q - 1][s - A[i - 1]];
+                        }
+                    }
+                }
+            }
+
+            return f[curr][k][target];
+        }
+    };
+    ```
+
+### [Longest Increasing Subsequence](#longest-increasing-subsequence)
+
+### K Edit Distance
+
+### Frog Jump
 
 * You could use naive solution to iterate all the possible cases and use
   memoization to speed up.
@@ -2080,3 +3479,7 @@ public class Solution {
         }
     };
     ```
+
+### Maximal Square
+
+### Maximal Rectangle

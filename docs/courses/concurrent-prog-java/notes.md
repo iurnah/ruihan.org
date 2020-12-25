@@ -1145,7 +1145,10 @@ while (size() > 1) {
   if (!tryLock(n1)) { continue; }
   e = getMinEdge(M);
   n2 = getNeighbor(n1, e);
-  if (!tryLock(n2)) { continue; }
+  if (!tryLock(n2)) {
+    // fixup
+    continue;
+  }
   n3 = merge(n1, n2);
   remove(n2);
   insert(n3);
