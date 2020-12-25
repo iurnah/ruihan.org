@@ -370,7 +370,10 @@
   <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>tryLock</span><span class=p>(</span><span class=n>n1</span><span class=p>))</span> <span class=p>{</span> <span class=k>continue</span><span class=p>;</span> <span class=p>}</span>
   <span class=n>e</span> <span class=o>=</span> <span class=n>getMinEdge</span><span class=p>(</span><span class=n>M</span><span class=p>);</span>
   <span class=n>n2</span> <span class=o>=</span> <span class=n>getNeighbor</span><span class=p>(</span><span class=n>n1</span><span class=p>,</span> <span class=n>e</span><span class=p>);</span>
-  <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>tryLock</span><span class=p>(</span><span class=n>n2</span><span class=p>))</span> <span class=p>{</span> <span class=k>continue</span><span class=p>;</span> <span class=p>}</span>
+  <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>tryLock</span><span class=p>(</span><span class=n>n2</span><span class=p>))</span> <span class=p>{</span>
+    <span class=c1>// fixup</span>
+    <span class=k>continue</span><span class=p>;</span>
+  <span class=p>}</span>
   <span class=n>n3</span> <span class=o>=</span> <span class=n>merge</span><span class=p>(</span><span class=n>n1</span><span class=p>,</span> <span class=n>n2</span><span class=p>);</span>
   <span class=n>remove</span><span class=p>(</span><span class=n>n2</span><span class=p>);</span>
   <span class=n>insert</span><span class=p>(</span><span class=n>n3</span><span class=p>);</span>
