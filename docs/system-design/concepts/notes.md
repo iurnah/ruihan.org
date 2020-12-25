@@ -25,13 +25,20 @@ ACID databases provide:
 
 * Atomicity: database updates either happen completely, or they don't happen at
   all. (Books are either checked in to the library or checked out; they can't be
-  in a weird in-between state.)
+  in a weird in-between state.) Note the difference between Atomicity in a database
+  system and atomic operation in concurrent programming.
 * Consistency: rules in the database are always enforced. (All the books are
-  shelved correctly and in order.)
+  shelved correctly and in order.) Consistency is a property of the application,
+  while atomicity, isolation, and durability are properties of the database.
 * Isolation: concurrent updates happen as if they ran one after the other.
-  (Everybody is quiet in the library; no other patrons are distracting you.)
+  Formalized as serializability or linearizability in some textbooks.
+  (e.g. Everybody is quiet in the library; no other patrons are distracting you.)
 * Durability: once an update finishes, it stays in the database, even if
-  something fails later on. (The library's records stick around even if the power goes out.)
+  something fails later on. In a single-node database, durability typically means
+  that the data has been written to non-volatile storage such as a hard drive or
+  SSD. In a replicated database, durability may mean that the data has been
+  successfully copied to some number of nodes. (The library's records stick around
+  even if the power goes out.)
 
 BASE databases have fewer guarantees:
 
@@ -66,13 +73,16 @@ BASE database may be a better choice.
 
 ## Consistency model
 
+1. Week consistent
+    * Cache system
+2. Eventually consistent
+    * Mail, DNS, SMTP
+3. Strong consistent
+    * RDBMS
+
 * [分布式系统的事务处理](https://coolshell.cn/articles/10910.html)
-
-* Master-Slave
-* Master-Master
-* 2/3 Phase Commit
-
-### Eventually Consistent
+* [Google I/O 2009 - Transactions Across Datacenters](https://www.youtube.com/watch?v=srOgpXECblk&ab_channel=GoogleDevelopers)
+* [Transaction Across DataCenter Slides](http://snarfed.org/transactions_across_datacenters_io.html)
 
 ## Consistent hashing
 
@@ -81,6 +91,10 @@ BASE database may be a better choice.
 * [Geospatial Performance Improvements in MongoDB 3.2](https://www.mongodb.com/blog/post/geospatial-performance-improvements-in-mongodb-3-2)
 
 ## Bloom filter
+
+### Counting Bloom filter
+
+## Count–min sketch
 
 ## Cuckoo filter
 
@@ -99,6 +113,31 @@ BASE database may be a better choice.
 [Cassandra vs MongoDB vs CouchDB vs Redis vs Riak vs HBase vs Couchbase vs OrientDB vs Aerospike vs Neo4j vs Hypertable vs ElasticSearch vs Accumulo vs VoltDB vs Scalaris vs RethinkDB comparison](https://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis)
 
 ![DB Systems CAP comparison](./fig/DB-CAP-comparison.png)
+
+## ZooKeepr
+
+ZooKeeper is a centralized service for maintaining configuration information,
+naming, providing distributed synchronization, and providing group services. For
+example Rest.li use Zookeeper to store the DNS and the naming information for its
+D2 (Dynamic Discovery).
+
+Zookeeper store information that in less than 1M size. The service itself is
+replicated over a set of machines that comprise the service. These machines
+maintain an in-memory image of the data tree along with a transaction logs and
+snapshots in a persistent store. Clients only connect to a single ZooKeeper
+server. When a client first connects to the ZooKeeper service, the first
+ZooKeeper server will setup a session for the client. If the client needs to
+connect to another server, this session will get reestablished with the new server.
+
+Read requests sent by a ZooKeeper client are processed locally at the ZooKeeper
+server to which the client is connected. Write requests are forwarded to other
+ZooKeeper servers and go through consensus before a response is generated. Sync
+requests are also forwarded to another server, but do not actually go through
+consensus to improve throughtput. Thus, the throughput of read requests **scales**
+with the number of servers and the throughput of write requests **decreases**
+with the number of servers.
+
+* [Apache ZooKeeper Project Description](https://cwiki.apache.org/confluence/display/ZOOKEEPER/ProjectDescription)
 
 ## Kafka
 

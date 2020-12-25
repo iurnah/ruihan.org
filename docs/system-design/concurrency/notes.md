@@ -1,5 +1,7 @@
 # Concurrency and Synchronization
 
+## Coroutine
+
 ## Thread and concurrency
 
 ### Thread memory model
@@ -578,3 +580,4 @@ is acceptable in most of the projects. A good reference is here[1]. source code.
 
 - [Operating Systems: Three Easy Pieces](http://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks.pdf)
 - [timer queue – a way to handle multiple timers using one thread](https://davejingtian.org/2013/09/28/timer-queue-a-way-to-handle-multiple-timers-using-one-thread/)
+- [COMP 322: Fundamentals of Parallel Programming](https://wiki.rice.edu/confluence/display/PARPROG/COMP322)
