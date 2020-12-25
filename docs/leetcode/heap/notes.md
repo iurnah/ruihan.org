@@ -19,7 +19,7 @@
 
 ## Heap sort
 
-### Heap implementation using array
+### Heap implementation using an array
 
 ### Heap implementation using HeapNode
 
@@ -41,7 +41,7 @@
 
 * Notice if the elements in the queue is some complex container or object, you
   have to declare `priority_queue` with its underline container type, and the
-  binary predicate `std::greater` if necessary. Here is example in the solution
+  binary predicate `std::greater` if necessary. Here is an example in the solution
   of the problem [Minimum Unique Word Abbreviation](#minimum-unique-word-abbreviation)
 
     ```C++
@@ -54,7 +54,7 @@
   element base on the first int value. How can we sort the priority queue element based
   on the second value of the `pair<int, string>`. To achieve that, we cannot use the
   building function object greater we have write a customized function object and pass
-  to the declaration of the pq like this,
+  to the declaration of the `pq` like this,
 
     ```C++
     class mycomparison
@@ -72,9 +72,24 @@
     ...
     ```
 
-* We may need to write customized binary predicate function in order to implement
-  the `min-heap` or `max-heap`. The binary predication function is depends on the
+* We may need to write a customized binary predicate function in order to implement
+  the `min-heap` or `max-heap`. The binary predicate function depends on the
   underline container and also the type of the container element.
+
+### Python heapq package
+
+Python [`heapq` package](https://docs.python.org/3.8/library/heapq.html) provides
+a library of build heap data structure and heap related operations. It supports
+the following methods,
+
+1. `heapq.heappush(heap, item)`
+2. `heapq.heappop(heap)`
+3. `heapq.heappushpop(heap, item)`
+4. `heapq.heapify(list)`
+5. `heapreplace(heap, item)` equivalent to heappoppush (not exists).
+6. `heapq.merge(*iterable, key=None, reverse=False)`
+7. `heapq.nlargest(n, iterable, key=None)`
+8. `heapq.nsmallest(n, iterable, key=None)`
 
 ## Priority Queue
 
@@ -87,7 +102,7 @@ Solution 1 Priority queue
   "min list" still have node.
 * Priority queue solution is $O(N \log k)$
 
-```C++
+```c++
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -471,7 +486,135 @@ public:
 };
 ```
 
-## Use priority queue to rearange tasks (characters, string, etc.)
+### 373. Find K Pairs with Smallest Sums
+
+* use the following visual add when writing your code. The best solution choose
+  the smallest K pairs **layer by layer** from top left to bottom right.
+* From the visualization, you can see that this problem is equivalent to the
+  problem [Kth Smallest Element in a Sorted Matrix](#kth-smallest-element-in-a-sorted-matrix)
+
+```text
+      2   4   6
+   +------------
+ 1 |  3   5   7
+ 7 |  9  11  13
+11 | 13  15  17
+```
+
+=== "Python heapq and generator"
+
+    ```python
+    def kSmallestPairs(self, nums1, nums2, k):
+        streams = map(lambda u: ([u+v, u, v] for v in nums2), nums1)
+        stream = heapq.merge(*streams)  # streams is iterables
+        return [suv[1:] for suv in itertools.islice(stream, k)]
+    ```
+
+=== "Java O(KlogK)"
+
+```
+https://leetcode.com/problems/find-k-pairs-with-smallest-sums/discuss/84551/simple-Java-O(KlogK)-solution-with-explanation
+```
+
+=== "C++ Priority Queue"
+
+    ```c++
+    class cmp {
+    public:
+        bool operator() (const pair<int, int>& a, const pair<int, int>& b) {
+            return a.first + a.second < b.first + b.second;
+        }
+    };
+
+    class Solution {
+    public:
+        vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+            vector<pair<int, int>> res;
+            priority_queue<pair<int, int>, vector<pair<int, int>>, cmp> pq;
+
+            for (int i = 0; i < min((int)nums1.size(), k); ++i) {
+                for (int j = 0; j < min((int)nums2.size(), k); ++j) {
+                    pq.push({nums1[i], nums2[j]});
+                    if (pq.size() > k) {
+                        pq.pop();
+                    }
+                }
+            }
+
+            while (!pq.empty()) {
+                res.push_back(pq.top()); pq.pop();
+            }
+            return res;
+        }
+    };
+    ```
+
+=== "C++ priority queue optimized (scheduler model)"
+
+    ```c++
+    class Solution {
+    public:
+        vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+            // Base cases
+            if (nums1.size() == 0 || nums2.size() == 0 || k == 0) {
+                return { };
+            }  
+
+            // Result pairs
+            vector<pair<int, int>>  result;
+
+            // Prioritized scheduling based on sum (consider it as edge weight in graph)
+            // Similar to Prim's algorithm
+
+            // Min sum pq storing pair indices of nums1 index and nums2 index
+            auto pqCmp = [&nums1, &nums2](const pair<int, int>& p1, const pair<int, int>& p2) {
+                return nums1[p1.first] + nums2[p1.second] > nums1[p2.first] + nums2[p2.second];
+            };
+
+            priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(pqCmp)> pq(pqCmp);
+
+            // Visited is required to avoid duplicate scheduling
+            vector<vector<bool>> visited(nums1.size(), vector<bool>(nums2.size(), false));
+
+            // Push 0, 0 as the seed for scheduling
+            pq.push(make_pair(0, 0));
+
+            // Find k smallest sum pairs
+            while (k && !pq.empty()) {
+                // Current min sum index pair is at pq top
+                auto top = pq.top();
+
+                pq.pop();
+                result.push_back(make_pair(nums1[top.first], nums2[top.second]));
+
+                // Advance num1 index and schedule
+                ++top.first;
+
+                if (top.first < nums1.size() && !visited[top.first][top.second]) {
+                    pq.push(top);
+                    visited[top.first][top.second] = true;
+                }
+
+                --top.first;
+
+                // Advance num2 index and schedule
+                ++top.second;
+
+                if (top.second < nums2.size() && !visited[top.first][top.second]) {
+                    pq.push(top);
+                    visited[top.first][top.second] = true;
+                }
+
+                --top.second;
+                --k;
+            }
+
+            return result;
+        }
+    };
+    ```
+
+## Use priority queue to rearrange tasks (characters, string, etc.)
 
 ### Rearrange String k Distance Apart
 

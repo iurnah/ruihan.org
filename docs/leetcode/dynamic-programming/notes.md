@@ -19,13 +19,16 @@ The knapsack problems often given the follow conditions
    hence 0-1 knapsack problem. `c[i]` could also be `inf`, meaning the items can
    be used as many time as you want (bounded by the size of the knapsack).
 
-The question it ask could be
+Knapsack problems ask
 
 1. Whether the given items can fit into the size of the knapsack.
 2. Find the maximum capacity the items can occupy the knapsack.
 3. Find the maximum value of items that can fit into the knapsack.
 4. Find the total number of ways the given item can fit into the size of the knapsack.
    (reuse is allowed)
+
+In all the above questions, the items can be reused or not reused, they are very
+different and the throught process and the solution are also different.
 
 ## Knapsack I
 
@@ -204,32 +207,38 @@ The question it ask could be
   `m / s[i]` times. In this sense, this problem is equivalent to the problem
   [Knapsack IV](#knapsack-iv).
 - From $O(MNK)$ to $O(MN)$: notice the third loop can be optimized by closely
-  looking for the redundant computation. Because the innermost look will always
-  look back an integer multiple of times of `s[i]` of previous row `f[i - 1]`.
+  looking for the redundant computation. For each `i` and `j`, we check all `k`s
+  for the value of `f[i - 1][j - k * A[i - 1]]` to update `f[i][j]`. We can
+  remove some of the redundant computation. Because the innermost loop will
+  always look back an integer multiple of `s[i]` of the previous row `f[i - 1]`.
   For each `i`, we only looking for multiple times of `s[i - 1]` index before.
   We can use previous results directly for the current calculation then add `v[i]`
   instead of restart from `k = 0`. This way we can get rid of the inner most loop.
+  See the below diagram and sketch for the derivation of the state equation change.
   As a result, the solution code is very similar to the problem [Knapsack II](#knapsack-ii),
   except the single difference in indexing (`i` instead of `i - 1`). but they
   are completely different, the similarity of the code is pure a coincidence.
 
-  ```
-          j
-          0  1  2  3  4  5  6  7  8  9
-  f[i-1]  x  x  x  x  x  x  x  x  x  x
-  s[i]    v     v     v     2
-  f[i][4] = max(f[i - 1][j - 0*2], f[i - 1][j - 1*2] + 1*v[i - 1], ...)
-  f[i][6] = max(f[i - 1][j - 0*2], f[i][4] + v[i - 1])
-          = max(f[i - 1][j],       f[i][j - s[i - 1]] + v[i - 1])
-  ```
+    ```text
+            j
+            0  1  2  3  4  5  6  7  8  9
+    f[i-1]  x  x  x  x  x  x  x  x  x  x
+    s[i]    v     v     v     2
+    f[i][4] = max(f[i - 1][j - 0*2], f[i - 1][j - 1*2] + 1*v[i - 1], ...)
+    f[i][6] = max(f[i - 1][j - 0*2], f[i][4] + v[i - 1])
+            = max(f[i - 1][j],       f[i][j - s[i - 1]] + v[i - 1])
+    ```
+
+    ![Optimize](fig/knapsack-iii-optimization-mn.png)
+    ![Optimize Process](fig/knapsack-iii-optimization-process.png)
 
 - From $O(MN)$ to $O(M)$: This is from the following observation explained using
   the figure. It is a very clever idea in noticing that the new value only
   calculated from the the front index `j - k*s[i-1]` and the the old value
   from the same index (hence the `j` is iterating from `0` in the $O(M)$
   solution, in contrast, the $O(M)$ solution in [Knapsack II](#knapsack-ii)
-  iterate `j` backward).
-  ![knapsack-iii-optimization](./fig/knapsack-iii-optimization.png)
+  iterate `j` backward because need the old value not the new ones).
+  ![knapsack-iii-optimization m](./fig/knapsack-iii-optimization-m.png)
 
 === "DP O(MNK)"
 
@@ -1123,13 +1132,13 @@ Solution 2
 
 - One insight of this solution is that every word in the sentence is possible to
   start a new row, but not necessary. For example, a long row can contain
-  multiple of the setence, but the last word cannot fit in to this sigle row, it
+  multiple of the setences, but the last word cannot fit into this sigle row, it
   start a new row. In this case only the first word in the sentence and the last
   word can start a new row. We use this insight in the following way, for each
-  word, we assume it could start a new row, then greedyly use the following
-  words in the sentence to fix the row, we record the total number of words can
-  fit this row in dp[i], i is the index of the starting word in the sentence.
-  after the calculation, we could count sum(dp[i]), i is starting word's index
+  word, we assume it could start a new row, then use the following words in the
+  sentence to fix the row, we record the total number of words that can fit this
+  row in `dp[i]`, `i` is the index of the starting word in the sentence. After
+  the calculation, we could count `sum(dp[i])`, `i` is starting word's index.
   
 ```C++
 class Solution {
@@ -1162,4 +1171,4 @@ public:
 
 TODO:
 This solution may be further improved because for some of the count, we never
-used. Can we calculate the final result by only one loop, or in a nested loop.
+used. Can we calculate the final result by only one loop, or in a nested loop?

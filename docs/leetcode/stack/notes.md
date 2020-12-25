@@ -1,5 +1,9 @@
 # Stack
 
+## Key problem types
+
+* [monotonous increase stack](https://leetcode.com/problems/sum-of-subarray-minimums/discuss/178876/stack-solution-with-very-detailed-explanation-step-by-step)
+
 ## Problems
 
 ### 496. Next Greater Element I
@@ -11,7 +15,9 @@
   all `nums2` elements and store them in a map, then lookup the elements in
   `num1` from the map.
 
-```C++ tab="C++ stack"
+=== "C++ stack"
+
+```c++
 class Solution {
 public:
     vector<int> nextGreaterElement(vector<int>& findNums, vector<int>& nums) {
@@ -40,54 +46,64 @@ public:
 
 ### 503. Next Greater Element II
 
-```C++ tab="C++ Naive"
-class Solution {
-public:
-    vector<int> nextGreaterElements(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> res;
+=== "c++ Naive"
 
-        for (int i = 0; i < n; i++) {
-            int j = (i + 1) % n;
-            int flag = 0;
-            while (j != i) {
-                if (nums[j] > nums[i]) {
-                    res.push_back(nums[j]);
-                    flag = 1;
-                    break;
+    ```c++
+    class Solution {
+    public:
+        vector<int> nextGreaterElements(vector<int>& nums) {
+            int n = nums.size();
+            vector<int> res;
+
+            for (int i = 0; i < n; i++) {
+                int j = (i + 1) % n;
+                int flag = 0;
+                while (j != i) {
+                    if (nums[j] > nums[i]) {
+                        res.push_back(nums[j]);
+                        flag = 1;
+                        break;
+                    }
+                    j++;
+
+                    j %= n; // circular interate
                 }
-                j++;
 
-                j %= n; // circular interate
+                if (!flag) {
+                    res.push_back(-1);
+                }
             }
 
-            if (!flag) {
-                res.push_back(-1);
-            }
+            return res;
         }
+    };
+    ```
 
-        return res;
-    }
-};
-```
+=== "C++ stack"
 
-```C++ tab="C++ stack"
-class Solution {
-public:
-    vector<int> nextGreaterElements(vector<int>& nums) {
-        int n = nums.size();
-        stack<int> s;
-        vector<int> res(nums.size(), -1);
-        for (int i = 0; i < 2 * n; ++i) {
-            while (!s.empty() && nums[i % n] > nums[s.top()]) {
-                res[s.top()] = nums[i % n];
-                s.pop();
+    ```c++
+    class Solution {
+    public:
+        vector<int> nextGreaterElements(vector<int>& nums) {
+            int n = nums.size();
+            stack<int> s;
+            vector<int> res(nums.size(), -1);
+            for (int i = 0; i < 2 * n; ++i) {
+                while (!s.empty() && nums[i % n] > nums[s.top()]) {
+                    res[s.top()] = nums[i % n];
+                    s.pop();
+                }
+
+                if (i < n) s.push(i);
             }
 
-            if (i < n) s.push(i);
+            return res;
         }
+    };
+    ```
 
-        return res;
-    }
-};
-```
+### 907. Sum of Subarray Minimums
+
+    ```c++
+
+    ```

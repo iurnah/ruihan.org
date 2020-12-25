@@ -117,35 +117,34 @@ of k" are solved using this trick. There are two hints.
 
 ### Maximum Subarray
 
-=== "C++ Greedy solution"
+Kadane's solution
 
-    ```C++
-    // why this greedy solution works?
-    class Solution {
-    public:
-        int maxSubArray(vector<int>& nums) {
-            int n = nums.size();
-            int sum = 0;
-            int max = 0;
-            if (n == 0)
-                return 0;
-
-            max = nums[0];
-            for (int i = 0; i < n; i++) {
-                sum += nums[i];
-                max = sum > max ? sum : max;
-                sum = sum > 0 ? sum : 0;
-            }
-
-            return max;
-        }
-    };
-    ```
+This is a DP solution, it reduced the `f` array to two variables. Making the
+problem $O(1)$ in space. [Discuss about this solution](http://blog.csdn.net/linhuanmars/article/details/21314059),
+where it make use of the idea of global maximum and local maximum.
 
 !!! note
-    Why can not compare to `f[i - 1])` to find the maximum. Because including the `f[i - 1]` will skip
-    elements, the sum will not from a subarray, but sequence of numbers in the array. This is very similar to
-    problems Longest Common Substring and Longest Common Subsequence
+    Why can not compare to `f[i - 1]` to find the maximum. If comparing to the
+    `f[i - 1]`, it will skip elements, the sum will not from a subarray, but
+    sequence of numbers in the array. This is very similar to problems
+    Longest Common Substring and Longest Common Subsequence. The DP "Choices"
+    here is **NOT** to choose or not choose `A[i]`, but "Add `A[i]` to the
+    result of the subproblem or we have to start a subarray from `i`" because
+    we cannot skip `A[i]`.
+
+!!! note
+    The idea of **global maximum** and **local maximum** is very useful to
+    solve DP problems. The local maximum is the maximum sum of a continuous
+    subarray, the global maximum is to keep the maximum of the from the local
+    and global maximum.
+
+Prefix sum solution
+
+The ideas is we have array sums, `sums[i] = A[0] +, ... + A[i]`, called prefix sum.
+With one for loop we can find the maxSum so far and the minSum before it.
+The difference is the possible results, we collect the maximum of those differences.
+
+related to [Jump Game](#jump-game)
 
 === "C++ DP"
 
@@ -167,24 +166,11 @@ of k" are solved using this trick. There are two hints.
             return res;
         }
     };
-    // Notice this is a coordinate based DP problem, the meaning of the index i
-    // in nums and f are different.
     ```
 
-Kadane's solution
+=== "C++ Kadane's solution"
 
-This is a DP solution, it reduced the f array to two variables. Making the problem $O(n)$ in space.
-[Discuss about this solution](http://blog.csdn.net/linhuanmars/article/details/21314059),
-where it make use of the idea of global maximum and local maximum.
-
-!!! note
-    The idea of global maximum and local maximum is very usefull to solve DP problems.
-    The local maximum is the maximum sum of a continuous subarray, the global maximum
-    is keep the maximum of the local mmaximum.
-
-=== "C++ Kadane's solution" hl_lines="9"
-
-    ```c++
+    ```c++ hl_lines="9"
     class Solution {
     public:
         int maxSubArray(vector<int>& nums) {
@@ -200,17 +186,11 @@ where it make use of the idea of global maximum and local maximum.
             return res;
         }
     };
-    ``` 
+    ```
 
-Prefix sum solution
+=== "Java prefix sum solution"
 
-The ideas is we have array sums, `sums[i] = A[0] +, ... + A[i]`, called prefix sum.
-With one for loop we can find the maxSum so far and the minSum before it.
-The difference is the possible results, we collect the maximum of those differences.
-
-=== "C++ prefix sum solution"
-
-    ```c++
+    ```java
     public class Solution {
         public int maxSubArray(int[] A) {
             if (A == null || A.length == 0){
@@ -222,6 +202,31 @@ The difference is the possible results, we collect the maximum of those differen
                 sum += A[i];
                 max = Math.max(max, sum - minSum);
                 minSum = Math.min(minSum, sum);
+            }
+
+            return max;
+        }
+    };
+    ```
+
+=== "C++ Greedy solution"
+
+    ```C++
+    // why this greedy solution works?
+    class Solution {
+    public:
+        int maxSubArray(vector<int>& nums) {
+            int n = nums.size();
+            int sum = 0;
+            int max = 0;
+            if (n == 0)
+                return 0;
+
+            max = nums[0];
+            for (int i = 0; i < n; i++) {
+                sum += nums[i];
+                max = sum > max ? sum : max;
+                sum = sum > 0 ? sum : 0;
             }
 
             return max;

@@ -1253,6 +1253,42 @@ Solution 1 Binary search using ordering abstraction
             return False
     ```
 
+### 441. Arranging Coins
+
+Solution 1 Biinary search
+
+* Notice the integer overflow possibility, we use `long` to deal with it.
+
+```c++
+class Solution {
+public:
+    int arrangeCoins(int n) {
+        if (n < 2) {
+            return n;
+        }
+        
+        long l = 0;
+        long r = n;
+        while (l < r) {
+            long m = l + (r - l) / 2;
+            long t = m * (m + 1) / 2;
+
+            if (t == n)
+                return m;
+            
+            if (t < n) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+            
+        }
+        
+        return l - 1;
+    }
+};
+```
+
 ### 633. Sum of Square Numbers
 
 Solution 1 Binary search
@@ -2309,6 +2345,8 @@ public:
 
 ### 658. [Find K Closest Elements](#find-k-closest-elements)
 
+### 373. Find K Pairs with Smallest Sums
+
 ### 378. Kth Smallest Element in a Sorted Matrix
 
 Solution 1 Binary Search
@@ -2447,15 +2485,17 @@ public:
 
 Solution 2 Binary search
 
-1. Similar to Problem 668. Kth Smallest Number in Multiplication Table.
-2. The problem is complicated at first glance. A brute force solution generates all
-   the absolute distances and then sort to find the kth smallest one.
-3. We found it is potentially a searchable senario if we sort the elements. We
-   have range `[min_distance, max_distance]`. We search a distance in this range
-   such that there are exactly k pairs distance including itself. If the count of
-   pair distance less than k, we try to increase it buy `start = mid + 1`, vice versa.
-4. When the binary search loop stops, if the result exist, `start` point to the
-   distance we are searching. Since this problem guarrantee solution exist, we return `start`.
+* Similar to Problem [668. Kth Smallest Number in Multiplication Table](#668-kth-smallest-number-in-multiplication-table).
+* The problem is complicated at the first glance. A brute force solution
+  generates all the absolute distances and then sort to find the kth smallest one.
+* We found it is potentially a searchable scenario if we sort the elements.
+  We have range `[min_distance, max_distance]`. We search a distance in this
+  range such that there are exactly k pairs distance including itself. If the
+  count of pair distance less than k, we try to increase it buy `start = mid + 1`,
+  vice versa.
+* When the binary search loop stops, if the result exist, `start` point to
+  the distance we are searching. Since this problem guarrantee solution exist,
+  we return `start`.
 
 ```c++
 class Solution {
@@ -2538,6 +2578,58 @@ public:
         }
 
         return start;
+    }
+};
+```
+
+### 786. K-th Smallest Prime Fraction
+
+* You should find seek to find the monotonic pattern of the fraction and think
+  how to search it effectively. To use binary search you need to draw an
+  imaginary matrix to consider how can you search effectively.
+
+=== "Binary search O(nlog(max_frac))"
+
+```c++
+class Solution {
+public:
+    vector<int> kthSmallestPrimeFraction(vector<int>& A, int K) {
+        int n = A.size();
+        double l = 0, r = 1.0;
+
+        while (l < r) {
+            double m = (l + r) / 2;
+
+            // calculate how many smaller on the right
+            int cnt = 0;
+            double mx = 0;
+            int p, q;
+            int j = 1;
+            for (int i = 0; i < n - 1; ++i) {
+                while (j < n && A[i] > A[j] * m) ++j;
+                // int j = upper_bound(A.begin() + i, A.end(), A[i] / m) - A.begin(); 
+                cnt += (n - j);
+                if (n == j) break;
+                double fraction = (double) A[i] / (double) A[j];
+                if (fraction > mx) {
+                    p = A[i];
+                    q = A[j];
+                    mx = fraction;
+                }
+            }
+
+            if (cnt == K) {
+                return {p, q};
+            }
+
+            if (cnt > K) {
+                r = m;
+            } else if (cnt < K) {
+                l = m;
+            }
+        }
+
+        return {};
     }
 };
 ```

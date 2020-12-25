@@ -1,7 +1,7 @@
 # String Problems
 
 !!! Warning "Understand the problem by listing all the test cases first"
-    One of the most important principle to solve a string proble during an
+    One of the most important principle to solve a string problem during an
     interview is to first make sure you have all the possible test cases laid out.
 
 ## Loop invariance
@@ -9,7 +9,7 @@
 To keep loop invariance, you have to be really clear about the different type of
 chars in the string that may affect the complexity of the loop. The following
 problems can be tricky to implement when you keep the wrong loop invariance or
-have identified wrong if condition or while conditions.
+have identified the wrong if condition or while condition.
 
 ### 157. Read N Characters Given Read4
 
