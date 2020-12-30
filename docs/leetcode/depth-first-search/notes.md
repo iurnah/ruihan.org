@@ -5,7 +5,9 @@
 DFS explore aggressively along a single path and only backtrack when necessary.
 It use a stack and usually implemented using recursion.
 
-```text tab="The psudo code"
+=== "The psudo code"
+
+```text
 DFS(graph G, start vertex s)
 -- mark s as explored
 -- for every edge (s,v) :
@@ -31,7 +33,9 @@ there is a path from $u$ to $v$ isn't been visited (all white path) (White-path 
 * If graph G __exists__ a directed cycle, no topological ordering.
 * Every directed acyclic graph must have a __sink__ vertex.
 
-```text tab="The psudo code"
+=== "The psudo code"
+
+```text
 DFS-Loop (graph G)
 -- mark all nodes unexplored
 -- current_label = n [to keep track of ordering]
@@ -89,7 +93,9 @@ $$
 
 ### 339. Nested List Weight Sum
 
-```C++ tab="DFS solution"
+=== "C++ DFS solution"
+
+```c++
 /**
  * // This is the interface that allows for creating nested lists.
  * // You should not implement it, or speculate about its implementation
@@ -144,7 +150,9 @@ public:
 
 ### 364. Nested List Weight Sum II
 
-```C++ tab="C++"
+=== "c++ DFS"
+
+```c++
 class Solution {
 public:
     int depthSumInverse(vector<NestedInteger>& nestedList) {

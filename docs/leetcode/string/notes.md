@@ -15,7 +15,9 @@ have identified the wrong if condition or while condition.
 
 Solution 1
 
-```C++ tab="loop invariance"
+=== "C++ loop invariance"
+
+```c++
 /**
  * The read4 API is defined in the parent class Reader4.
  *     int read4(char *buf4);
@@ -51,7 +53,9 @@ public:
 
 ### 158. Read N Characters Given Read4 II - Call multiple times
 
-```C++ tab="one byte by one byte"
+=== "C++ one byte by one byte"
+
+```c++
 /**
  * The read4 API is defined in the parent class Reader4.
  *     int read4(char *buf);
@@ -98,85 +102,89 @@ public:
 * We can also use the divide and conquer idea and using recursive helper function
   to solve the problem. The key to implement this solution is to keep the loop invariance in mind.
 
-```C++ tab="Iterative solution"
-class Solution {
-public:
-    string decodeString(string s) {
-        int n = s.size();
-        stack<int> stk_cnt;
-        stack<string> stk_str;
-        int cnt = 0;
-        string tmp_str = "";
+=== "C++ Iterative solution"
 
-        for (int i = 0; i < n; i++) {
-            if (isdigit(s[i])) {
-                cnt = cnt * 10 + s[i] - '0';  
-            } else if (s[i] == '[') {
-                stk_cnt.push(cnt);
-                stk_str.push(tmp_str);
-                cnt = 0;
-                tmp_str.clear();
-            } else if (s[i] == ']') {
-                // output, or modify stacks
-                int c = stk_cnt.top();
-                stk_cnt.pop();
-                for (int i = 0; i < c; i++) {
-                    stk_str.top() += tmp_str;
-                }
-                tmp_str = stk_str.top();
-                stk_str.pop();
-            } else {
-                tmp_str += s[i];
-            }
-        }
+    ```c++
+    class Solution {
+    public:
+        string decodeString(string s) {
+            int n = s.size();
+            stack<int> stk_cnt;
+            stack<string> stk_str;
+            int cnt = 0;
+            string tmp_str = "";
 
-        return stk_str.empty() ? tmp_str : stk_str.top();
-    }
-};
-```
-
-```C++ tab="Recursive solution"
-class Solution {
-
-public:
-    string decodeString(string s) {
-        int i = 0;
-        return decode_helper(s, i);
-    }
-
-    string decode_helper(string s, int& i) {
-        int n = s.size();
-        string res = "";
-
-        while (i < n && s[i] != ']') {
-            if (s[i] < '0' || s[i] > '9') {
-            //if (isalpha(s[i])) {
-                res += s[i++];
-            } else {
-                int cnt = 0;
-                //while (i < n && isdigit(s[i])) {
-                while (i < n && s[i] >= '0' && s[i] <= '9') {
-                    cnt = cnt * 10 + s[i++] - '0';
-                }
-                ++i; // '['
-                string t = decode_helper(s, i);
-                ++i;  //  ']'
-                while (cnt-- > 0) {
-                    res += t;
+            for (int i = 0; i < n; i++) {
+                if (isdigit(s[i])) {
+                    cnt = cnt * 10 + s[i] - '0';  
+                } else if (s[i] == '[') {
+                    stk_cnt.push(cnt);
+                    stk_str.push(tmp_str);
+                    cnt = 0;
+                    tmp_str.clear();
+                } else if (s[i] == ']') {
+                    // output, or modify stacks
+                    int c = stk_cnt.top();
+                    stk_cnt.pop();
+                    for (int i = 0; i < c; i++) {
+                        stk_str.top() += tmp_str;
+                    }
+                    tmp_str = stk_str.top();
+                    stk_str.pop();
+                } else {
+                    tmp_str += s[i];
                 }
             }
+
+            return stk_str.empty() ? tmp_str : stk_str.top();
+        }
+    };
+    ```
+
+=== "C++ Recursive solution"
+
+    ```c++
+    class Solution {
+
+    public:
+        string decodeString(string s) {
+            int i = 0;
+            return decode_helper(s, i);
         }
 
-        return res;
-    }
-};
-```
+        string decode_helper(string s, int& i) {
+            int n = s.size();
+            string res = "";
+
+            while (i < n && s[i] != ']') {
+                if (s[i] < '0' || s[i] > '9') {
+                //if (isalpha(s[i])) {
+                    res += s[i++];
+                } else {
+                    int cnt = 0;
+                    //while (i < n && isdigit(s[i])) {
+                    while (i < n && s[i] >= '0' && s[i] <= '9') {
+                        cnt = cnt * 10 + s[i++] - '0';
+                    }
+                    ++i; // '['
+                    string t = decode_helper(s, i);
+                    ++i;  //  ']'
+                    while (cnt-- > 0) {
+                        res += t;
+                    }
+                }
+            }
+
+            return res;
+        }
+    };
+    ```
 
 ### 388. Longest Absolute File Path
 
 ### 1233. Remove Sub-Folders from the Filesystem
 
-```C++
+```c++
 class Solution {
 public:
     vector<string> removeSubfolders(vector<string>& folder) {
@@ -213,57 +221,61 @@ public:
     2. write a naive solution to cover all test cases
     3. refactor to improve the complexity
 
-```C++ tab="Two pass"
-class Solution {
-public:
-    int maxScore(string s) {
-        int len = s.size();
-        if (len == 0) {
-            return 0;
+=== "C++ Two pass"
+
+    ```c++
+    class Solution {
+    public:
+        int maxScore(string s) {
+            int len = s.size();
+            if (len == 0) {
+                return 0;
+            }
+
+            int ones = 0;
+            int zeros = 0;
+            int max_score = INT_MIN;
+            for (int i = 0; i < len; i++) {
+                if (s[i] - '0' == 1) ones++;
+            }
+
+            for (int i = 0; i < len - 1; i++) {
+                if (s[i] - '0' == 0) zeros++;
+                else ones--;
+                max_score = max(max_score, zeros + ones);
+            }
+
+            return max_score;
         }
+    };
+    ```
 
-        int ones = 0;
-        int zeros = 0;
-        int max_score = INT_MIN;
-        for (int i = 0; i < len; i++) {
-            if (s[i] - '0' == 1) ones++;
+=== "C++ One Pass"
+
+    ```c++
+    class Solution {
+    public:
+        int maxScore(string s) {
+            int len = s.size();
+            if (len == 0) {
+                return 0;
+            }
+
+            int ones = 0;
+            int zeros = 0;
+            int max_score = INT_MIN;
+
+            for (int i = 0; i < len; i++) {
+                if (s[i] - '0' == 0) zeros++;
+                else ones++;
+                if (i < len - 1)
+                    max_score = max(max_score, zeros - ones);
+            }
+
+            return max_score + ones;
         }
-
-        for (int i = 0; i < len - 1; i++) {
-            if (s[i] - '0' == 0) zeros++;
-            else ones--;
-            max_score = max(max_score, zeros + ones);
-        }
-
-        return max_score;
-    }
-};
-```
-
-```C++ tab="One pass"
-class Solution {
-public:
-    int maxScore(string s) {
-        int len = s.size();
-        if (len == 0) {
-            return 0;
-        }
-
-        int ones = 0;
-        int zeros = 0;
-        int max_score = INT_MIN;
-
-        for (int i = 0; i < len; i++) {
-            if (s[i] - '0' == 0) zeros++;
-            else ones++;
-            if (i < len - 1)
-                max_score = max(max_score, zeros - ones);
-        }
-
-        return max_score + ones;
-    }
-};
-```
+    };
+    ```
 
 ## Substring search and substring window problem
 
@@ -278,81 +290,7 @@ following principles while solving the problem.
 
 ### 3. Longest Substring Without Repeating Characters
 
-```C++ tab="One pass iteration"
-class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        vector<int> dict(256, -1);
-        int maxLen = 0, start = -1;
-
-        for (int i = 0; i < s.length(); ++i) {
-            if (dict[s[i]] > start)
-                start = dict[s[i]];
-
-            dict[s[i]] = i;
-            maxLen = max(maxLen, i - start);
-        }
-
-        return maxLen;
-    }
-};
-```
-
-```C++ tab="Two pointer loop invariant"
-class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        unordered_map<char, int> mp;
-
-        int left = 0;
-        int count = 0;
-        int res = 0;
-        for (int i = 0; i < s.length(); i++) {
-            m[s[i]]++;
-            if (m[s[i]] > 1) count++;
-
-            while (count > 0) {
-                m[s[left]]--;
-                if (m[s[left]] == 1) {
-                    count--;
-                }
-                left++;
-            }
-
-            res = max(res, i - left + 1);
-        }
-
-        return res;
-    }
-}
-```
-
-```C++ tab="Two pointer loop invariant II"
-class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        if (s.length() == 0) return 0;
-
-        int map[256] = {0};
-        int res = INT_MIN;
-        int j = 0;
-
-        for (int i = 0; i < s.length(); i++) {
-            while (j < s.length() && map[s[j]] == 0) {
-                map[s[j]]++;
-                res = max(res, j - i + 1);
-                j++;
-            }
-
-            map[s[i]]--;
-        }
-
-        return res;
-    }
-};
-```
-
-Solution 2 Loop invariance
+Solution 1 Loop invariance
 
 * This solution is very neat that it uniformly take care of two cases: 1) first
   time discovered a char. 2) discovered a preated char, by cleverly set the
@@ -363,25 +301,85 @@ Solution 2 Loop invariance
   position in the dictionary and update the length.
 * The `start = dict[s[i]]` maintained the invariance so that `i - start` will never be wrong.
 
-```C++ tab=""
-class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        vector<int> dict(256, -1);
-        int maxLen = 0, start = -1;
+=== "C++ One pass iteration"
 
-        for (int i = 0; i < s.length(); ++i) {
-            if (dict[s[i]] > start) // if repeat find
-                start = dict[s[i]]; // update start
+    ```c++
+    class Solution {
+    public:
+        int lengthOfLongestSubstring(string s) {
+            vector<int> dict(256, -1);
+            int maxLen = 0, start = -1;
 
-            dict[s[i]] = i; // we just mark the position in the dict.
-            maxLen = max(maxLen, i - start);
+            for (int i = 0; i < s.length(); ++i) {
+                if (dict[s[i]] > start)
+                    start = dict[s[i]];
+
+                dict[s[i]] = i;
+                maxLen = max(maxLen, i - start);
+            }
+
+            return maxLen;
         }
+    };
+    ```
 
-        return maxLen;
+=== "C++ Two pointer loop invariant"
+
+    ```c++
+    class Solution {
+    public:
+        int lengthOfLongestSubstring(string s) {
+            unordered_map<char, int> mp;
+
+            int left = 0;
+            int count = 0;
+            int res = 0;
+            for (int i = 0; i < s.length(); i++) {
+                m[s[i]]++;
+                if (m[s[i]] > 1) count++;
+
+                while (count > 0) {
+                    m[s[left]]--;
+                    if (m[s[left]] == 1) {
+                        count--;
+                    }
+                    left++;
+                }
+
+                res = max(res, i - left + 1);
+            }
+
+            return res;
+        }
     }
-};
-```
+    ```
+
+=== "C++ Two pointer loop invariant II"
+
+    ```c++
+    class Solution {
+    public:
+        int lengthOfLongestSubstring(string s) {
+            if (s.length() == 0) return 0;
+
+            int map[256] = {0};
+            int res = INT_MIN;
+            int j = 0;
+
+            for (int i = 0; i < s.length(); i++) {
+                while (j < s.length() && map[s[j]] == 0) {
+                    map[s[j]]++;
+                    res = max(res, j - i + 1);
+                    j++;
+                }
+
+                map[s[i]]--;
+            }
+
+            return res;
+        }
+    };
+    ```
 
 ### 159. Longest Substring with At Most Two Distinct Characters
 
@@ -391,86 +389,92 @@ public:
   think about removing the third char. So that we can count the desired length.
 * We use a pointer `left` to keep the left boundary of the interested chars.
 
-```C++ tab="C++ loop invariant with map"
-class Solution {
-public:
-    int lengthOfLongestSubstringTwoDistinct(string s) {
-        int max_len = 0;
-        int left = 0;
-        unordered_map<char, int> m;
+=== "C++ loop invariant with map"
 
-        for (int i = 0; i < s.length(); i++) }{
-            m[s[i]]++;
-            while (m.size() > 2) {
-                if (--m[s[left]] == 0) m.erase(s[left]);
-                left++;
-            }
+    ```c++
+    class Solution {
+    public:
+        int lengthOfLongestSubstringTwoDistinct(string s) {
+            int max_len = 0;
+            int left = 0;
+            unordered_map<char, int> m;
 
-            max_len = max(max_len, i - left + 1);
-        }
-
-        return max_len;
-    }
-};
-```
-
-```C++ tab="C++ using char array as map"
-class Solution {
-public:
-    int lengthOfLongestSubstringTwoDistinct(string s) {
-        int max_len = 0;
-        int left = 0;
-        int cnt = 0;
-        int m[128] = {0};
-
-        for (int i = 0; i < s.length(); i++) {
-            if (m[s[i]]++ == 0) cnt++;
-            while (cnt > 2) {
-                if (--m[s[left++]] == 0) cnt--;
-            }
-            max_len = max(max_len, i - left + 1);
-        }
-
-        return max_len;
-    }
-};
-```
-
-```C++ tab="C++ Two pointers"
-class Solution {
-public:
-    int lengthOfLongestSubstringTwoDistinct(string s) {
-        int max_len = 0;
-        int cnt = 0;
-        int m[128] = {0};
-
-        for (int i = 0, j = 0; i < s.length(); i++) {
-            while (j < s.length()) {
-                if (m[s[j]] == 0) {
-                    cnt++;
+            for (int i = 0; i < s.length(); i++) }{
+                m[s[i]]++;
+                while (m.size() > 2) {
+                    if (--m[s[left]] == 0) m.erase(s[left]);
+                    left++;
                 }
-                m[s[j]]++;
-                /* loop invariance: maintain the hash only have 2 distinct chars */
+
+                max_len = max(max_len, i - left + 1);
+            }
+
+            return max_len;
+        }
+    };
+    ```
+
+=== "C++ using char array as map"
+
+    ```c++
+    class Solution {
+    public:
+        int lengthOfLongestSubstringTwoDistinct(string s) {
+            int max_len = 0;
+            int left = 0;
+            int cnt = 0;
+            int m[128] = {0};
+
+            for (int i = 0; i < s.length(); i++) {
+                if (m[s[i]]++ == 0) cnt++;
                 while (cnt > 2) {
-                    if (--m[s[i++]] == 0)
-                        cnt--;
+                    if (--m[s[left++]] == 0) cnt--;
                 }
-                max_len = max(max_len, j - i + 1);
-                j++;
+                max_len = max(max_len, i - left + 1);
             }
-        }
 
-        return max_len;
-    }
-};
-```
+            return max_len;
+        }
+    };
+    ```
+
+=== "C++ Two pointers"
+
+    ```c++
+    class Solution {
+    public:
+        int lengthOfLongestSubstringTwoDistinct(string s) {
+            int max_len = 0;
+            int cnt = 0;
+            int m[128] = {0};
+
+            for (int i = 0, j = 0; i < s.length(); i++) {
+                while (j < s.length()) {
+                    if (m[s[j]] == 0) {
+                        cnt++;
+                    }
+                    m[s[j]]++;
+                    /* loop invariance: maintain the hash only have 2 distinct chars */
+                    while (cnt > 2) {
+                        if (--m[s[i++]] == 0)
+                            cnt--;
+                    }
+                    max_len = max(max_len, j - i + 1);
+                    j++;
+                }
+            }
+
+            return max_len;
+        }
+    };
+    ```
 
 ### 340. Longest Substring with At Most K Distinct Characters
 
 * This problem is essentially equivalent to the
   [Longest Substring with At Most Two Distinct Characters](#longest-substring-with-at-most-two-distinct-characters) problem.
 
-```C++ tab=""
+```c++
 class Solution {
 public:
     int lengthOfLongestSubstringKDistinct(string s, int k) {

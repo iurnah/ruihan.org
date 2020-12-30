@@ -2634,6 +2634,81 @@ public:
 };
 ```
 
+### 1631. Path With Minimum Effort
+
+Solution 1 Binary search + BFS
+
+* Because we are searching for the smallest effort of all paths. If the
+  **proposed** solution is not possible, namely, all paths have effort greater
+  than the proposed solution (the proposed value is too small). We need to
+  increase the `start` in binary search.
+
+Solution 1 Binary search + Dijkstra
+
+=== "C++ Binary search + BFS"
+
+```c++
+class Solution {
+    vector<int> dx={0, 1, 0, -1};
+    vector<int> dy={-1,0, 1, 0};
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        int m = heights.size();
+        int n = m == 0 ? 0 : heights[0].size();
+        
+        int start = 0, end = 10e6;
+        while (start < end) {
+            int mid = (start + end) / 2;
+            // int mid = start + (end - start) / 2;
+            
+            if (!pathPossible(heights, mid)) {
+                start = mid + 1;
+            } else {
+                end = mid;
+            }
+        }
+        
+        return start;
+    }
+    
+    bool pathPossible(vector<vector<int>>& heights, int val) {
+        int m = heights.size();
+        int n = m == 0 ? 0 : heights[0].size();
+                
+        queue<vector<int>> q;
+        q.push({0, 0});
+        set<int> visited;
+        visited.insert(0);
+        
+        while (!q.empty()) {
+            vector<int> t = q.front();
+            int x = t[0];
+            int y = t[1];
+            q.pop();
+            
+            if (x == m - 1 && y == n - 1)
+                return true;
+            
+            for (int k = 0; k < 4; k++) {
+                int a = x + dx[k];
+                int b = y + dy[k];
+                if (a >= 0 && b >= 0 && a < m && b < n && val >= abs(heights[a][b] - heights[x][y]) && visited.count(a * n + b) == 0) {
+                    q.push({a, b});
+                    visited.insert(a * n + b);
+                }
+            }
+        }
+    
+        return false;
+    }
+};
+```
+
+=== "C++ Binary search + Dijkstra"
+
+```c++
+```
+
 ## Category 4 Binary search as an optimization routine
 
 ### 300 Longest Increasing Subsequence
