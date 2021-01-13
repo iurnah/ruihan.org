@@ -17,39 +17,39 @@ Solution 1
 
 === "C++ loop invariance"
 
-```c++
-/**
- * The read4 API is defined in the parent class Reader4.
- *     int read4(char *buf4);
- */
-
-class Solution {
-public:
+    ```c++
     /**
-     * @param buf Destination buffer
-     * @param n   Number of characters to read
-     * @return    The number of actual characters read
-     */
-    int read(char *buf, int n) {
-        int total = 0;
-        int len = 0;
-        while (total < n) {
-            len = read4(buf + total);
-            if (len == 0) {
-                break;
+    * The read4 API is defined in the parent class Reader4.
+    *     int read4(char *buf4);
+    */
+
+    class Solution {
+    public:
+        /**
+        * @param buf Destination buffer
+        * @param n   Number of characters to read
+        * @return    The number of actual characters read
+        */
+        int read(char *buf, int n) {
+            int total = 0;
+            int len = 0;
+            while (total < n) {
+                len = read4(buf + total);
+                if (len == 0) {
+                    break;
+                }
+
+                total += len;
+
+                if (total > n) {
+                    total = n;
+                }
             }
 
-            total += len;
-
-            if (total > n) {
-                total = n;
-            }
+            return total;
         }
-
-        return total;
-    }
-};
-```
+    };
+    ```
 
 ### 158. Read N Characters Given Read4 II - Call multiple times
 

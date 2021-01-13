@@ -1011,7 +1011,7 @@ public:
 };
 ```
 
-!!! Notes "Tips
+!!! Note "Tips"
     以上两个 solution 足以说明BFS的搜索方向和搜索目标非常重要。巧妙转化搜索目标可以使得code很好写，更简洁。
 
 ### Best Meeting Point
@@ -1168,8 +1168,6 @@ public:
 
 ### 399. Evaluate Division
 
-Solution BFS
-
 === "C++ BFS"
 
     ```c++
@@ -1288,9 +1286,9 @@ Solution BFS
     };
     ```
 
-Solution 3 Floyd–Warshall All pair shortest path
+=== "C++ Floyd-Warshall"
 
-```C++ tab="C++ Floyd-Warshall"
+```c++
 
 ```
 
@@ -1379,7 +1377,7 @@ public:
 
 === "C++ Optimized BFS solution"
 
-    ```c++ hl_lines="30,31,32,33"
+    ```c++ hl_lines="30-33"
     class Solution {
     public:
         int shortestDistance(vector<vector<int>>& grid) {
@@ -1441,7 +1439,7 @@ public:
 * Call BFS in a for loop and use a `visited` vector to mark the status of the vertex explorations.
 * Direct transform the above BFS solution to a DFS solution.
 
-==="C++ BFS solution"
+=== "C++ BFS solution"
 
     ```c++
     class Solution {
@@ -1480,7 +1478,7 @@ public:
     };
     ```
 
-==="C++ DFS solution"
+=== "C++ DFS solution"
 
     ```c++
     class Solution {
@@ -1516,7 +1514,7 @@ public:
     };
     ```
 
-==="Union-Find solution"
+=== "Union-Find solution"
 
     ```c++
     class Solution {

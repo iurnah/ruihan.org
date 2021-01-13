@@ -2590,49 +2590,49 @@ public:
 
 === "Binary search O(nlog(max_frac))"
 
-```c++
-class Solution {
-public:
-    vector<int> kthSmallestPrimeFraction(vector<int>& A, int K) {
-        int n = A.size();
-        double l = 0, r = 1.0;
+    ```c++
+    class Solution {
+    public:
+        vector<int> kthSmallestPrimeFraction(vector<int>& A, int K) {
+            int n = A.size();
+            double l = 0, r = 1.0;
 
-        while (l < r) {
-            double m = (l + r) / 2;
+            while (l < r) {
+                double m = (l + r) / 2;
 
-            // calculate how many smaller on the right
-            int cnt = 0;
-            double mx = 0;
-            int p, q;
-            int j = 1;
-            for (int i = 0; i < n - 1; ++i) {
-                while (j < n && A[i] > A[j] * m) ++j;
-                // int j = upper_bound(A.begin() + i, A.end(), A[i] / m) - A.begin(); 
-                cnt += (n - j);
-                if (n == j) break;
-                double fraction = (double) A[i] / (double) A[j];
-                if (fraction > mx) {
-                    p = A[i];
-                    q = A[j];
-                    mx = fraction;
+                // calculate how many smaller on the right
+                int cnt = 0;
+                double mx = 0;
+                int p, q;
+                int j = 1;
+                for (int i = 0; i < n - 1; ++i) {
+                    while (j < n && A[i] > A[j] * m) ++j;
+                    // int j = upper_bound(A.begin() + i, A.end(), A[i] / m) - A.begin(); 
+                    cnt += (n - j);
+                    if (n == j) break;
+                    double fraction = (double) A[i] / (double) A[j];
+                    if (fraction > mx) {
+                        p = A[i];
+                        q = A[j];
+                        mx = fraction;
+                    }
+                }
+
+                if (cnt == K) {
+                    return {p, q};
+                }
+
+                if (cnt > K) {
+                    r = m;
+                } else if (cnt < K) {
+                    l = m;
                 }
             }
 
-            if (cnt == K) {
-                return {p, q};
-            }
-
-            if (cnt > K) {
-                r = m;
-            } else if (cnt < K) {
-                l = m;
-            }
+            return {};
         }
-
-        return {};
-    }
-};
-```
+    };
+    ```
 
 ### 1631. Path With Minimum Effort
 
@@ -2643,71 +2643,306 @@ Solution 1 Binary search + BFS
   than the proposed solution (the proposed value is too small). We need to
   increase the `start` in binary search.
 
-Solution 1 Binary search + Dijkstra
+Solution 2 Dijkstra
+
+* If you can change the problem into searching a weighted graph with edge weights,
+  which are the absolute differences (effort). Since the weights are all positives,
+  using Dijkstra algorithm can find the shortest path in the measure of effort.
 
 === "C++ Binary search + BFS"
 
-```c++
-class Solution {
-    vector<int> dx={0, 1, 0, -1};
-    vector<int> dy={-1,0, 1, 0};
-public:
-    int minimumEffortPath(vector<vector<int>>& heights) {
-        int m = heights.size();
-        int n = m == 0 ? 0 : heights[0].size();
-        
-        int start = 0, end = 10e6;
-        while (start < end) {
-            int mid = (start + end) / 2;
-            // int mid = start + (end - start) / 2;
+    ```c++
+    class Solution {
+        vector<int> dx={0, 1, 0, -1};
+        vector<int> dy={-1,0, 1, 0};
+    public:
+        int minimumEffortPath(vector<vector<int>>& heights) {
+            int m = heights.size();
+            int n = m == 0 ? 0 : heights[0].size();
             
-            if (!pathPossible(heights, mid)) {
-                start = mid + 1;
-            } else {
-                end = mid;
+            int start = 0, end = 10e6;
+            while (start < end) {
+                int mid = (start + end) / 2;
+                
+                if (!pathPossible(heights, mid)) {
+                    start = mid + 1;
+                } else {
+                    end = mid;
+                }
             }
+            
+            return start;
         }
         
-        return start;
-    }
-    
-    bool pathPossible(vector<vector<int>>& heights, int val) {
-        int m = heights.size();
-        int n = m == 0 ? 0 : heights[0].size();
+        bool pathPossible(vector<vector<int>>& heights, int val) {
+            int m = heights.size();
+            int n = m == 0 ? 0 : heights[0].size();
+                    
+            queue<vector<int>> q;
+            q.push({0, 0});
+            set<int> visited;
+            visited.insert(0);
+            
+            while (!q.empty()) {
+                vector<int> t = q.front();
+                int x = t[0];
+                int y = t[1];
+                q.pop();
                 
-        queue<vector<int>> q;
-        q.push({0, 0});
-        set<int> visited;
-        visited.insert(0);
-        
-        while (!q.empty()) {
-            vector<int> t = q.front();
-            int x = t[0];
-            int y = t[1];
-            q.pop();
-            
-            if (x == m - 1 && y == n - 1)
-                return true;
-            
-            for (int k = 0; k < 4; k++) {
-                int a = x + dx[k];
-                int b = y + dy[k];
-                if (a >= 0 && b >= 0 && a < m && b < n && val >= abs(heights[a][b] - heights[x][y]) && visited.count(a * n + b) == 0) {
+                if (x == m - 1 && y == n - 1)
+                    return true;
+                
+                for (int k = 0; k < 4; k++) {
+                    int a = x + dx[k];
+                    int b = y + dy[k];
+
+                    if (a < 0 || a >= m || b < 0 || b >= n) continue;
+                    if (val < abs(heights[a][b] - heights[x][y])) continue;
+                    if (visited.count(a * n + b) > 0) continue;
+
                     q.push({a, b});
                     visited.insert(a * n + b);
                 }
             }
+        
+            return false;
         }
+    };
+    ```
+
+=== "Java Binary search + BFS"
+
+```java
+class Solution {
+    private int[] d = {0, 1, 0, -1, 0};
+        
+    public int minimumEffortPath(int[][] heights) {
+        int lo = 0, hi = 1_000_000;
+        while (lo < hi) {
+            int effort = lo + (hi - lo) / 2;
+            if (isPath(heights, effort)) {
+                hi = effort;
+            }else {
+                lo = effort + 1;
+            }
+        }
+        return lo;
+    }
     
+    private boolean isPath(int[][] h, int effort) {
+        int m = h.length, n = h[0].length;
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[2]);
+        Set<Integer> seen = new HashSet<>();
+        seen.add(0);
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            int x = cur[0], y = cur[1];
+            
+            if (x == m - 1 && y == n - 1) {
+                return true;
+            }
+
+            for (int k = 0; k < 4; ++k) {
+                int r = x + d[k], c = y + d[k + 1];
+                if (0 <= r && r < m && 0 <= c && c < n &&
+                    effort >= Math.abs(h[r][c] - h[x][y]) && seen.add(r * n + c)) {
+                    q.offer(new int[]{r, c});
+                }
+            } 
+        }
+        
         return false;
+    }
+}
+```
+
+=== "C++ Dijkstra"
+
+```c++
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        int m = heights.size();
+        int n = heights[0].size();
+        
+        vector<vector<int>> dist(m, vector<int>(n, INT_MAX)); // min distance found so far.
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        
+        int d[5] = {0, 1, 0, -1, 0};
+
+        pq.push({0, 0}); // first: min effort, second: encoded (x, y) (=x * n + y);
+        
+        while (!pq.empty()) {
+            pair<int, int> t = pq.top(), pq.pop();
+            int effort = t.first;
+            int x = t.second / n;
+            int y = t.second % n;
+            
+            if (x == m - 1 && y == n - 1)
+                return effort;
+            
+            for (int k = 0; k < 4; ++k) {
+                int a = x + d[k];
+                int b = y + d[k + 1];
+                
+                if (a < 0 || a >= m || b < 0 || b >= n) continue;
+                // update neighboring node, effort=min effort before visit node(a,b)
+                int currEffort = max(effort, abs(heights[a][b] - heights[x][y]));
+                if (dist[a][b] > currEffort) {
+                    dist[a][b] = currEffort;
+                    pq.push({currEffort, a * n + b});
+                }
+            }
+        }
+
+        return -1;
     }
 };
 ```
 
-=== "C++ Binary search + Dijkstra"
+=== "Python Dijkastra"
 
 ```c++
+class Solution:
+    def minimumEffortPath(self, heights: List[List[int]]) -> int:
+        m, n = map(len, [heights, heights[0]])
+        efforts = [[math.inf] * n for _ in range(m)]
+        efforts[0][0] = 0
+        heap = [(0, 0, 0)]
+        
+        while heap:
+            effort, x, y = heapq.heappop(heap);
+
+            if (x, y) == (m - 1, n - 1):
+                return effort
+            
+            for i, j in (x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y):
+                if i < 0 or i >= m or j < 0 or j >= n:
+                    continue
+
+                currEffort = max(effort, abs(heights[x][y] - heights[i][j]))
+                if efforts[i][j] > currEffort:
+                    efforts[i][j] = currEffort
+                    heapq.heappush(heap, (currEffort, i, j))
 ```
+
+### 1102. Path With Maximum Minimum Value
+
+Solution 1 Binary Search + BFS
+
+* Again, propose a possible value and use a `isValid` function to check the validity of the proposed solution.
+
+Solution 2 BFS + PQ
+
+* This solution can be thought as a variant of Dijkastra, but not the same.
+
+Solution 3 Union Find
+
+=== "C++ Binary Search + BFS"
+
+    ```c++
+    class Solution {
+    public:
+        int maximumMinimumPath(vector<vector<int>>& A) {
+            int m = A.size();
+            int n = A[0].size();
+            
+            int start = 0, end = max(A[0][0], A[m - 1][n - 1]);
+            int res = 0, mid = 0;
+            while (start < end) {
+                mid = start + (end - start) / 2;
+                
+                if (pathPossible(A, mid)) {
+                    start = mid + 1;
+                } else {
+                    end = mid;
+                }
+            }
+            
+            return start;
+        }
+        
+        bool pathPossible(vector<vector<int>>& A, int mid) {
+            int m = A.size();
+            int n = A[0].size();
+            
+            queue<pair<int, int>> q;
+            q.emplace(0, 0);
+            vector<vector<int>> v(m, vector<int>(n, 0));
+            v[0][0] = 1;
+            
+            int d[5] = {0, 1, 0, -1, 0};
+            
+            while (!q.empty()) {
+                int x = q.front().first;
+                int y = q.front().second;
+                q.pop();
+                
+                if (x == m - 1 && y == n - 1)
+                    return true;
+                
+                for (int k = 0; k < 4; ++k) {
+                    int a = x + d[k];
+                    int b = y + d[k + 1];
+                    
+                    if (a < 0 || a >= m || b < 0 || b >= n || v[a][b] == 1) continue;
+                    if (mid > A[a][b]) continue;
+                        
+                    q.emplace(a, b);
+                    v[a][b] = 1;
+                    
+                }
+            }
+            
+            return false;
+        }
+    };
+    ```
+
+=== "C++ BFS + PQ"
+
+    ```c++
+    class Solution {
+    public:
+        int maximumMinimumPath(vector<vector<int>>& A) {
+            int m = A.size();
+            int n = A[0].size();
+            
+            int res = INT_MAX;
+            priority_queue<pair<int, int>, vector<pair<int, int>>> pq; // max heap.
+            pq.emplace(A[0][0], 0);
+            vector<vector<int>> visited(m, vector<int>(n, 0));
+            visited[0][0] = -1;
+            
+            int d[5] = {0, 1, 0, -1, 0};
+            
+            while (!pq.empty()) {
+                pair<int, int> t = pq.top(); pq.pop();
+                int cost = t.first;
+                int x = t.second / n;
+                int y = t.second % n;
+
+                res = min(res, cost);
+                
+                if (x == m - 1 && y == n - 1)
+                    break;
+                
+                for (int k = 0; k < 4; k++) {
+                    int r = x + d[k];
+                    int c = y + d[k + 1];
+                    
+                    if (r < 0 || r >= m || c < 0 || c >= n || visited[r][c] < 0) continue;
+                    
+                    pq.emplace(A[r][c], r * n + c);
+                    visited[r][c] = -1;
+                }
+            }
+            
+            return res;
+        }
+    };
+    ```
 
 ## Category 4 Binary search as an optimization routine
 

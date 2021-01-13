@@ -147,7 +147,7 @@ number of objects in the tree rooted at i.
 
 ### Implementation
 
-```Java tab=
+```Java
 /* weighted quick union */
 public void union(int p, int q)
 {
@@ -265,7 +265,9 @@ the two different couch together. We are looking for valid swaps that remove the
 inter-counch edge and create a new component in the graph. the conclusion is
 that we cannot remove two edges by a single swap. This should proof the greedy will work.
 
-```C++ tab="C++ Union Find"
+== "C++ Union Find"
+
+```c++
 
 ```
 
@@ -277,7 +279,9 @@ to either `x + 1` or `x - 1`.
     x^1 = x + 1, if x is even
     x^1 = x - 1, if x is odd
 
-```C++ tab="C++ Greedy"
+== "C++ Greedy"
+
+```c++
 class Solution {
 public:
   int minSwapsCouples(vector<int>& row) {

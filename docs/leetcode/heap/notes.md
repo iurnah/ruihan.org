@@ -29,8 +29,8 @@
 
 | # |     Operation      | complexity  | comment |
 |---|--------------------|-------------|---------|
-| 1 | buildMaxHeap(A)  | $O(n)$      | Build a priority queue routine iteratively call `maxHeapify()` $n$ times. The complexity is $O(n)$ instead of $O(n \log n)$ |
-| 2 | maxHeapify(A, i) | $O(\log n)$ | Maintains the heap properties for subtree rooted at `i`. Assumes the subtrees of `i` are max heap before calling this routine. |
+| 1 | buildMaxHeap(A)  | $O(n)$      | Build a priority queue routine iteratively call `maxHeapify()` $n/2$ times. The complexity is $O(n)$ instead of $O(n \log n)$ |
+| 2 | maxHeapify(A, i) | $O(\log n)$ | Maintains the heap properties (by bubble up/down) for subtree rooted at `i`. Assumes the subtrees of `i` are max heap before calling this routine. |
 | 3 | insert()         | $O(\log n)$ | Insert a element to the heap. |
 | 4 | peekMaximum()    | $O(1)$      | Return the max element without remove it from the max-heap. |
 | 5 | popMaximum()     | $O(\log n)$ | Remove the max element from the max-heap. |
@@ -75,6 +75,80 @@
 * We may need to write a customized binary predicate function in order to implement
   the `min-heap` or `max-heap`. The binary predicate function depends on the
   underline container and also the type of the container element.
+
+### Java Priority Queue
+
+=== "Primitive types"
+
+    ```java
+    Queue<Integer> pq = new PriorityQueue<>(); // default is min heap
+    pq.add(1);
+    pq.add(2);
+    pq.poll();   // return the min value;
+    ```
+
+=== "Use with objects"
+
+    ```java
+    public class CustomerOrder implements Comparable<CustomerOrder> {
+        private int orderId;
+        private double orderAmount;
+        private String customerName;
+
+        public CustomerOrder(int orderId, double orderAmount, String customerName) {
+            this.orderId = orderId;
+            this.orderAmount = orderAmount;
+            this.customerName = customerName;
+        }
+
+        @Override
+        public int compareTo(CustomerOrder o) {
+            return o.orderId > this.orderId ? 1 : -1;
+        }
+
+        @Override
+        public String toString() {
+            return "orderId:" + this.orderId + ", orderAmount:" + this.orderAmount + ", customerName:" + customerName;
+        }
+
+        public double getOrderAmount() {
+            return orderAmount;
+        }
+    }
+
+    Queue<CustomerOrder> pq = new PriorityQueue<>(new CustomIntegerComparator());
+
+    // to overwrite the compareTo comparator
+    static class CustomerOrderComparator implements Comparator<CustomerOrder> {
+
+        @Override
+        public int compare(CustomerOrder o1, CustomerOrder o2)
+        {
+            return o1.getOrderAmount() < o2.getOrderAmount() ? 1 : -1;
+        }
+    }
+
+    Queue<CustomerOrder> pq = new PriorityQueue<>(new CustomOrderComparator());
+    ```
+
+=== "Custom Ordering"
+
+    ```java
+    static class CustomIntegerComparator implements Comparator<Integer> {
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            return o1 < o2 ? 1 : -1; // reverse ordering
+        }
+    }
+
+    Queue<Integer> pq = new PriorityQueue<>(new CustomIntegerComparator());
+    ```
+
+=== "Lambda comparator Java 8"
+
+    ```java
+    Queue<int []> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+    ```
 
 ### Python heapq package
 

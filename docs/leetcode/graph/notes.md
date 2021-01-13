@@ -4,7 +4,7 @@
 
 ### Edge lists
 
-A edge is represented using an array of two vertex numbers or objects contain
+An edge is represented using an array of two vertex numbers or objects contain
 the vertex numbers. Weights can be added as the third number or another member
 of the objects.
 
@@ -51,9 +51,14 @@ Representing a graph with adjacency lists combines adjacency matrices with edge 
 
 ## Algorithms
 
-### Bipartise
-
-### Directed graph strongly connected components
+* Weighted Graph
+* Unweighted Graph
+* Directed Graph
+* Undirected Graph
+* Graph Traversal
+* Single Source Shortest Path
+* Connected components
+* Minimum spanning tree
 
 ### Kosaraju's Two-pass algorithm
 
@@ -63,12 +68,53 @@ Representing a graph with adjacency lists combines adjacency matrices with edge 
        - The "source node of a node". A source node is the first node in the DFS tree.
        - The "finish time of a node".
 3. Second run of the `DFS-Loop` to computer the strongly connected components (SCC).
-   The SCC is represented by the source ndoe.
+   The SCC is represented by the source node.
 
-### Minimum spanning tree
+### Dijkstra algorithm (positive path only)
+
+* Dijkstra algorithm implementation need one data structure (think of it as an
+  array) to record the path distance, another data structure (priority queue) to
+  maintain the min-heap which is ordered by the key of the edge weights. The
+  algorithm greedily select the smallest edge from the queue and update the
+  optimal solution so far (called **relaxation** in graph algorithm jargon).
+
+=== "The psudo code"
+
+```text
+INITIALIZE-SINGLE-SOURCE(G, s)
+  for each vertex v in G.V:
+    v.d = inf
+    v.parent = null
+  s.d = 0
+
+RELAX(u, v, w)
+  if v.d > u.d + w(u, v)
+    v.d = u.d + w(u, v)
+    v.parent = u  
+
+DIJKSTRA(G,w,s)
+  INITIALIZE-SINGLE-SOURCE(G, s)
+  S = None
+  Q = G.V
+  while Q != None
+    u = EXTRACT-MIN(Q)
+    S = S + {u}
+    for each vertex v in G.adj[u]:
+      RELAX(u, v, w)
+```
+
+### Bellman-Ford
+
+### Bipartise
+
+### Directed graph strongly connected components
 
 ## Problems
 
 ### Critical Connections in a Network
 
 ### [Critical Routers](https://leetcode.com/discuss/interview-question/436073/)
+
+### 1631. Path With Minimum Effort
+
+Solution 1 Binary Search BFS

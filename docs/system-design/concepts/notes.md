@@ -92,6 +92,8 @@ BASE database may be a better choice.
 
 ## Bloom filter
 
+[Storage structures used in databases and distributed systems](https://medium.com/@ssudan16/storage-structures-used-in-databases-and-distributed-systems-1405f1851afc)
+
 ### Counting Bloom filter
 
 ## Count–min sketch
@@ -143,6 +145,7 @@ with the number of servers.
 
 * [The Log: What every software engineer should know about real-time data's unifying abstraction](https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying)
 * [Kafka Tutorial From Confluent](https://kafka-tutorials.confluent.io/)
+* [Apache Kafka Internals](https://medium.com/@ssudan16/kafka-internals-47e594e3f006)
 
 ## CouchDB
 
