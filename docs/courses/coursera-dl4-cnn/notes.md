@@ -6,7 +6,7 @@
 * The value `f` is always odd.
 * stride $s$. output dimention: floor of $\frac{n + 2p - f}{s} + 1$
 * 2D image
-    * num_channel must match
+   * num_channel must match
 
 
 input: 1 x 60 x 60,  filter: 1 x 1 x 60,
