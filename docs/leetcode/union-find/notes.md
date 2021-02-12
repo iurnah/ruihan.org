@@ -265,11 +265,11 @@ the two different couch together. We are looking for valid swaps that remove the
 inter-counch edge and create a new component in the graph. the conclusion is
 that we cannot remove two edges by a single swap. This should proof the greedy will work.
 
-== "C++ Union Find"
+=== "C++ Union Find"
 
-```c++
+    ```c++
 
-```
+    ```
 
 Solution 2 Greedy
 
@@ -279,27 +279,27 @@ to either `x + 1` or `x - 1`.
     x^1 = x + 1, if x is even
     x^1 = x - 1, if x is odd
 
-== "C++ Greedy"
+=== "C++ Greedy"
 
-```c++
-class Solution {
-public:
-  int minSwapsCouples(vector<int>& row) {
-      int res = 0;
-      for (int i = 0; i < row.size(); i += 2) {
-          int x = row[i];
-          if ((x ^ 1) == row[i + 1]) continue;
-          res++;
-          for (int j = i + 1; j < row.size(); ++j) {
-              if (row[j] == (x ^ 1)) {
-                  row[j] = row[i + 1];
-                  row[i + 1] = (x ^ 1);
-                  break;
-              }
-          }
-      }
+    ```c++
+    class Solution {
+    public:
+    int minSwapsCouples(vector<int>& row) {
+        int res = 0;
+        for (int i = 0; i < row.size(); i += 2) {
+            int x = row[i];
+            if ((x ^ 1) == row[i + 1]) continue;
+            res++;
+            for (int j = i + 1; j < row.size(); ++j) {
+                if (row[j] == (x ^ 1)) {
+                    row[j] = row[i + 1];
+                    row[i + 1] = (x ^ 1);
+                    break;
+                }
+            }
+        }
 
-      return res;
-  }
-};
-```
+        return res;
+    }
+    };
+    ```

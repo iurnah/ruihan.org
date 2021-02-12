@@ -70,13 +70,23 @@ Representing a graph with adjacency lists combines adjacency matrices with edge 
 3. Second run of the `DFS-Loop` to computer the strongly connected components (SCC).
    The SCC is represented by the source node.
 
-### Dijkstra algorithm (positive path only)
+### Dijkstra algorithm (No negative edge)
 
 * Dijkstra algorithm implementation need one data structure (think of it as an
   array) to record the path distance, another data structure (priority queue) to
   maintain the min-heap which is ordered by the key of the edge weights. The
   algorithm greedily select the smallest edge from the queue and update the
   optimal solution so far (called **relaxation** in graph algorithm jargon).
+* Dijkstra algorithm Implemention requires to maintain two invariant, 1. All the
+  vertices $w_i$ that not in $S$ will be kept in the heap. 2. The key should be
+  the minimum weight of all the edges who's tail in $S$, head point to $w_i$. In
+  every iteration, each $w_i$ need to run a local turnament to decide its new key
+  and then update the heap.
+* To compare Dijkastra to BFS, when you visit a new node, Dijkastra will do a
+  relaxation (update keys by local turnament and reinsert heap) while BFS simply
+  add the node to the queue.
+
+![Dijkstra Algorith](fig/dijkastra-algorithm.png)
 
 === "The psudo code"
 
@@ -90,7 +100,7 @@ INITIALIZE-SINGLE-SOURCE(G, s)
 RELAX(u, v, w)
   if v.d > u.d + w(u, v)
     v.d = u.d + w(u, v)
-    v.parent = u  
+    v.parent = u
 
 DIJKSTRA(G,w,s)
   INITIALIZE-SINGLE-SOURCE(G, s)
@@ -115,6 +125,4 @@ DIJKSTRA(G,w,s)
 
 ### [Critical Routers](https://leetcode.com/discuss/interview-question/436073/)
 
-### 1631. Path With Minimum Effort
-
-Solution 1 Binary Search BFS
+### 1631. [Path With Minimum Effort](../../binary-search/notes/#1631-path-with-minimum-effort)
