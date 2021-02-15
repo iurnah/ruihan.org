@@ -1,5 +1,7 @@
 # Leetcode
 
+* [x] [Favorite Problems](./favorite/notes.md)
+
 * [x] [Array](./array/notes.md)
 * [x] [Backtracking](./backtracking/notes.md)
 * [ ] [Binary Indexed Tree](./binary-indexed-tree/notes.md)
@@ -21,7 +23,7 @@
 * [x] [Math](./math/notes.md)
 * [ ] [Queue](./queue/notes.md)
 * [ ] [Recursion](./recursion/notes.md)
-* [ ] [Reservoir Sampling](./reservior-sampling/notes.md)
+* [x] [Reservoir Sampling](./reservoir-sampling/notes.md)
 * [ ] [Segment Tree](./segment-tree/notes.md)
 * [ ] [Sort](./sort/notes.md)
 * [x] [Stack](./stack/notes.md)

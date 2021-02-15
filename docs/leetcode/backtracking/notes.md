@@ -1,6 +1,6 @@
 # Backtracking
 
-## introduction
+## Introduction
 
 Backtracking algorithm can be used to generate all the subsets of a given set,
 all the permutation of a given sequence, and all the combinations of k elements
@@ -84,9 +84,9 @@ helper(vector<int> nums, int n, [int cur], vector<int> &subset, vector<vector<in
    select the duplicate elements for a second time to form the same pattern, we
    use the following template check statement to achieve this.
 
-```C++
+```c++
 if (i != cur && nums[i] == nums[i - 1]){
-        continue;  
+        continue;
 }
 ```
 
@@ -114,195 +114,207 @@ Relation with BFS
 
 ### Subsets
 
-```C++ tab=
-class Solution {
-public:
-    vector<vector<int>> subsets(vector<int>& nums) {
-        int n = nums.size();
-        vector<vector<int> > results;
-        vector<int> subset;
+=== "C++"
 
-        helper (nums, n, 0, subset, results);
+    ```c++
+    class Solution {
+    public:
+        vector<vector<int>> subsets(vector<int>& nums) {
+            int n = nums.size();
+            vector<vector<int> > results;
+            vector<int> subset;
 
-        return results;
-    }
+            helper (nums, n, 0, subset, results);
 
-    /* helper to get the permutation from curr to n - 1, total is n - curr */
-    void helper (vector<int> nums, int n, int curr,
-                 vector<int>& subset, vector<vector<int> >& results) {
-
-        results.push_back(subset);
-
-        for (int i = curr; i < n; i++) {
-            subset.push_back(nums[i]);
-            helper(nums, n, i + 1, subset, results);
-            subset.pop_back();
+            return results;
         }
-    }
-};
-```
 
-```Python tab="Python"
-class Solution(object):
-    def subsets(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: List[List[int]]
-        """
-        n = len(nums)
-        results = []
+        /* helper to get the permutation from curr to n - 1, total is n - curr */
+        void helper (vector<int> nums, int n, int curr,
+                    vector<int>& subset, vector<vector<int> >& results) {
 
-        self.helper(nums, n, 0, [], results)
+            results.push_back(subset);
 
-        return results
+            for (int i = curr; i < n; i++) {
+                subset.push_back(nums[i]);
+                helper(nums, n, i + 1, subset, results);
+                subset.pop_back();
+            }
+        }
+    };
+    ```
 
-    def helper(self, nums, n, curr, currSubset, results):
+=== "Python"
 
-        results.append(list(currSubset))
+    ```python
+    class Solution(object):
+        def subsets(self, nums):
+            """
+            :type nums: List[int]
+            :rtype: List[List[int]]
+            """
+            n = len(nums)
+            results = []
 
-        for i in range(curr, n):
-            currSubset.append(nums[i])
-            self.helper(nums, n, i + 1, currSubset, results)
-            currSubset.pop()
-```
+            self.helper(nums, n, 0, [], results)
+
+            return results
+
+        def helper(self, nums, n, curr, currSubset, results):
+
+            results.append(list(currSubset))
+
+            for i in range(curr, n):
+                currSubset.append(nums[i])
+                self.helper(nums, n, i + 1, currSubset, results)
+                currSubset.pop()
+    ```
 
 ### Subsets II
 
-```C++ tab="C++" hl_lines="21"
-class Solution {
-public:
-    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
-        int n = nums.size();
-        vector<vector<int>> results;
-        vector<int> subset;
+=== "C++"
 
-        sort (nums.begin(), nums.end());
+    ```c++
+    class Solution {
+    public:
+        vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+            int n = nums.size();
+            vector<vector<int>> results;
+            vector<int> subset;
 
-        helper (nums, n, 0, subset, results);
+            sort (nums.begin(), nums.end());
 
-        return results;
-    }
+            helper (nums, n, 0, subset, results);
 
-    void helper(vector<int> nums, int n, int curr,
-               vector<int>& subset, vector<vector<int>>& results) {
-
-        results.push_back(subset);
-
-        for (int i = curr; i < n; i++) {
-            if (i > curr && nums[i] == nums[i - 1]) {
-                continue;
-            }
-
-            subset.push_back(nums[i]);
-            helper(nums, n, i + 1, subset, results);
-            subset.pop_back();
+            return results;
         }
-    }
-};
-```
 
-```Python tab="Python"
-class Solution(object):
-    def subsetsWithDup(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: List[List[int]]
-        """
-        n = len(nums)
-        results = []
-        nums.sort()
-        self.helper(nums, n, 0, [], results)
+        void helper(vector<int> nums, int n, int curr,
+                vector<int>& subset, vector<vector<int>>& results) {
 
-        return results
+            results.push_back(subset);
+
+            for (int i = curr; i < n; i++) {
+                if (i > curr && nums[i] == nums[i - 1]) {
+                    continue;
+                }
+
+                subset.push_back(nums[i]);
+                helper(nums, n, i + 1, subset, results);
+                subset.pop_back();
+            }
+        }
+    };
+    ```
+
+=== "Python"
+
+    ```python
+    class Solution(object):
+        def subsetsWithDup(self, nums):
+            """
+            :type nums: List[int]
+            :rtype: List[List[int]]
+            """
+            n = len(nums)
+            results = []
+            nums.sort()
+            self.helper(nums, n, 0, [], results)
+
+            return results
 
 
-    def helper(self, nums, n, curr, currSubset, results):
-        results.append(list(currSubset))
+        def helper(self, nums, n, curr, currSubset, results):
+            results.append(list(currSubset))
 
-        for i in range(curr, n):
-            if (i > curr) and (nums[i] == nums[i - 1]):
-                continue
+            for i in range(curr, n):
+                if (i > curr) and (nums[i] == nums[i - 1]):
+                    continue
 
-            currSubset.append(nums[i])
-            self.helper(nums, n, i + 1, currSubset, results)
-            currSubset.pop()
-```
+                currSubset.append(nums[i])
+                self.helper(nums, n, i + 1, currSubset, results)
+                currSubset.pop()
+    ```
 
 ### Permutations
 
-```C++ tab="classic Backtracking"
-class Solution {
-public:
-    vector<vector<int> > permute(vector<int> nums) {
-        vector<vector<int> > results;
-        vector<int> permutation;
-        int n = nums.size();
-        if (n == 0)
+=== "C++ Backtracking"
+
+    ```c++
+    class Solution {
+    public:
+        vector<vector<int> > permute(vector<int> nums) {
+            vector<vector<int> > results;
+            vector<int> permutation;
+            int n = nums.size();
+            if (n == 0)
+                return results;
+
+            sort(nums.begin(), nums.end());
+            helper(nums, n, permutation, results);
+
             return results;
-
-        sort(nums.begin(), nums.end());
-        helper(nums, n, permutation, results);
-
-        return results;
-    }
-
-    void helper(vector<int> nums, int n, vector<int> &permutation,
-            vector<vector<int> > &results) {
-
-        if (permutation.size() == n) {
-            results.push_back(permutation);
-            return;
         }
 
-        for (int i = 0; i < n; i++) {
-            vector<int>::iterator it;
-            it = find(permutation.begin(), permutation.end(), nums[i]);
-            if(it == permutation.end()){
+        void helper(vector<int> nums, int n, vector<int> &permutation,
+                vector<vector<int> > &results) {
+
+            if (permutation.size() == n) {
+                results.push_back(permutation);
+                return;
+            }
+
+            for (int i = 0; i < n; i++) {
+                vector<int>::iterator it;
+                it = find(permutation.begin(), permutation.end(), nums[i]);
+                if(it == permutation.end()){
+                    permutation.push_back(nums[i]);
+                    helper(nums, n, permutation, results);
+                    permutation.pop_back();
+                }
+            }
+        }
+    };
+    ```
+
+=== "Use 'visited' variable"
+
+    ```c++
+    class Solution {
+    public:
+        vector<vector<int>> permute(vector<int>& nums) {
+            int n = nums.size();
+            vector<vector<int> > results;
+            vector<int> permute;
+            vector<bool> visited(n, false);
+
+            helper (nums, n, visited, permute, results);
+
+            return results;
+        }
+
+        void helper (vector<int> nums, int n, vector<bool> visited,
+                    vector<int>& permutation, vector<vector<int> >& results) {
+
+            if (permutation.size() == n) {
+                results.push_back(permutation);
+                return;
+            }
+
+            for (int i = 0; i < n; i++) {
+                if (visited[i]) {
+                    continue;
+                }
+
+                visited[i] = true;
                 permutation.push_back(nums[i]);
-                helper(nums, n, permutation, results);
+                helper (nums, n, visited, permutation, results);
                 permutation.pop_back();
+                visited[i] = false;
             }
         }
-    }
-};
-```
-
-```C++ tab="use 'visited' variable"
-class Solution {
-public:
-    vector<vector<int>> permute(vector<int>& nums) {
-        int n = nums.size();
-        vector<vector<int> > results;
-        vector<int> permute;
-        vector<bool> visited(n, false);
-
-        helper (nums, n, visited, permute, results);
-
-        return results;
-    }
-
-    void helper (vector<int> nums, int n, vector<bool> visited,
-                 vector<int>& permutation, vector<vector<int> >& results) {
-
-        if (permutation.size() == n) {
-            results.push_back(permutation);
-            return;
-        }
-
-        for (int i = 0; i < n; i++) {
-            if (visited[i]) {
-                continue;
-            }
-
-            visited[i] = true;
-            permutation.push_back(nums[i]);
-            helper (nums, n, visited, permutation, results);
-            permutation.pop_back();
-            visited[i] = false;
-        }
-    }
-};
-```
+    };
+    ```
 
 ### Permutations II
 
@@ -313,58 +325,61 @@ public:
 * You cannot using the find to check whether the element is presetend, you have
   to use the visited "bit map" to record the states.
 
-```C++ tab="C++" hl_lines="27"
-class Solution {
-public:
-    vector<vector<int>> permuteUnique(vector<int>& nums) {
-        int n = nums.size();
-        vector<vector<int>> results;
-        vector<int> permutation;
-        vector<bool> visited(n, 0);
-        if (n == 0)
+=== "C++"
+
+    ```c++  hl_lines="27"
+    class Solution {
+    public:
+        vector<vector<int>> permuteUnique(vector<int>& nums) {
+            int n = nums.size();
+            vector<vector<int>> results;
+            vector<int> permutation;
+            vector<bool> visited(n, 0);
+            if (n == 0)
+                return results;
+
+            sort(nums.begin(), nums.end());
+
+            helper(nums, n, visited, permutation, results);
+
             return results;
-
-        sort(nums.begin(), nums.end());
-
-        helper(nums, n, visited, permutation, results);
-
-        return results;
-    }
-
-    void helper(vector<int> nums, int n, vector<bool> visited,
-                vector<int>& permutation, vector<vector<int>>& results) {
-
-        if (permutation.size() == n) {
-            results.push_back(permutation);
-            return;
         }
 
-        for (int i = 0; i < n; i++) {
-            if (visited[i] || (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1])) {
-            //if (visited[i] == 1 || (i != 0 && nums[i] == nums[i - 1] && visited[i - 1])) { // why this also work?
-                // duplicated element only add once in each recursion(i == 0).
-                // e.g. 1 2 3 4 4 4 5 6 7. each 4 is selected in different level of recursion,
-                // the above equality check avoid adding duplicate element in the same level. (from different index)
-                // if we don't add this check, the duplicates could from different index
-                continue;
+        void helper(vector<int> nums, int n, vector<bool> visited,
+                    vector<int>& permutation, vector<vector<int>>& results) {
+
+            if (permutation.size() == n) {
+                results.push_back(permutation);
+                return;
             }
 
-            visited[i] = true;
-            permutation.push_back(nums[i]);
-            helper(nums, n, visited, permutation, results);
-            permutation.pop_back();
-            visited[i] = false;
+            for (int i = 0; i < n; i++) {
+                if (visited[i] || (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1])) { // 1st
+                //if (visited[i] || (i > 0 && nums[i] == nums[i - 1] && visited[i - 1])) { // 2nd
+                    // the condition enfoce the duplicates only added once to the result.
+                    // 1st is saying A[i - 1] is added, A[i] is not, then we add A[i].
+                    // 2nd is saying none of A[i - 1] and A[i] is added, then we add A[i].
+                    // duplicated element only add once in all subtrees.
+                    // e.g. 1 2 3 4 4 4 5 6 7. the 4, 4, 4 should be only selected once
+                    continue;
+                }
+
+                visited[i] = true;
+                permutation.push_back(nums[i]);
+                helper(nums, n, visited, permutation, results);
+                permutation.pop_back();
+                visited[i] = false;
+            }
         }
-    }
-};
-```
+    };
+    ```
 
 ### Combinations
 
 * Notice the `=` in the for loop, here the `i` is not array index, but number we
   are enumerating.
 
-```C++ tab=""
+```c++
 class Solution {
 public:
     vector<vector<int>> combine(int n, int k) {
@@ -398,7 +413,7 @@ public:
 * Notice in line 23, the recursion is on `i` again even though it has been selected
   already.
 
-```C++
+```c++
 class Solution {
 public:
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
@@ -437,7 +452,7 @@ public:
   solution we only add the if check in line 21, and call the hlepr function with
   `i + 1` in line 27.
 
-```C++ hl_lines="21,27"
+```c++ hl_lines="21 27"
 class Solution {
 public:
     vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
@@ -483,7 +498,7 @@ public:
   function called with `i` instead of `i + 1` because duplication is allowed in
   that problem.
 
-```C++
+```c++
 class Solution {
 public:
     vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
@@ -528,7 +543,7 @@ public:
 * Must initialize `f[i] = 0`. Because some of the state won't be updated
   indicates that they are not possible to fill).
 
-```C++
+```c++
 class Solution {
 public:
     int backPackVI(vector<int>& nums, int T) {
@@ -564,7 +579,9 @@ Print one such combination solution
 * `f[i]`: 存多少种方式
 * `pi[i]`: 如果 `f[i] >= 1`, 最后一个数字可以是`pi[i]`
 
-```C++ tab="Print one such combination"
+=== "Print one such combination"
+
+```c++
 class Solution {
 public:
     int backPackVI(vector<int>& nums, int T) {
