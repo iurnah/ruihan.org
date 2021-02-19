@@ -8,3 +8,5 @@
 ## Stack
 
 * [84. Largest Rectangle in Histogram](../../stack/notes/#84-largest-rectangle-in-histogram)
+* [907. Sum of Subarray Minimums](../../stack/notes/#907-sum-of-subarray-minimums)
+* [Google Interview Problems](https://repl.it/@iurnah/MinimumSubarrayElementGreaterThanThreshold#main.cpp)
