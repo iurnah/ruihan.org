@@ -108,7 +108,7 @@
 * Use a 2-d array to record the result the smaller problem, we know for the
   position `f[i][j] = f[i - 1][j] + f[i][j - 1]`, which means the summation of
   number of path from above and from left.
-* The initial state is the first row and the first column are all equal to `1`.  
+* The initial state is the first row and the first column are all equal to `1`.
 
 ```c++
 class Solution {
@@ -237,7 +237,7 @@ public:
 
 === "C++ Naive DP"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
@@ -288,7 +288,7 @@ public:
 
 === "C++ Naive DP Refactored"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
@@ -330,7 +330,7 @@ public:
 
 === "Java O(n) space"
 
-    ```java 
+    ```java
     // Optimized using a rolling array or single row dp array instead of m x n.
     class Solution {
         public int uniquePathsWithObstacles(int[][] a) {
@@ -424,7 +424,7 @@ public:
 
 === "C++ DP"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         int numDecodings(string s) {
@@ -535,7 +535,7 @@ public:
         }
         res2 = max(res2, f[i]);
     }
-    ``` 
+    ```
 
 === "C++ DP solution"
 
@@ -590,29 +590,29 @@ have the condition `A[i - 1] < A[i]`, we know the `A[i]` will be added to the
             int n = grid[0].size();
             if (m == 0 || n == 0)
                 return 0;
-    
+
             int f[m][n];
-    
+
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
                     if (i == 0 && j == 0) {
                         f[i][j] = grid[i][j];
                     }
-    
+
                     if (i == 0 && j > 0) {
                         f[i][j] = f[i][j - 1] + grid[i][j];
                     }
-    
+
                     if (j == 0 && i > 0) {
                         f[i][j] = f[i - 1][j] + grid[i][j];
                     }
-    
+
                     if (i > 0 && j > 0) {
                         f[i][j] = min(f[i - 1][j], f[i][j - 1]) + grid[i][j];
                     }
                 }
             }
-    
+
             return f[m - 1][n - 1];
         }
     };
@@ -635,7 +635,7 @@ have the condition `A[i - 1] < A[i]`, we know the `A[i]` will be added to the
             for (int i = 0; i < m; i++) {
                 // rolling the f array when move to a new row
                 prev = curr;
-                curr = 1 - curr;  
+                curr = 1 - curr;
                 for (int j = 0; j < n; j++) {
                     f[curr][j] = grid[i][j];
 
@@ -865,7 +865,7 @@ f[i][K] = min{f[i-1][1] + cost[i-1][K], f[i-1][2] + cost[i-1][K], ..., f[i-1][K-
 
 === "C++ O(nk)"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         /**
@@ -889,7 +889,7 @@ f[i][K] = min{f[i-1][1] + cost[i-1][K], f[i-1][2] + cost[i-1][K], ..., f[i-1][K-
                 f[0][j] = 0;
 
             for (int i = 1; i <= m; i++) {
-                min1 = min2 = INT_MAX; 
+                min1 = min2 = INT_MAX;
                 /* from all the colors, find the min1 and min2 */
                 for (int j = 0; j < k; j++) {
                     /* get the min1 and min2 first */
@@ -927,7 +927,7 @@ f[i][K] = min{f[i-1][1] + cost[i-1][K], f[i-1][2] + cost[i-1][K], ..., f[i-1][K-
 
 === "C++ O(nk^2)"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         int minCostII(vector<vector<int>>& costs) {
@@ -1152,7 +1152,7 @@ public:
 
 === "C++ Alternative"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         int maxProfit(vector<int> &prices) {
@@ -1315,7 +1315,7 @@ Solution 4 C++ using lower_bound
 
 === "C++ DP O(n^2)"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         int lengthOfLIS(vector<int>& nums) {
@@ -1396,7 +1396,7 @@ Solution 4 C++ using lower_bound
 
 === "DP with binary search refactored"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         int lengthOfLIS(vector<int>& nums) {
@@ -1426,7 +1426,7 @@ Solution 4 C++ using lower_bound
 
 === "C++ using lower_bound"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         int lengthOfLIS(vector<int>& nums) {
@@ -1568,7 +1568,7 @@ Solution 4 C++ using lower_bound
   就是 `i` 只由 `j*j` 组成.
 * if condition 无需检查 `f[i - j*j]` 是否为`INT_MAX`. 因为这里比`i`小的 `i - j*j`
   总是可以由完全平方数1组成。相比较题目 Coin Change 这道题，这一步可能性检查必不可少，因为在
-  [Coin Change](#coin-change) 中某一面值不一定能被兑换成给定面值的硬币。我们用无穷大来标记。  
+  [Coin Change](#coin-change) 中某一面值不一定能被兑换成给定面值的硬币。我们用无穷大来标记。
 
 === "C++ DP"
 
@@ -1839,7 +1839,7 @@ public class Solution {
             return 0;
         }
     };
-    ``` 
+    ```
 
 === "C++ DP log(n) space"
 
@@ -2477,7 +2477,7 @@ public:
     /**
      * @param nums a list of integer
      * @return an integer, maximum coins
-     */  
+     */
     int maxCoins(vector<int>& nums) {
         int n = nums.size();
         if (n == 1) {
@@ -2907,7 +2907,7 @@ public:
         *      p[j - 1] != s[i - 1] ==> f[i][j] = false;
         *      p[j - 1] == s[i - 1] ==> f[i][j] = f[i - 1][j - 1];
         *      p[j - 1] == '.' ==> f[i][j] = f[i - 1][j - 1]
-        * 
+        *
         *      p[j - 1] == '*',
         * case 1   p[j - 2] == '.' ==> f[i][j] = f[i - 1][j]; ??? why not f[i][j] = true;
         *          p[j - 2] != '.'
@@ -2916,7 +2916,7 @@ public:
         *             \
         * case 2       p[j - 2] == s[i - 1] ==> f[i][j] = f[i - 1][j]
         *              p[j - 2] != s[i - 1] ==> f[i][j] = f[i][j - 2];
-        * 
+        *
         * We see that case 1 and case 2 could be combined and put inside one if statement.
         * State: f[i][j]: the first i chars form s match regex the first j chars from p
         * Equation: f[i][j] =
@@ -3032,7 +3032,7 @@ public:
         *       f[i][0] = false;
         *       f[0][j] = true; if (p[j - 1] == "*" && j == 1)
         * calculate by DP:
-        *       f[0][j] = false; if (j > 1) 
+        *       f[0][j] = false; if (j > 1)
         */
         bool isMatch(const char *s, const char *p) {
             int m = 0;
@@ -3280,7 +3280,7 @@ public:
      * 技巧：要看作把A数组通过变化变成B数组。最后一步考虑把A[i]变成B[i].
      *       这样比在A的基础上变化更容易考虑递推关系
      * Last step: change A[i] to B[i], result[i] = result[i - 1] + abs(B[i] - A[i])
-     * State: f[i][j]: the cost of changing the first i element in A, 
+     * State: f[i][j]: the cost of changing the first i element in A,
      *        and the last elemnet A[i - 1] changed is changed to j (j == B[i])
      * Induction: A[i - 1] --> j, A[i - 2] --> k, |j - k| < target ==> j - target <= k <= j + target
      * Equation: f[i][j] = min_{j - target <= k <= j + target, 1 <= k <= 100}(f[i - 1][k] + abs(j - A[i]))
@@ -3342,7 +3342,7 @@ public:
     class Solution {
     public:
         /**
-        * This is a backpack problem, 
+        * This is a backpack problem,
         * Last step: A[i] is selected or not selected.
         * State: f[i][j]: total solution of i element can sum up to j.
         * Equation: f[i][j] = f[i - 1][j] + f[i - 1][j - A[i - 1]]|j > A[i - 1] for all i == k.
@@ -3351,14 +3351,14 @@ public:
         *       f[0][j] = 0
         * ******************** WRONG *********************************
         * ******************** CORRECT *******************************
-        * Last step: A[i - 1] is selected or not selected. 
+        * Last step: A[i - 1] is selected or not selected.
         *            If selected, we should select k - 1 numbers from A[0], .. A[n - 2] that sum to target - A[i - 1].
         *            If not selected, we should select k number from A[0], .. A[n - 2] that sum to target.
         * State: f[i][k][s]: total solution of selecting k element from first i element that sum up to j.
         * Equation: f[i][k][s] = f[i - 1][k][s] + f[i - 1][k - 1][s - A[i - 1]]|s > A[i - 1].
         * Init: f[0][0][0] = 1; // ?
         *       f[0][k][s] = 0
-        * 
+        *
         */
         int kSum(vector<int> A, int k, int target) {
             // wirte your code here
@@ -3452,7 +3452,7 @@ public:
 
 === "C++ map to set"
 
-    ```c++ 
+    ```c++
     class Solution {
     public:
         bool canCross(vector<int>& stones) {
@@ -3480,6 +3480,6 @@ public:
     };
     ```
 
-### Maximal Square
+### [Maximal Square](../../../leetcode/stack/notes/#221-maximal-square)
 
-### Maximal Rectangle
+### [Maximal Rectangle](../../../leetcode/stack/notes/#85-maximal-rectangle)
