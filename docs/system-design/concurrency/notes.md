@@ -297,7 +297,7 @@ void thr_exit() {
 void thr_join() {
     pthread_mutex_lock(&m);
     while (done == 0)
-        pthread_cond_wait(&c, &m);    
+        pthread_cond_wait(&c, &m);
     pthread_mutex_unlock(&m);
 }
 
@@ -397,8 +397,13 @@ Problem with this solution,
 3. If we have more than one consumer, one of them might sneak in to consume the
    buffer before the other consumer return from `pthread_cond_wait()`.
 
-![Broken solution with if statement](./fig/broken-solution-with-if-statement.png)
-![Broken solution with while statement](./fig/broken-solution-with-while-statement.png)
+### Producer-consumer using if
+
+![Broken solution with if statement](fig/broken-solution-with-if-statement.png)
+
+### Producer-consumer using while
+
+![Broken solution with while statement](fig/broken-solution-with-while-statement.png)
 
 ### Mesa semantics and Hoare semantics
 
