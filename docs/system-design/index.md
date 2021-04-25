@@ -8,6 +8,8 @@
 
 ## [Design Patterns](./patterns/notes.md)
 
+## [Design Messager](./messager/notes.md)
+
 ## [Design TinyUrl](./problems/tinyurl/notes.md)
 
 ## [Design Twitter](./problems/twitter/notes.md)

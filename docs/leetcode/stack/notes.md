@@ -745,3 +745,79 @@ public:
     }
 };
 ```
+
+### 1776. Car Fleet II
+
+Solution I Monotonic stack
+
+* Notice in this problem the invariant is much more complicated. Beside the
+  order (so that the cars can collide), you also have to make sure the next car
+  haven't collide ealier to some lower speed, you have to look at the global
+  optimal solution. For example, car_1, car_2, car_3, when you look at only car_1
+  and car_2, you may find that they are going to collide at t1, but car_2 and
+  car_3 could collide much erlier, the correct solution could be smaller than t1.
+
+=== "C++ monotonic stack"
+
+    ```c++ hl_line="18"
+    class Solution {
+    public:
+        vector<double> getCollisionTimes(vector<vector<int>>& cars) {
+            auto collideT = [&](int i, int j) -> double {
+                // cars[i][0] < cars[j][0], cars[i][1] > cars[j][0]
+                return static_cast<double>(cars[j][0] - cars[i][0]) / (cars[i][1] - cars[j][1]);
+            };
+
+            int n = cars.size();
+            stack<int> s;
+            vector<double> res(n, -1);
+
+            for (int i = n - 1; i >= 0; --i) {
+                // not only you have to be fast to catch next car,
+                // but also the next car have not collided before, if it collided before
+                // you have to look for the slower cars (which could be collided much ealier)
+                while (!s.empty() && (cars[i][1] <= cars[s.top()][1] ||
+                                    (s.size() > 1 && collideT(i, s.top()) > res[s.top()]))) {
+                    s.pop();
+                }
+                res[i] = s.empty() ? -1 : collideT(i, s.top());
+                s.push(i);
+            }
+
+            return res;
+        }
+    };
+    ```
+
+=== "C++ Brute force"
+
+    ```c++
+    class Solution {
+    public:
+        vector<double> getCollisionTimes(vector<vector<int>>& cars) {
+            int n = cars.size();
+            vector<double> ans(n, -1.0);
+
+            for (int i = n - 1; i >= 0; --i) {
+                int p = cars[i][0];
+                int v = cars[i][1];
+
+                for (int j = i - 1; j >= 0; --j) {
+                    int p_j = cars[j][0];
+                    int v_j = cars[j][1];
+                    int dp = p - p_j;
+                    int dv = v_j - v;
+                    if (dv <= 0) break;
+                    double t = (double) dp / dv;
+                    if (ans[j] < 0 || t < ans[j])
+                        ans[j] = t;
+                    else
+                        break;
+
+                }
+            }
+
+            return ans;
+        }
+    };
+    ```

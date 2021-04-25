@@ -33,7 +33,7 @@ some unique property of each problem.
        $n (n - 1) \dots (n - k + 1) = \frac{n!}{(n - k)!}$
     2. Calculate the number of ways to choose k elements as $\binom{n}{k}$, then
        order the k elements: $\binom{n}{k} \times k!$
-    3. Equalize the two give us: $\binom{n}{k} \times k!$
+    3. Equalize the two give us: $\binom{n}{k} = \frac{n!}{k! (n - k)!}$
 * What’s the relation between the subset and combination?
 * For `k` from `0` to `n`, get all the combinations, all those combinations will
   form the powerset of the original set of n elements. We have $\sum_{k = 0}^{n}\binom{n}{k} = \binom{n}{0} + \binom{n}{1}, \dots, \binom{n}{n} = 2^n\text{(number of all set)}$

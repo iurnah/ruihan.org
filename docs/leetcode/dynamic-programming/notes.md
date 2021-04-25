@@ -347,7 +347,7 @@ different and the throught process and the solution are also different.
             return res;
         }
     };
-    ```  
+    ```
 
 ## Knapsack IV
 
@@ -405,10 +405,10 @@ different and the throught process and the solution are also different.
             if (n == 0) {
                 return 0;
             }
-            
+
             int f[T + 1];
             f[0] = 1;
-            
+
             for (int j = 1; j <= T; j++) {
                 f[j] = 0;
             }
@@ -535,6 +535,83 @@ waymo
 
 ### Dungeon Game
 
+### 221. Maximal Square
+
+Solution 1 [monotonic stack](../../stack/notes/#221-maximal-square)
+Solution 2 [Dynamic Programming](https://zxi.mytechroad.com/blog/dynamic-programming/leetcode-221-maximal-square/)
+
+=== "C++ DP memoization"
+
+    ```c++
+    class Solution {
+    public:
+        int maximalSquare(vector<vector<char>>& matrix) {
+            if (matrix.empty()) return 0;
+            int m = matrix.size();
+            int n = matrix[0].size();
+            vector<vector<int>> sum(m + 1, vector<int>(n + 1, 0));
+            int res = 0;
+
+            for (int i = 1; i <= m; ++i) {
+                for (int j = 1; j <= n; ++j) {
+                    sum[i][j] = matrix[i - 1][j - 1] - '0'
+                        + sum[i - 1][j]
+                        + sum[i][j - 1]
+                        - sum[i - 1][j - 1];
+                }
+            }
+
+            int area = 0;
+            for (int i = 1; i <= m; ++i) {
+                for (int j = 1; j <= n; ++j) {
+                    for (int k = min(m - i + 1, n - j + 1); k > 0; --k) {
+                        area = sum[i + k - 1][j + k - 1]
+                                - sum[i + k - 1][j - 1]
+                                - sum[i - 1][j + k - 1]
+                                + sum[i - 1][j - 1];
+
+                        if (area == k * k) {
+                            res = max(res, area);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return res;
+        }
+    };
+    ```
+
+=== "C++ DP subproblem"
+
+    ```c++
+    class Solution {
+    public:
+        int maximalSquare(vector<vector<char>>& matrix) {
+            if (matrix.empty()) return 0;
+            int m = matrix.size();
+            int n = matrix[0].size();
+            vector<vector<int>> sizes(m, vector<int>(n, 0));
+            int res = 0;
+
+            for (int i = 0; i < m; ++i) {
+                for (int j = 0; j < n; ++j) {
+                    sizes[i][j] = matrix[i][j] - '0';
+                    if (sizes[i][j] == 0) continue;
+
+                    if (i > 0 && j > 0)
+                        sizes[i][j] = min(min(sizes[i - 1][j - 1], sizes[i - 1][j]), sizes[i][j - 1]) + 1;
+
+                    res = max(res, sizes[i][j] * sizes[i][j]);
+                }
+            }
+
+            return res;
+        }
+    };
+    ```
+
 ## 序列型
 
 ### Perfect Squares
@@ -600,7 +677,7 @@ There are two questions regarding this problem:
                     f[i][j] = f[i - 1][j];
                     for (int k = 0; k <= amount[i]; ++k) {
                         if (f[i - 1][j - k * curr_price[i - 1]] != -1 && j >= k * curr_price[i - 1]) {
-                        f[i][j] = max(f[i][j], f[i - 1][j - k * curr_price[i - 1]] + k * new_price[i - 1]);        
+                        f[i][j] = max(f[i][j], f[i - 1][j - k * curr_price[i - 1]] + k * new_price[i - 1]);
                         }
                     }
                 }
@@ -628,7 +705,7 @@ There are two questions regarding this problem:
         vector<int> v{15, 20};
         vector<int> w{30, 45};
         vector<int> s{3, 3};
-        int m = 30;  
+        int m = 30;
         int res = 0;
 
         Solution sol = Solution();
@@ -665,7 +742,7 @@ There are two questions regarding this problem:
                 for (int j = A; j >= 0; --j) {
                 for (int k = 0; k <= amount[i]; ++k) {
                     if (f[j - k * curr_price[i - 1]] != -1 && j >= k * curr_price[i - 1]) {
-                    f[j] = max(f[j], f[j - k * curr_price[i - 1]] + k * new_price[i - 1]);        
+                    f[j] = max(f[j], f[j - k * curr_price[i - 1]] + k * new_price[i - 1]);
                     }
                 }
                 }
@@ -692,7 +769,7 @@ There are two questions regarding this problem:
         vector<int> v{15, 20};
         vector<int> w{30, 45};
         vector<int> s{3, 3};
-        int m = 30;  
+        int m = 30;
         int res = 0;
 
         Solution sol = Solution();
@@ -1091,6 +1168,123 @@ public:
 
 ## Memoization
 
+### 1049. Last Stone Weight II
+
+- Solution 1 Recursion + memoization
+- Solution 2 Use two set to simulate
+- Solution 3 Transform into knapsack
+    - Thinking it as adding "+" and "-" in front of each number. The sum of all
+      the numbers with "+" S1, the sum of all number with "-" S2, we want to
+      find the minimum of `|S1 - S2|` because we have `S1 + S2 = total`. suppose
+      `S1 <= S2`, we want to minimize `S2 - S1 = total - S1 - S1 = total - 2 * S1`;
+      We wil achieve the goal by maximizing `S1`, so that the stete would be.
+      `f[i][j]` represent the optimal value of use first `i` stones to achieve
+       maximum `j` (`S1`) value.
+
+=== "C++ Memoization"
+
+    ```c++
+    class Solution {
+        int memo[30][3001];
+    public:
+        int lastStoneWeightII(vector<int>& stones) {
+            return helper(stones, 0, 0);
+        }
+
+        int helper(vector<int>& stones, int i, int sum) {
+            if (i == stones.size())
+                return abs(sum);
+            if (memo[i][sum] != 0)
+                return memo[i][sum];
+
+            memo[i][sum] = min(helper(stones, i + 1, abs(sum - stones[i])),
+                            helper(stones, i + 1, sum + stones[i]));
+
+            return memo[i][sum];
+        }
+    };
+    ```
+
+=== "C++ Set simulation"
+
+    ```c++
+    class Solution {
+    public:
+        int lastStoneWeightII(vector<int>& stones) {
+            if (stones.size() == 0)
+                return 0;
+
+            unordered_set<int> set_left({stones[0]});
+
+            for (int i = 1; i < stones.size(); ++i) {
+                unordered_set<int> set_right = set_left;
+                set_left.clear();
+                for (int y : set_right) {
+                    set_left.insert(y + stones[i]);
+                    set_left.insert(y - stones[i]);
+                }
+            }
+
+            int ans = INT_MAX;
+            for (int z : set_left) {
+                ans = min(ans, abs(z));
+            }
+
+            return ans;
+        }
+    };
+    ```
+
+=== "C++ knapsack"
+
+    ```c++
+    class Solution {
+    public:
+        int lastStoneWeightII(vector<int>& stones) {
+            int n = stones.size();
+            int sum = accumulate(begin(stones), end(stones), 0);
+
+            vector<vector<int>> f(n + 1, vector<int>(sum / 2 + 1, 0));
+
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 1; j < sum / 2 + 1; ++j) {
+                    if (j < stones[i - 1]) {
+                        f[i][j] = f[i - 1][j];
+                    } else {
+                        f[i][j] = max(f[i - 1][j], f[i - 1][j - stones[i - 1]] + stones[i - 1]);
+                    }
+                }
+            }
+
+            return sum - 2 * f[n][sum / 2];
+        }
+    };
+    ```
+
+=== "C++ knapsack O(1) space"
+
+    ```c++
+    class Solution {
+    public:
+        int lastStoneWeightII(vector<int>& stones) {
+            int n = stones.size();
+            int sum = accumulate(begin(stones), end(stones), 0);
+
+            vector<int> f(sum / 2 + 1, 0);
+
+            for (int i = 1; i <= n; ++i) {
+                for (int j = sum / 2; j >= 0; --j) {
+                    if (j >= stones[i - 1]) {
+                        f[j] = max(f[j], f[j - stones[i - 1]] + stones[i - 1]);
+                    }
+                }
+            }
+
+            return sum - 2 * f[sum / 2];
+        }
+    };
+    ```
+
 ### Sentence Screen Fitting
 
 Solution 1
@@ -1139,7 +1333,7 @@ Solution 2
   sentence to fix the row, we record the total number of words that can fit this
   row in `dp[i]`, `i` is the index of the starting word in the sentence. After
   the calculation, we could count `sum(dp[i])`, `i` is starting word's index.
-  
+
 ```C++
 class Solution {
 public:

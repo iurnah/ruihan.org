@@ -623,3 +623,5 @@ However, the $\sigma$ is usually unknown, what you can do is to use the estimate
 1. [Distributtion Explorer by Justin Bois](https://distribution-explorer.github.io/)
 2. [Tutorial 3b: Probability distributions and their stories](http://bois.caltech.edu/dist_stories/t3b_probability_stories.html)
 3. [Think Stats: Exploratory Data Analysis in Python](http://greenteapress.com/thinkstats2/html/index.html)
+4. [Introduction to Probability](https://ocw.mit.edu/resources/res-6-012-introduction-to-probability-spring-2018/index.htm)
+4. [Introduction to Probability and Statistics](https://ocw.mit.edu/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/index.htm)

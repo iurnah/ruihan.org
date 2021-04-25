@@ -35,7 +35,6 @@ plugins:
       minify_html: true
 
 nav:
-  - Home: index.md
   - Books:
     - Index: books/index.md
     - Accelerated C++: books/accelerated-cpp/notes.md

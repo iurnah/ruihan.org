@@ -778,7 +778,7 @@ BFS solution
   possible to be the same as G1 to R1, or greater than G1 to R1 by 1. __The
   assigned nearest distance from room to gate never be able to reduce further in
   future.__ Then the first assigned distance value for a room will be the nearest one.
- 
+
 DFS solution
 
 * I initially start with each `INF` cell and search for 0. the issue is we have
@@ -808,7 +808,7 @@ DFS solution
             queue<pair<int, int>> q;
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (rooms[i][j] == 0) { // start from each gate 
+                    if (rooms[i][j] == 0) { // start from each gate
                         q.push({i, j});
                     }
                 }
@@ -857,7 +857,7 @@ DFS solution
 
             int x[4] = {-1, 0, 1, 0};
             int y[4] = {0, 1, 0, -1};
-    
+
             if (i < 0 || i >= m || j < 0 || j >= n || mat[i][j] < d) {
                 return;
             }

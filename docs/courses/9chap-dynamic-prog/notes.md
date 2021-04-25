@@ -3480,6 +3480,6 @@ public:
     };
     ```
 
-### [Maximal Square](../../../leetcode/stack/notes/#221-maximal-square)
+### [221. Maximal Square](../../../leetcode/stack/notes/#221-maximal-square)
 
-### [Maximal Rectangle](../../../leetcode/stack/notes/#85-maximal-rectangle)
+### [85. Maximal Rectangle](../../../leetcode/stack/notes/#85-maximal-rectangle)
