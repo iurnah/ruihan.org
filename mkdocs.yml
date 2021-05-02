@@ -35,6 +35,7 @@ plugins:
       minify_html: true
 
 nav:
+  - Home: index.md
   - Books:
     - Index: books/index.md
     - Accelerated C++: books/accelerated-cpp/notes.md
@@ -72,6 +73,9 @@ nav:
     - Reservoir Sampling: leetcode/reservoir-sampling/notes.md
     - Stack: leetcode/stack/notes.md
     - String: leetcode/string/notes.md
+    - Sliding Window: leetcode/sliding-window/notes.md
+    - Topological Sort: leetcode/topological-sort/notes.md
+    - Two Pointers: leetcode/two-pointers/notes.md
     - Tree: leetcode/tree/notes.md
     - Trie: leetcode/trie/notes.md
     - Union Find: leetcode/union-find/notes.md
@@ -91,11 +95,11 @@ nav:
     - Concurrency and Synchronization: system-design/concurrency/notes.md
     - Distributed System Concepts: system-design/concepts/notes.md
     - Design Patterns: system-design/patterns/notes.md
-    - How to Design Crawler: system-design/problems/crawler/notes.md
-    - How to Design TinyUrl: system-design/problems/tinyurl/notes.md
-    - How to Design Twitter: system-design/problems/twitter/notes.md
-    - How to Deisgn Scheduler: system-design/problems/scheduler/notes.md
-    - How to Design Ticketmaster: system-design/problems/ticketmaster/notes.md
-
+    - Design Crawler: system-design/problems/crawler/notes.md
+    - Design TinyUrl: system-design/problems/tinyurl/notes.md
+    - Design Twitter: system-design/problems/twitter/notes.md
+    - Deisgn Scheduler: system-design/problems/scheduler/notes.md
+    - Design Ticketmaster: system-design/problems/ticketmaster/notes.md
+    - Design Messager: system-design/problems/messager/notes.md
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'

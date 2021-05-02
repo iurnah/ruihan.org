@@ -1547,20 +1547,3 @@ public:
         }
     };
     ```
-
-## BFS Topological sorting
-
-Apply BFS in DAG topological sorting requires to start with the vertices that
-have `0` indegree, namely the source vertices. We need a __queue__ and a `indegree`
-vector for solving topological sorting problems. The BFS queue may start with
-more than one source vertices because topological sorted graph may start with
-two or more vertices (indegree == 0). When BFS visit an adjacent vertex of the
-queue-front vertex, the indegree of this visited vertex should be decreased by 1,
-as we "visited" this arc. If the indegree of the visited vertex is reduced to 0,
-we push it to the queue. The idea of using BFS in topological sorting is to explore
-frontier of the vertices that currently have `0` non-visited arcs leading to the
-vertices (indegree is 0).
-
-* What if the given graph have a single vertex?
-* How to check whether the topological sorting is unique or not?
-* How to output all the unique topological sorted sequence of vertices?

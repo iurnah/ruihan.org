@@ -19,12 +19,21 @@
       if needed.
 * To simplify the code, we can use sentinel values to eliminate redundent codes.
 
+### monotonic stack cheat sheet
+
+1. You can iterate the array both forward or backword, forward iteration is simpler.
+2. You can push the index to the stack or simly push the array value. Usually, when
+   we need to meet index range constrain, we have to push the index to the stack.
+3. Be careful about the comparasion between the current value and the stack top,
+   Make sure choose the correct operators ($>$ or $>=$, $<$ or $<=$).
+4. Sometimes you need to look more than the stack top, for example [Trapping Rain Water](#42.-trapping-rain-water).
+
 ## Problems
 
 ### 42. Trapping Rain Water
 
-Solution 1 monotonic Stack
-Solution 2 scan the tallest from left and tallest from right, then canculate.
+* Solution 1 monotonic Stack
+* Solution 2 scan the tallest from left and tallest from right, then canculate.
 
 === "C++ monotonic stack"
 
@@ -93,8 +102,8 @@ Solution 2 scan the tallest from left and tallest from right, then canculate.
 
 ### 84. Largest Rectangle in Histogram
 
-Solution 1 Scan to left and right from each index
-Solution 2 Using monotonous increase stack
+* Solution 1 Scan to left and right from each index
+* Solution 2 Using monotonous increase stack
 
 === "C++ naive solution"
 
@@ -544,6 +553,38 @@ public:
     };
     ```
 
+### 901. Online Stock Span
+
+* Solution 1 Monotonic stack
+
+1. Iterate left to right, keep the current result together with the element in
+   the stack (pop each element meet the constrain off the stack)
+2. The stack have strict decreasing values
+
+    ```c++
+    class StockSpanner {
+        stack<pair<int, int>> s;
+        int count = 0;
+    public:
+        StockSpanner() {
+        }
+
+        int next(int price) {
+
+            count = 1;
+
+            while (!s.empty() && s.top().first <= price) {
+                count += s.top().second;
+                s.pop();
+            }
+
+            s.push({price, count});
+
+            return count;
+        }
+    };
+    ```
+
 ### 739. Daily Temperatures
 
 === "C++ monotonic stack"
@@ -746,6 +787,10 @@ public:
 };
 ```
 
+### 1130. Minimum Cost Tree From Leaf Values
+
+### 1425. Constrained Subsequence Sum
+
 ### 1776. Car Fleet II
 
 Solution I Monotonic stack
@@ -759,7 +804,7 @@ Solution I Monotonic stack
 
 === "C++ monotonic stack"
 
-    ```c++ hl_line="18"
+    ```c++ hl_lines="18"
     class Solution {
     public:
         vector<double> getCollisionTimes(vector<vector<int>>& cars) {

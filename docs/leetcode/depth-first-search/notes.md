@@ -27,50 +27,6 @@ DFS(graph G, start vertex s)
 6. If vertex $v$ is a descendant of vertex $u$, at the time of discovery of $u$,
 there is a path from $u$ to $v$ isn't been visited (all white path) (White-path theorem)
 
-## Topological sort
-
-* __Motivation:__ sequence tasks while respecing all precedence constraints.
-* If graph G __exists__ a directed cycle, no topological ordering.
-* Every directed acyclic graph must have a __sink__ vertex.
-
-=== "The psudo code"
-
-```text
-DFS-Loop (graph G)
--- mark all nodes unexplored
--- current_label = n [to keep track of ordering]
--- for each vertex
-    -- if v not yet explored [in previous DFS call ]
-    -- DFS(G,v)
-
-DFS(graph G, start vertex s)
--- for every edge (s,v)
-    -- if v not yet explored
-    -- mark v explored
-    -- DFS(G,v)
--- set f(s) = current_label
--- current_label = current_label - 1
-```
-
-One possible improvement is to use three flags to distinguish the `non-visited`,
-`visiting`, and `visited` nodes. It detects circle when run into a vertex marked
-as `visiting` as the current vertex is in `visiting` state. Because in DAG, the
-property of DFS states that __a descendant have to be visited before its
-predecessor finished__. For example, DFS start from $s$, and just discovered
-vertex $v$, recursive call on vertex $v$ discovred the $s$ in "visiting" state,
-this indicate there exists a cycle.
-
-### Course Schedule
-
-### Course Schedule II
-
-* What if the given graph have a single vertex?
-
-### Sequence Reconstruction
-
-* How to check whether the topological sorting is unique or not?
-* How to output all the unique topological sorted sequence of vertices?
-
 #### Strongly connected components
 
 ## Problem that cannot be solve by BFS and DFS at the same time
