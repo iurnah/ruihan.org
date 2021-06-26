@@ -55,6 +55,7 @@ nav:
     - Functional Programming Principles in Scala: courses/func-prog-in-scala/notes.md
     - Applied Scrum for Agile Project Management: courses/applied-scrum-for-agile/notes.md
     - Concurrent Programming in Java: courses/concurrent-prog-java/notes.md
+    - Java Collections: courses/java-collections/notes.md
   - Leetcode:
     - Index: leetcode/index.md
     - Favorite: leetcode/favorite/notes.md
@@ -101,5 +102,6 @@ nav:
     - Deisgn Scheduler: system-design/problems/scheduler/notes.md
     - Design Ticketmaster: system-design/problems/ticketmaster/notes.md
     - Design Messager: system-design/problems/messager/notes.md
+    - Design Payment System: system-design/problems/payment/notes.md
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
