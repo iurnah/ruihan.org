@@ -42,7 +42,7 @@ TODO: add note about the reading.
 | tone and intonation             | adding more tone and intonation variations into your speaking |
 | affirmation                     | speaking with affirmed tone   |
 
-## Week 2
+## Week 2 Leadership Presence
 
 * Do you feel like a leader?
 * Do you look like a leader?
@@ -62,15 +62,15 @@ TODO: add note about the reading.
 ### Personal Presence
 
 * charisma
-  * (old) Power, influence, big personality, forcefull presence
-  * (new) Calm, confidence
+    * (old) Power, influence, big personality, forcefull presence
+    * (new) __calm, confidence__
 * leadership presence
-  * Look confident
-  * communication clearly
+    * Look confident
+    * communication clearly
 * 3 dimentions
-  * How you act
-  * How you communicate
-  * How you look
+    * How you act
+    * How you communicate
+    * How you look
 
 ### Verbal Skill
 
@@ -84,13 +84,13 @@ TODO: add note about the reading.
 * Use specific words
 * Make your tone professional and enthusiastic
 * Voice quality
-  * volume
-  * talk slowly
-  * use phrasing and inflection
-  * Use pauses
-  * vary your voice
+    * volume
+    * talk slowly
+    * use phrasing and inflection
+    * Use pauses
+    * vary your voice
 
->Effective communication is about engagement
+> Effective communication is about engagement
 
 ### Videos and Articles
 
@@ -127,6 +127,87 @@ Today's leaders
 * make decisions
 * support the big pictures
 
-## Week 3
+## Week 3 Difficult conversation
 
-## Week 4
+* what you style of handling difficult conversation?
+* ask, what emotions make me think this way? Where do they come from? What is
+  real, and what are my assumptions?
+
+How to make a person feel safe?
+
+* avoid asking why question.
+* avoid use the work but, but using and.
+
+### Practicel tools
+
+* not responding to effort --> keep the dialogue open
+* stubbornness --> recognize their position and go back to goals
+* Develop informal interpersonal relationships
+* be consistent in your behavior
+* explain your motivations
+* be succint
+* communicate and over communicate
+
+### Listening
+
+* Receive
+* Understand
+* Evaluate
+* Remember
+* Responding
+
+### Levels of listening
+
+* Leve 3
+    * Fake attention
+    * tuning out the speaker
+    * More interested in talking
+* Level 2
+    * Hearing words, but missing intent
+    * not looking at non-verbals
+* Level 1
+    * Listening with understanding and respect
+
+### Videos and Articles
+
+* [Holly Weeks, Taking Stress Out of Stressful Conversations](https://google.com)
+* [Amy Gallo, How to Mentally Prepare for a Difficult Conversations](https://google.com)
+* [Accessing Your Listening Skills](_bbce5fb218d69bfdac3b91e4129f7ef8_Listening_Quiz.pdf)
+* [Crucial Confrontations Cricket Buchler](https://youtu.be/riq3VhjJhw8)
+* ![6 source of influence](fig/six-source-of-influence.png)
+
+## Week 4 Crisis Communication
+
+* What is a crisis?
+* How do you plan for crisis?
+* How to communicate effectively in a crisis?
+
+Crisis Communication plan
+
+1. Identify worse-case scenario
+2. Identify your audiences and plan how to reach each audience
+    * employees are your spokespeople
+
+### The key rule: communicate Early and Often
+
+What if you don't have all the facts?
+
+* prepare a holding statement
+* establish regular media updates
+* communicate company values
+* avoid wating and "no comments"
+* tell then what you'll do
+
+Holding statemenet:
+
+* this is what we know
+* this is what we care about
+* we are investigating
+* we will update you in an hour
+
+living our value everyday:
+
+* We care about the pepole involved
+* We are committed to the full disclosure
+
+> And I think it's critical to point out today that if I don't understand what you are saying, I don't trust you. And if what you are saying is so technical and beyond my ability to understand, I'm not going to invest the time to figure it out. I just don't trust you. I don't like you. I don't believe you. So companies that take the time to help people understand how to make communication inclusive so that people can instantly understand what you are saying, I think is the secret here.
