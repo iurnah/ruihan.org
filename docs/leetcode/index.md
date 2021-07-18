@@ -16,7 +16,7 @@
 * [ ] [Geometry](./geometry/notes.md)
 * [ ] [Graph](./graph/notes.md)
 * [ ] [Greedy](./greedy/notes.md)
-* [ ] [Hash](./hash/notes.md)
+* [x] [Hash](./hash/notes.md)
 * [x] [Heap](./heap/notes.md)
 * [x] [Interval](./interval/notes.md)
 * [x] [Linked List](./linked-list/notes.md)

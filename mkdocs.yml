@@ -56,7 +56,8 @@ nav:
     - Applied Scrum for Agile Project Management: courses/applied-scrum-for-agile/notes.md
     - Concurrent Programming in Java: courses/concurrent-prog-java/notes.md
     - Java Collections: courses/java-collections/notes.md
-    - Leadership Courses: courses/leadership-courses/notes.md
+    - Interpersonal Communication Rice: courses/leadership-courses/interpersonal-communication-rice.md
+    - Business Writing Colorado: courses/leadership-courses/business-writing-colorado.md
   - Leetcode:
     - Index: leetcode/index.md
     - Favorite: leetcode/favorite/notes.md
@@ -68,6 +69,7 @@ nav:
     - Depth-First Search (DFS): leetcode/depth-first-search/notes.md
     - Dynamic Programming: leetcode/dynamic-programming/notes.md
     - Graph: leetcode/graph/notes.md
+    - Hash: leetcode/hash/notes.md
     - Heap: leetcode/heap/notes.md
     - Interval: leetcode/interval/notes.md
     - Linked List: leetcode/linked-list/notes.md

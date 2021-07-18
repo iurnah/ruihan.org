@@ -586,9 +586,9 @@ public:
 
 === "Java O(KlogK)"
 
-```
-https://leetcode.com/problems/find-k-pairs-with-smallest-sums/discuss/84551/simple-Java-O(KlogK)-solution-with-explanation
-```
+    ```
+    https://leetcode.com/problems/find-k-pairs-with-smallest-sums/discuss/84551/simple-Java-O(KlogK)-solution-with-explanation
+    ```
 
 === "C++ Priority Queue"
 

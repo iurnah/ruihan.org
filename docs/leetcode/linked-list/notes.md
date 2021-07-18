@@ -55,50 +55,52 @@ public:
 
 * It seems we need a stack. We can use a `stack` variable or use recursion.
 
-```C++ tab="C++ stack"
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        stack<int> s1, s2;
-        while(l1) {
-            s1.push(l1->val);
-            l1 = l1->next;
-        }
-        while(l2) {
-            s2.push(l2->val);
-            l2 = l2->next;
-        }
+=== "C++ stack"
 
-        int sum = 0;
-        ListNode *p = nullptr, *head = new ListNode(0);
-        while (!s1.empty() || !s2.empty()) {
-            if (!s1.empty()) { sum += s1.top(); s1.pop(); }
-            if (!s2.empty()) { sum += s2.top(); s2.pop(); }
-            head->val = sum % 10;
-            p = new ListNode(sum / 10);
-            p->next = head;
-            head = p;
-            sum /= 10;
-        }
+    ```c++
+    /**
+    * Definition for singly-linked list.
+    * struct ListNode {
+    *     int val;
+    *     ListNode *next;
+    *     ListNode(int x) : val(x), next(NULL) {}
+    * };
+    */
+    class Solution {
+    public:
+        ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+            stack<int> s1, s2;
+            while(l1) {
+                s1.push(l1->val);
+                l1 = l1->next;
+            }
+            while(l2) {
+                s2.push(l2->val);
+                l2 = l2->next;
+            }
 
-        return head->val == 0 ? head->next : head;
-    }
-};
-```
+            int sum = 0;
+            ListNode *p = nullptr, *head = new ListNode(0);
+            while (!s1.empty() || !s2.empty()) {
+                if (!s1.empty()) { sum += s1.top(); s1.pop(); }
+                if (!s2.empty()) { sum += s2.top(); s2.pop(); }
+                head->val = sum % 10;
+                p = new ListNode(sum / 10);
+                p->next = head;
+                head = p;
+                sum /= 10;
+            }
+
+            return head->val == 0 ? head->next : head;
+        }
+    };
+    ```
 
 ### Plus One Linked List
 
 * We need a stack. Using recursion can help us handle the case well
 
-```C++
+```c++
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -147,7 +149,7 @@ public:
 
 * use slow and fast node to "measure" the nth node and remove it.
 
-```C++
+```c++
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -184,69 +186,73 @@ public:
 
 * This is an easy problem, but can you use two * programing to solve it?
 
-```C++ tab="C++ solution"
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* removeElements(ListNode* head, int val) {
-        ListNode dummy(0);
-        dummy.next = head;
-        ListNode *curr = &dummy;
+=== "C++ solution"
 
-        while (curr->next) {
-            if (curr->next->val == val) {
-                ListNode *next = curr->next;
-                curr->next = next->next;
-            } else {
-                curr = curr->next;
+    ```c++
+    /**
+    * Definition for singly-linked list.
+    * struct ListNode {
+    *     int val;
+    *     ListNode *next;
+    *     ListNode(int x) : val(x), next(NULL) {}
+    * };
+    */
+    class Solution {
+    public:
+        ListNode* removeElements(ListNode* head, int val) {
+            ListNode dummy(0);
+            dummy.next = head;
+            ListNode *curr = &dummy;
+
+            while (curr->next) {
+                if (curr->next->val == val) {
+                    ListNode *next = curr->next;
+                    curr->next = next->next;
+                } else {
+                    curr = curr->next;
+                }
             }
+
+            return dummy.next;
         }
+    };
+    ```
 
-        return dummy.next;
-    }
-};
-```
+=== "Two * solution"
 
-```C++ tab="Two * solution"
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* removeElements(ListNode* head, int val) {
-        // if (head == nullptr) return nullptr;
-        ListNode **headptr = &head;
+    ```c++
+    /**
+    * Definition for singly-linked list.
+    * struct ListNode {
+    *     int val;
+    *     ListNode *next;
+    *     ListNode(int x) : val(x), next(NULL) {}
+    * };
+    */
+    class Solution {
+    public:
+        ListNode* removeElements(ListNode* head, int val) {
+            // if (head == nullptr) return nullptr;
+            ListNode **headptr = &head;
 
-        ListNode **curr = headptr;
-        while (*curr != NULL) {
-            ListNode *entry = *curr;
-            if (entry->val == val) {
-                *curr = entry->next;
-            } else {
-                curr = &(entry->next);
+            ListNode **curr = headptr;
+            while (*curr != NULL) {
+                ListNode *entry = *curr;
+                if (entry->val == val) {
+                    *curr = entry->next;
+                } else {
+                    curr = &(entry->next);
+                }
             }
-        }
 
-        return *headptr;
-    }
-};
-```
+            return *headptr;
+        }
+    };
+    ```
 
 ### Remove Duplicates from Sorted List
 
-```C++
+```c++
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -279,7 +285,7 @@ public:
 
 ### Remove Duplicates from Sorted List II
 
-```C++
+```c++
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -321,82 +327,88 @@ public:
 
 ### Reverse Linked List
 
-```C++ tab="C++ iterative with dummy"
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode *reverse(ListNode *head) {
-        ListNode *new_head = nullptr;
+=== "C++ iterative with dummy"
 
-        while(head != nullptr) {
-            ListNode *tmp = head->next;
-            head->next = new_head;
-            new_head = head;
-            head = tmp;
+    ```c++
+    /**
+    * Definition for singly-linked list.
+    * struct ListNode {
+    *     int val;
+    *     ListNode *next;
+    *     ListNode(int x) : val(x), next(NULL) {}
+    * };
+    */
+    class Solution {
+    public:
+        ListNode *reverse(ListNode *head) {
+            ListNode *new_head = nullptr;
+
+            while(head != nullptr) {
+                ListNode *tmp = head->next;
+                head->next = new_head;
+                new_head = head;
+                head = tmp;
+            }
+
+            return new_head;
         }
+    };
+    ```
 
-        return new_head;
-    }
-};
-```
+=== "C++ iterative without dummy"
 
-```C++ tab="C++ iterative without dummy"
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* reverseList(ListNode* head) {
-        if (head == nullptr) return nullptr;
+    ```c++
+    /**
+    * Definition for singly-linked list.
+    * struct ListNode {
+    *     int val;
+    *     ListNode *next;
+    *     ListNode(int x) : val(x), next(NULL) {}
+    * };
+    */
+    class Solution {
+    public:
+        ListNode* reverseList(ListNode* head) {
+            if (head == nullptr) return nullptr;
 
-        ListNode *curr = head;
-        while(curr->next) {
-            ListNode *tmp = curr->next;
-            curr->next = tmp->next;
-            tmp->next = head;
-            head = tmp;
-        }
+            ListNode *curr = head;
+            while(curr->next) {
+                ListNode *tmp = curr->next;
+                curr->next = tmp->next;
+                tmp->next = head;
+                head = tmp;
+            }
 
-        return head;
-    }
-};
-```
-
-```C++ tab="C++ recursive"
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* reverseList(ListNode* head) {
-        if (head == nullptr || head->next == nullptr)
             return head;
+        }
+    };
+    ```
 
-        ListNode *new_head = reverseList(head->next);
-        head->next->next = head;
-        head->next = nullptr;
+=== "C++ recursive"
 
-        return new_head;
-    }
-};
-```
+    ```c++
+    /**
+    * Definition for singly-linked list.
+    * struct ListNode {
+    *     int val;
+    *     ListNode *next;
+    *     ListNode(int x) : val(x), next(NULL) {}
+    * };
+    */
+    class Solution {
+    public:
+        ListNode* reverseList(ListNode* head) {
+            if (head == nullptr || head->next == nullptr)
+                return head;
+
+            ListNode *new_head = reverseList(head->next);
+            head->next->next = head;
+            head->next = nullptr;
+
+            return new_head;
+        }
+    };
+    ```
 
 ### Reverse Linked List II
 
@@ -415,6 +427,88 @@ public:
 ### Sort List
 
 ## Catergory 5 Cycle in linked lists
+
+### 708. Insert into a Sorted Circular Linked List
+
+* What the loop invariant?
+    * It is easy to handle the common case `prev <= insertVal <= curr`.
+    * For the special case when "wrap around" the circle, it could be `insertVal`
+      is the max or min, but in both cases, the insertion operation is the same.
+
+=== "Python loop invariant"
+
+    ``` python
+    """
+    # Definition for a Node.
+    class Node:
+        def __init__(self, val=None, next=None):
+            self.val = val
+            self.next = next
+    """
+
+    class Solution:
+        def insert(self, head: 'Node', insertVal: int) -> 'Node':
+            node = Node(insertVal)
+            node.next = node
+            if not head:
+                return node
+
+            prev, curr = head, head.next
+            while not prev.val <= insertVal <= curr.val and not prev.val > curr.val > insertVal and not insertVal > prev.val > curr.val:
+                prev, curr = prev.next, curr.next
+                if prev == head:
+                    break
+
+            prev.next = node
+            node.next = curr
+
+            return head
+    ```
+
+=== "C++ loop invariant"
+
+    ```c++
+    /*
+    // Definition for a Node.
+    class Node {
+    public:
+        int val = NULL;
+        Node* next = NULL;
+
+        Node() {}
+
+        Node(int _val, Node* _next) {
+            val = _val;
+            next = _next;
+        }
+    };
+    */
+    class Solution {
+    public:
+        Node* insert(Node* head, int insertVal) {
+            if (head == nullptr) {
+                head = new Node(insertVal, nullptr);
+                head->next = head;
+                return head;
+            }
+
+            Node* prev = head;
+            Node* next = head->next;
+            while (!(prev->val <= insertVal && insertVal <= next->val)
+                && !(prev->val > next->val && insertVal < next->val)
+                && !(prev->val > next->val && insertVal > prev->val)) {
+                prev = prev->next;
+                next = next->next;
+                if (prev == head)
+                    break;
+            }
+
+            prev->next = new Node(insertVal, next);
+
+            return head;
+        }
+    };
+    ```
 
 ### Linked List Cycle
 
