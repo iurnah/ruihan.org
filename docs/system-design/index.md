@@ -1,14 +1,12 @@
 # System Design
 
-## [How Browser Works](./browser/notes.md)
-
 ## [Concurrency and Synchronization](./concurrency/notes.md)
 
 ## [Distributed System Concepts](./concepts/notes.md)
 
 ## [Design Patterns](./patterns/notes.md)
 
-## [Design Messager](./messager/notes.md)
+## [Design Messager](./problems/messager/notes.md)
 
 ## [Design TinyUrl](./problems/tinyurl/notes.md)
 

@@ -32,7 +32,7 @@
 
 ## GreenField MVP
 
-![GreenField MVP Credit Card Architecture](greenfield-credit-card-arch.png)
+![GreenField MVP Credit Card Architecture](fig/greenfield-credit-card-arch.png)
 
 ### Authorization
 
