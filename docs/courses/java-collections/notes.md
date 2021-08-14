@@ -183,3 +183,172 @@ Collections.sort(list, new Comparator<Vehicle>() {
 // Use Java 8 lambda comparator (functional style)
 Collections.sort(list, (o1, o2) -> o1.brand.compareTo(o2.brand));
 ```
+
+## LinkedList
+
+![LinkedList Class](fig/linkedlist-class.png)
+
+* LinkedList class implement both the `List` and `Deque` interfaces.
+* LinkedList definition
+
+    ```java
+    private static class Node<E> {
+      E item;
+      Node<E> next;
+      Node<E> prev;
+
+      Node(Node<E> prev, E element, Node<E> next) {
+        this.item = element;
+        this.prev = prev;
+        this.next = next;
+      }
+    }
+
+    // construct a LinkedList
+    List<Integer> list = new LinkedList<Integer>();
+
+    // construct a LinkedList with existing list
+    List<Integer> list = new LinkedList<Integer>(oldList);
+    ```
+
+* `LinkedList` operation methods
+
+```java
+// add elements
+LinkedList.add(E e)
+LinkedList.addFirst(E e)
+LinkedList.addLast(E e)
+LinkedList.add(int index, E e)
+LinkedList.addAll(Collection c)
+LinkedList.addAll(int index, Collection c)
+
+// fetch elements
+LinkedList.getFirst()
+LinkedList.getLast()
+LinkedList.get(int index)
+
+// remove elements
+LinkedList.removeFirst()
+LinkedList.removeLast()
+LinkedList.remove(int index)
+LinkedList.remove(Object 0)
+
+// sorting
+Collections.sort(linkedList);
+```
+
+## CopyOnWriteArrayList
+
+* creating a `CopyOnWriteArrayList`
+
+    ```java
+    private transient volatile Object[] array;
+
+    public CopyOnWriteArrayList() {
+      setArray(new Object[0]);
+    }
+
+    final void setArray(Object[] a) {
+      array = a;
+    }
+
+    List list = new CopyOnWriteArrayList();
+
+    // using an existing array
+    public CopyOnWriteArrayList(E[] toCopyIn) {
+      setArray(Array.copyOf(toCopyin, toCopyIn.length, Object[].class));
+    }
+    ```
+
+* inserting elements into a `CopyOnWriteArrayList`
+
+    ```java
+    CopyOnWriteArrayList.add(E e)
+    CopyOnWriteArrayList.add(int index, E element)
+    CopyOnWriteArrayList.addAll(Collection c)
+    CopyOnWriteArrayList.addIfAbsent(E e)
+    CopyOnWriteArrayList.addAllAbsent(Collection c)
+    ```
+
+### CopyOnWriteArrayList internal
+
+* Using a reentrant lock `final transient ReentrantLock lock = new ReentrantLock();`
+* __Steps:__ writing thread aquire the by `lock.lock()`; make a copy of the data
+  with size of `length + 1`; add the element at the end of the copied data;
+  point to the new data; release the lock.
+
+### Interation
+
+* Using `forEach(Consumer<? super E> action)`.
+* Using `iterator()`. No synchronization is needed while traversing the iterator
+  because the iteration is being done on a snapshot.
+
+    ```java
+    import java.util.Iterator;
+    import java.util.List;
+    import java.util.concurrent.CopyOnWriteArrayList;
+
+    public class CopyOnWriteArrayListDemo {
+
+      public static void main(String args[]) {
+        List<String> list = new CopyOnWriteArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Orange");
+
+        //Created an iterator
+        Iterator<String> itr = list.iterator();
+        //Adding elements after creating iterator. ConcurrentModificationException will not be thrown.
+        list.add("Papaya");
+
+        //Iterating the list through the iterator that was created earlier. Papaya will not be present.
+        while(itr.hasNext()) {
+          System.out.println(itr.next());
+        }
+
+        System.out.println("Again getting the iterator");
+        //Again creating the iterator. This time papaya will be present.
+        itr = list.iterator();
+        while(itr.hasNext()) {
+          System.out.println(itr.next());
+        }
+      }
+    }
+    ```
+
+* `iterator()` of `CopyOnWriteArrayList` class doesn't support `remove()` method.
+  We can directly remove a element while iterating throught the list.
+
+    ```java
+    import java.util.Iterator;
+    import java.util.List;
+    import java.util.concurrent.CopyOnWriteArrayList;
+
+    public class CopyOnWriteArrayListDemo {
+
+      public static void main(String args[]) {
+        List<String> list = new CopyOnWriteArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Orange");
+
+        //Created an iterator
+        Iterator<String> itr = list.iterator();
+
+        while(itr.hasNext()) {
+          System.out.println(itr.next());
+          list.remove("Orange");
+        }
+        System.out.println("Again creating the iterator");
+        //Created an iterator
+        itr = list.iterator();
+
+        while(itr.hasNext()) {
+          System.out.println(itr.next());
+
+        }
+      }
+    }
+    ```
+
+## Sets
