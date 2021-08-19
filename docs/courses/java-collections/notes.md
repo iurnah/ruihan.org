@@ -352,3 +352,228 @@ Collections.sort(linkedList);
     ```
 
 ## Sets
+
+* Creating a HashSet `Set<Integer> set = new HashSet<>();`.
+* Operations
+
+    ```java
+    Set.add(E e)
+    Set.contains(E e)
+    Set.remove(Object o) // return true if element in the set, false if not in the set.
+    Set.clear()
+    Set.isEmpty()
+    ```
+
+* Iterate a `Set`, using `for` loop, `Iterator`, and `forEach()`.
+* `HashSet` is not ordered, it can not be sorted.
+
+## TreeSet
+
+![TreeSet Hierarchy](fig/treeset-hierarchy.png)
+
+* `TreeSet` doesn't allow duplicate elements.
+* `TreeSet` doesn't allow null elements.
+* `TreeSet` store elements in ascending order.
+* `HashSet` V.S. `TreeSet`
+  * allow null values v.s. not allow null values.
+  * random order v.s. sorted
+  * HashSet is faster for `add`, `remove`, `contains`, `size`, etc.
+* Creating a `TreeSet`. `TreeSet` internally uses `TreeMap`.
+
+    ```java
+    Set<Integer> set = new TreeSet<>();
+
+    // use a comparator in the constructor
+    Comparator<String> comp = (String o1, String o2) -> (o1.compareTo(o2));
+    Set<String> treeset = new TreeSet<>(comp);
+    ```
+
+* Add element to `TreeSet`. `TreeSet.Add(E e)` or `TreeSet.AddAll(Collection<> c)`.
+* get element from a `TreeSet`.
+
+```java
+// get elements
+TreeSet.first();
+TreeSet.last();
+TreeSet.subSet(E fromElement, E toElement); // return a range of element
+TreeSet.headSet(E toElement);   // return all the smaller elements than toElement
+TreeSet.tailSet(E fromElement); // return all the elements which are greater than fromElement
+
+// remove an element
+TreeSet.remove(Object o);
+TreeSet.isEmpty();
+TreeSet.size();
+TreeSet.size(Object o);
+```
+
+## HashMap
+
+* Creation and insertion
+
+    ```java
+    Map<String, Integer> map = new HashMap<>();
+
+    HashMap.put(K key, V value);
+    HashMap.putIfAbsent(K key, V value);
+    HashMap.putAll(Map<? extends K, ? extends V> m);
+    ```
+
+* Update and removal
+
+    ```java
+    HashMap.get(Object key);
+    HashMap.getOrDefault(Object key, V defaultValue);
+    ```
+
+* Replacing a value in HashMap
+
+    ```java
+    HashMap.replace(K key, V oldValue, V newValue);
+    HashMap.replace(K key, V value);
+    HashMap.replaceAll(BiFunction<? super K, ? super V, ? extends V> function);
+    ```
+
+* Removing an element from HashMap
+
+    ```java
+    HashMap.remove(Object key); // return the value being removed.
+    HashMap.remove(Object key, Object value); // return true if the key-value pair are matching and removed.
+    ```
+
+* Check presence
+
+    ```java
+    HashMap.containsKey(Object key);
+    HashMap.containsValue(Object value);
+    ```
+
+* fetch all keys `HashMap.keySet()`.
+* fetch all values `HashMap.values()`;
+* check empty `HashMap.isEmpty()`;
+* Java 8 addition `HashMap.compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction)`.
+
+    ```java
+    HashMap.compute("China", (K, v) -> v == null ? 10 : v + 1);
+    HashMap.computeIfAbsent("China", (K, v) -> v == null ? 10 : v + 1); // for key is absent or key is null
+    HashMap.computeIfPresent("China", (K, v) -> v == null ? 10 : v + 1); // for key is absent or key is null
+    HashMap.merge()
+    ```
+
+* use of `HashMap.merge();`
+
+    ```java
+        import java.util.HashMap;
+    import java.util.Map;
+
+    public class HashMapDemo {
+
+      public static void main(String args[]) {
+
+        Map<String, Integer> map1 = new HashMap<>();
+        map1.put("Jay", 5000);
+        map1.put("Rahul", 3000);
+        map1.put("Nidhi", 4500);
+        map1.put("Amol", 60000);
+
+        Map<String, Integer> map2 = new HashMap<>();
+        map2.put("Jay", 7000);
+        map2.put("Rahul", 4500);
+        map2.put("Nidhi", 1200);
+        map2.put("Saurav", 25000);
+
+        map1.forEach((key,value) -> map2.merge(key, value, (v1, v2) -> v1 + v2));
+
+        System.out.println(map2);
+
+      }
+    }
+    ```
+
+* Design good key for `HashMap`. We need to follow the `equals` and `hashcode` contracts.
+    * If two objects are equal, then they must have the same hash code.
+    * If two objects have the same hashcode, they may or may not be equal.
+
+    ```java
+      class Employee {
+
+        int empId;
+        String empName;
+
+        public Employee(int empId, String empName) {
+          super();
+          this.empId = empId;
+          this.empName = empName;
+        }
+
+        @Override
+        public int hashCode() {
+          final int prime = 31;
+          int result = 1;
+          result = prime * result + empId;
+          result = prime * result + ((empName == null) ? 0 : empName.hashCode());
+          return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+          Employee emp = (Employee) obj;
+          return this.empId == emp.empId;
+        }
+
+      }
+
+      // main class
+      import java.util.HashMap;
+      import java.util.Map;
+      import java.util.Map.Entry;
+
+      public class HashMapDemo {
+
+        public static void main(String args[]) {
+
+          Employee emp1 = new Employee(123, "Jane");
+          Employee emp2 = new Employee(123, "Jane");
+
+          Map<Employee, Integer> employeeMap = new HashMap<>();
+
+          employeeMap.put(emp1, 56000);
+          employeeMap.put(emp2, 45000);
+
+          for(Entry<Employee, Integer> entry : employeeMap.entrySet()) {
+            System.out.println("Employee Id: " + entry.getKey().empId + " Employee Name: " + entry.getKey().empName);
+          }
+
+        }
+      }
+    ```
+
+* Iterate a `HashMap`
+
+    ```java
+    ...
+    Set<Entry<String, Integer>> entrySet = stockPrice.entrySet(); // Returns a Set of Entries
+
+    for (Entry<String, Integer> entry : entrySet) {
+      System.out.println("Company Name: " + entry.getKey() + " Stock Price: " + entry.getValue());
+    }
+    ...
+
+    ...
+    Set<Entry<String, Integer>> entrySet = stockPrice.entrySet(); // Returns a Set of Entries
+
+    Iterator<Entry<String, Integer>> itr = entrySet.iterator(); //Getting the iterator
+
+    while (itr.hasNext()) {
+      Entry<String,Integer> entry = itr.next();
+      System.out.println("Company Name: " + entry.getKey() + " Stock Price: " + entry.getValue());
+
+      if(entry.getKey().equals("Oracle")) {
+        itr.remove();
+      }
+    }
+    ...
+
+    ...
+    stockPrice.forEach((key, value) -> System.out.println("Company Name: " + key + " Stock Price: " + value));
+    ...
+    ```
