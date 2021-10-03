@@ -482,6 +482,30 @@ public:
 };
 ```
 
+### 646. Maximum Length of Pair Chain
+
+* sort and use the idea similar to merge intervals, here we also use greedy.
+* The key is sort by the end. The greedy is that we always prefer to choose
+  `pairA` against `pairB` because `pairA[1] < pairB[1]`.
+
+=== "Python interval"
+
+```python
+class Solution:
+    def findLongestChain(self, pairs: List[List[int]]) -> int:
+        n = len(pairs)
+        pairs.sort(key=lambda x: x[1]) # sort by end
+        prev = pairs[0][1]
+
+        count = 1
+        for p in pairs:
+            if p[0] > prev:
+                count += 1
+                prev = p[1]
+
+        return count
+```
+
 ### 729. My Calendar I
 
 Solution 1 Check intervals (vector) overlapping
@@ -612,7 +636,7 @@ public:
             count += c.second;
             if (count == 3) {
                 calendar[start]--;
-                calendar[end]++;  
+                calendar[end]++;
                 return false;
             }
         }

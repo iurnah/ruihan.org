@@ -737,7 +737,7 @@ public:
 };
 ```
 
-## Task Scheduler
+### Task Scheduler
 
 Solution 1 Greedy + Priority Queue
 
@@ -847,3 +847,78 @@ public:
   }
 };
 ```
+
+### 1882. Process Tasks Using Servers
+
+* Solution 1: Use two `PriorityQueue`s. Pay attention to the order criteria.
+
+=== "Python Solution"
+
+    ```python
+    class Solution:
+        def assignTasks(self, servers: List[int], tasks: List[int]) -> List[int]:
+            readyQ, runningQ = [], []
+            res = []
+
+            for i in range(len(servers)):
+                heappush(readyQ, (servers[i], i))
+
+            for i, task in enumerate(tasks):
+                while runningQ and runningQ[0][0] <= i:
+                    _, w, idx = heappop(runningQ)
+                    heappush(readyQ, (w, idx))
+
+                if readyQ:
+                    w, idx = heappop(readyQ)
+                else:
+                    i, w, idx = heappop(runningQ)
+
+                res.append(idx)
+                heappush(runningQ, (i + task, w, idx))
+
+            return res
+    ```
+
+=== "Java Solution"
+
+    ```java
+    class Solution {
+        public int[] assignTasks(int[] servers, int[] tasks) {
+            PriorityQueue<int[]> readyQ = new PriorityQueue<>(
+                (a, b) -> a[1] != b[1] ? a[1] - b[1] : a[2] - b[2]);
+            PriorityQueue<int[]> runningQ = new PriorityQueue<>(
+                (a, b) -> (a[0] != b[0]) ? (a[0] - b[0]) :
+                    ((a[1] != b[1]) ? (a[1] - b[1]) : (a[2] - b[2])));
+
+            int m = servers.length;
+            int n = tasks.length;
+
+            for (int i = 0; i < m; i++) {
+                // first element used for runningQ not readyQ
+                readyQ.add(new int[] {0, servers[i], i});
+            }
+
+            int[] res = new int[n];
+
+            for (int i = 0; i < n; i++) {
+                while (!runningQ.isEmpty() && runningQ.peek()[0] <= i) {
+                    readyQ.add(runningQ.poll());
+                }
+
+                if (readyQ.isEmpty()) {
+                    int[] curr = runningQ.poll();
+                    res[i] = curr[2];
+                    curr[0] += tasks[i];
+                    runningQ.add(curr);
+                } else {
+                    int[] curr = readyQ.poll();
+                    res[i] = curr[2];
+                    curr[0] = i + tasks[i];
+                    runningQ.add(curr);
+                }
+            }
+
+            return res;
+        }
+    }
+    ```

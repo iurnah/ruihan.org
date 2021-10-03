@@ -29,6 +29,29 @@ I will write some of my consolidated notes for them.
 
 ### Binary Tree Tilt
 
+### 951. Flip Equivalent Binary Trees
+
+* Solution 1: recursive
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def flipEquiv(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> bool:
+        if root1 == root2 == None:
+            return True
+
+        if root1 and root2 and root1.val == root2.val:
+            return (self.flipEquiv(root1.left, root2.left) and self.flipEquiv(root1.right, root2.right)) \
+                or (self.flipEquiv(root1.left, root2.right) and self.flipEquiv(root1.right, root2.left))
+        else:
+            return False
+```
+
 ## Path sum and longest path problem
 
 ### Path Sum
@@ -56,6 +79,48 @@ I will write some of my consolidated notes for them.
 ### Most Frequent Subtree Sum
 
 ### Diameter of Binary Tree
+
+### 1339. Maximum Product of Splitted Binary Tree
+
+* use recursion to calculate the subtree sum and then calculate the results.
+
+=== "Python solution 1"
+
+```Python
+class Solution:
+    def __init__(self):
+        self.res = 0
+        self.total = 0
+
+    def maxProduct(self, root: Optional[TreeNode]) -> int:
+        def dfs(node):
+            if not node: return 0
+            left, right = dfs(node.left), dfs(node.right)
+            self.res = max(self.res, left * (self.total - left), right * (self.total - right))
+            return left + right + node.val
+
+        self.total = dfs(root)
+        dfs(root)
+        return self.res % (10**9 + 7)
+```
+
+=== "Python solution 2"
+
+```Python
+class Solution:
+    def maxProduct(self, root: Optional[TreeNode]) -> int:
+        vals=[]
+
+        def dfs(node):
+            if not node: return 0
+            left, right = dfs(node.left), dfs(node.right)
+            vals.append(left + right + node.val)
+            return left + right + node.val
+
+        total = dfs(root)
+
+        return max(val * (total - val) for val in vals) % (10**9 + 7)
+```
 
 ## Preorder traversal
 

@@ -625,3 +625,33 @@ public:
     }
 };
 ```
+
+### 491. Increasing Subsequences
+
+* notice the given array may not sorted. You need to consider duplidates in this case.
+* to eliminite duplication, we use a set to keep the "root of the subtree" and make
+  sure no duplicates in the same level when grow the tree.
+
+```python
+class Solution:
+    def findSubsequences(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        def helper(nums, index, path):
+            if len(path) > 1:
+                res.append(path[:])
+
+            seen = set()
+            for i in range(index, len(nums)):
+                if nums[i] in seen: continue
+
+                if not path or nums[i] >= path[-1]:
+                    path.append(nums[i])
+                    helper(nums, i + 1, path)
+                    path.pop()
+
+                seen.add(nums[i])
+
+        helper(nums, 0, [])
+
+        return res
+```

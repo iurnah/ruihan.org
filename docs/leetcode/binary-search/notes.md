@@ -1104,6 +1104,30 @@ merge sort
     };
     ```
 
+### 540. Single Element in a Sorted Array
+
+```python
+class Solution:
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        start = 0
+        end = len(nums) - 1
+        while start < end:
+            mid = start + (end - start) // 2
+
+            if mid % 2 == 0:
+                if nums[mid] == nums[mid + 1]:
+                    start = mid + 2
+                else:
+                    end = mid
+            else:
+                if nums[mid] == nums[mid - 1]:
+                    start = mid + 1
+                else:
+                    end = mid
+
+        return nums[start]
+```
+
 ## Category 2 Using ordering abstraction
 
 ### 69. Sqrt(x)

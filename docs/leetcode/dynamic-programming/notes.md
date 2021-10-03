@@ -537,8 +537,8 @@ waymo
 
 ### 221. Maximal Square
 
-Solution 1 [monotonic stack](../../stack/notes/#221-maximal-square)
-Solution 2 [Dynamic Programming](https://zxi.mytechroad.com/blog/dynamic-programming/leetcode-221-maximal-square/)
+- Solution 1 [monotonic stack](../../stack/notes/#221-maximal-square)
+- Solution 2 [Dynamic Programming](https://zxi.mytechroad.com/blog/dynamic-programming/leetcode-221-maximal-square/)
 
 === "C++ DP memoization"
 
@@ -611,6 +611,42 @@ Solution 2 [Dynamic Programming](https://zxi.mytechroad.com/blog/dynamic-program
         }
     };
     ```
+=== "Python DP"
+
+    ```Python
+    class Solution:
+        def maximalSquare(self, matrix: List[List[str]]) -> int:
+            res = 0
+            m = len(matrix)
+            n = len(matrix[0])
+            dp = [[0 if matrix[i][j] == "0" else 1 for j in range(n)] for i in range(m)]
+
+            for i in range(1, m):
+                for j in range(1, n):
+                    if dp[i][j] > 0:
+                        dp[i][j] = min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1
+
+            res = max([max(row) for row in dp])
+            return res ** 2
+    ```
+
+### 1277. Count Square Submatrices with All Ones
+
+- solution 1 Similar to [221. Maximal Square](./#221-maximal-square)
+
+```python
+class Solution:
+    def countSquares(self, matrix: List[List[int]]) -> int:
+        res = 0
+        for i in range(0, len(matrix)):
+            for j in range(0, len(matrix[0])):
+                if matrix[i][j] > 0 and i > 0 and j > 0:
+
+                    matrix[i][j] = min(matrix[i - 1][j], matrix[i][j - 1], matrix[i - 1][j - 1]) + 1
+
+                res += matrix[i][j]
+        return res
+```
 
 ## 序列型
 
