@@ -577,3 +577,275 @@ TreeSet.size(Object o);
     stockPrice.forEach((key, value) -> System.out.println("Company Name: " + key + " Stock Price: " + value));
     ...
     ```
+
+## TreeMap
+
+![TreeMap](fig/treemap.png)
+
+* natrually sorted by keys
+* doesn't allow null key
+* not thread-safe, can be made thread-safe by using the `synchronizedMap()`.
+
+```java
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+public class TreeMapDemo {
+
+  public static void main(String args[]) {
+
+    // Creating a TreeMap which will store all the elements in reverse order.
+    TreeMap<String, Integer> reverseMap = new TreeMap<>(Comparator.reverseOrder());
+    reverseMap.put("Oracle", 43);
+    reverseMap.put("Microsoft", 56);
+    reverseMap.put("Apple", 43);
+    reverseMap.put("Novartis", 87);
+    System.out.println("Elements are stored in reverse order: " + reverseMap);
+
+    // Creating a HashMap which will store all the elements in random order.
+    Map<String, Integer> hashMap = new HashMap<>();
+    hashMap.put("Oracle", 43);
+    hashMap.put("Microsoft", 56);
+    hashMap.put("Apple", 43);
+    hashMap.put("Novartis", 87);
+    System.out.println("Elements are stored in random order: " + hashMap);
+
+    // Creating a TreeMap using existing HashMap. This will store the elements in ascending order.
+    TreeMap<String, Integer> treeMap1 = new TreeMap<>(hashMap);
+    System.out.println("Elements are stored in ascending order: " + treeMap1);
+
+    // Creating a TreeMap using existing TreeMap. This will store the elements in the same order as it was in the passed Map.
+    TreeMap<String, Integer> treeMap2 = new TreeMap<>(reverseMap);
+    System.out.println("Elements are stored in descending order: " + treeMap2);
+  }
+}
+```
+
+* inserting element in a TreeMap
+
+    ```java
+    TreeMap.put(K key, V value);
+    TreeMap.putAll(Map<? extends K, ? extends V> m);
+    TreeMap.remove(Object o);  # return null if key is not presented.
+    TreeMap.replace(K key , V value);
+    TreeMap.replace(K key , V oldValue, V newValue);  # return true or false
+    ```
+
+* sort a `TreeMap` by value.
+
+    ```java
+    import java.util.Comparator;
+    import java.util.TreeMap;
+
+    public class TreeMapDemo {
+      public static TreeMap<String, Integer> sortByValuesLambda(TreeMap<String, Integer> map) {
+
+        Comparator<String> valueComparator = (k1, k2) -> {
+
+          int comp = map.get(k1).compareTo(map.get(k2));
+          if (comp == 0)
+            return 1;
+          else
+            return comp;
+        };
+
+        TreeMap<String, Integer> mapSortedByValues = new TreeMap<>(valueComparator);
+
+        mapSortedByValues.putAll(map);
+        return mapSortedByValues;
+      }
+
+      public static TreeMap<String, Integer> sortByValues(TreeMap<String, Integer> map) {
+
+        Comparator<String> valueComparator = new Comparator<String>() {
+
+                // return comparison results of values of two keys
+                public int compare(String k1, String k2)
+                {
+                    int comp = map.get(k1).compareTo(
+                        map.get(k2));
+                    if (comp == 0)
+                        return 1;
+                    else
+                        return comp;
+                }
+
+            };
+
+        TreeMap<String, Integer> mapSortedByValues = new TreeMap<>(valueComparator);
+
+        mapSortedByValues.putAll(map);
+        return mapSortedByValues;
+      }
+
+      public static void main(String args[]) {
+
+        TreeMap<String, Integer> map = new TreeMap<>();
+        map.put("Oracle", 43);
+        map.put("Microsoft", 56);
+        map.put("Apple", 76);
+        map.put("Novartis", 87);
+        map.put("Google", 23);
+        map.put("Audi", 101);
+
+        System.out.println(sortByValues(map));
+      }
+    }
+    ```
+
+* HashMap Sorting
+    * add all element to a TreeMap
+
+        ```java
+        Map<Integer, String> employeeMap = new HashMap<>();
+        employeeMap.put(123, "Joe");
+        employeeMap.put(456, "Ann");
+        TreeMap<Integer, String> employeeTreeMap = new TreeMap<>();
+        employeeTreeMap.putAll(employeeMap);
+        ```
+
+    * add all keys (or values) to a `ArrayList` and sort.
+
+        ```java
+        Map<Integer, String> employeeMap = new HashMap<>();
+        employeeMap.put(123, "Joe");
+        employeeMap.put(456, "Ann");
+
+        List<Integer> keyList = new ArrayList<>(employeeMap.keySet()):
+        Collections.sort(keyList);
+
+        List<Integer> valueList = new ArrayList<>(employeeMap.valueSet()):
+        Collections.sort(valueList);
+        ```
+
+    * Using Lambda and streams
+
+        ```java
+        Map<Integer, String> employeeMap = new HashMap<>();
+        employeeMap.put(123, "Joe");
+        employeeMap.put(456, "Ann");
+
+        employeeMap.entrySet()
+        .stream()
+        .sorted(Map.Entry.<Integer, String>comparingByKey())
+        .forEach(System.out::println);
+
+        employeeMap.entrySet()
+        .stream()
+        .sorted(Map.Entry.<Integer, String>comparingByValue())
+        .forEach(System.out::println);
+        ```
+
+## LinkedHashMap
+
+`LinkedHashMap` can maintains the insertion order. It is not synchronized.
+
+![LinkedHashMap](fig/linkedhashmap.png)
+
+* creating a `LinkedHashMap`
+
+    ```java
+    LinkedHashMap();
+    LinkedHashMap(int capacity); // capacity should be > 0, otherwise IllegalArgumentException
+    LinkedHashMap(int capacity, float, loadFactor); // capacity should be > 0, otherwise IllegalArgumentException
+    // accessOrder: true, sorted in order of access; false, sorted in order of insertion.
+    LinkedHashMap(int capacity, float loadFactor, boolean accessOrder);
+    LinkedHashMap(Map<? extends K, ? extends V> m);
+    ```
+
+* The `LinkedHashMap` is using a doubly LinkedList to track the insertion order
+  elements. You can think of them first as a `List` structure and then the `Map`
+  properties are added such as Hash bucket and chaining to resolve the conflict.
+
+## ConcurrentHashMap
+
+* `ConcurrentHashMap` and `SynchronizedMap`
+    * segement of the map is locked v.s. entire map is locked
+    * read/write can access the same time v.s. returns interator, fails fast on concurrent modification
+    * doesn't allow null key v.s. allow only one null key
+* create a `ConcurrentHashMap`
+    * like create other HashMap, with parameters: `apacity`, `loadFactor`, `aExistingMap`.
+* inserting into the `ConcurrentHashMap`
+    ```java
+    ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+    ConcurrentHashMap.put(K key, V value);
+    ConcurrentHashMap.putIfAbsent(K key, V value);
+    ConcurrentHashMap.putAll(Map<? extends K, ? extends V> m);
+    ```
+
+## IdentityHashMap
+
+* `IdentityHashMap` is reference-equality semantics oriented.
+* A simple example to show how `HashMap` and `IdentityHashMap` are different.
+
+    ```java
+    import java.util.HashMap;
+    import java.util.IdentityHashMap;
+    import java.util.Map;
+
+    class Employee {
+      int empId;
+      String empName;
+
+      public Employee(int empId, String empName) {
+        super();
+        this.empId = empId;
+        this.empName = empName;
+      }
+
+      @Override
+      public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + empId;
+        result = prime * result + ((empName == null) ? 0 : empName.hashCode());
+        return result;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+        Employee other = (Employee) obj;
+        if (empId != other.empId)
+          return false;
+        if (empName == null) {
+          if (other.empName != null)
+            return false;
+        } else if (!empName.equals(other.empName))
+          return false;
+        return true;
+      }
+    }
+
+    public class IdentityHashMapDemo {
+      public static void main(String args[]) {
+
+        Employee emp1 = new Employee(123, "Saurav");
+        Employee emp2 = new Employee(123, "Saurav");
+
+
+        Map<Employee, String> hashMap = new HashMap<>();
+        hashMap.put(emp1, "emp1");
+        hashMap.put(emp2, "emp2");
+
+
+        Map<Employee, String> identityHashMap = new IdentityHashMap<>();
+        identityHashMap.put(emp1, "emp1");
+        identityHashMap.put(emp2, "emp2");
+
+        System.out.println("The employee objects in HashMap are:");
+        System.out.println(hashMap);
+        // Output:
+        // The employee objects in HashMap are:
+        // {Employee@93301da6=emp2}
+
+        System.out.println();
+        System.out.println("The employee objects in IdentityHashMap are:");
+        System.out.println(identityHashMap);
+        // Output:
+        // The employee objects in HashMap are:
+        // {Employee@93301da6=emp2, Employee@93301da6=emp1}
+      }
+    }
+    ```
