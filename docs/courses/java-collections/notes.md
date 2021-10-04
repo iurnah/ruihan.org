@@ -849,3 +849,62 @@ public class TreeMapDemo {
       }
     }
     ```
+
+## Arrays Class
+
+* `Arrays.binarySearch(int[])` to search an `Array of elements`
+
+    ```java
+    int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    int index = Arrays.binarySearch(numbers, 4);
+    int index = Arrays.binarySearch(numbers, 5, 9, 4);
+    ```
+
+* Search comparable object with `Arrays.binarySearch`
+
+    ```java
+    Employee[] employees = { new Employee(123, "Jay"), new Employee(124, "Roy"), new Employee(125, "Nikki")};
+    int index = Arrays.binarySearch(employees, new Employee(124, "Roy"), (emp1, emp2) -> emp1.empId - emp2.empId);
+    ```
+
+* Sort an Array: `Arrays.sort(array)`, `Arrays.sort(array, fromIndex, toIndex)`
+* Sort an Array in parallel `Arrays.parallelSort()`, not always parallel sort.
+* Copy an Array
+
+    ```java
+    int[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int[] newArray = Arrays.copyOf(numbers, numbers.length);
+    int[] newArray = Arrays.copyOfRange(numbers, 0, 5);
+    ```
+
+* Copy an Array of objects will deep copy, modify the original objects will not
+  change the copied objects.
+* `Arrays.asList(Integer[])`
+* `Arrays.equals(Integer[], Integer[])`
+* `Arrays.asList(Integer[], int)`
+
+## Collections Class
+
+```java
+List<Integer> list = new ArrayList<>();
+  list.add(34);
+  list.add(12);
+
+List<Integer> list2 = new ArrayList<>();
+  list.add(34);
+  list.add(12);
+
+Collections.min(list);
+Collections.max(list);
+Collections.frequency(list, 9);
+Collections.binarySearch(list, new Integer(222))
+Collections.copy(list, list2); // requires list.length >= list2.length
+Collections.fill(list, 10);
+
+// unmodifiable
+List<String> unmodifiableList = Collections.unmodifiableList(list);
+
+// synchronized, not efficient to use in practice
+List<String> unmodifiableList = Collections.synchronizedList(list);
+```
+
