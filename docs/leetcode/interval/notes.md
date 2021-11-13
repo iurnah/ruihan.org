@@ -26,49 +26,53 @@ following all three operations.
 
 ### insertInterval (addInterval, mergeInterval)
 
-```C++ tab="C++ vector"
-void addRange(int left, int right) {
-    vector<pair<int, int>> tmp;
-    int pos = 0;
-    for (int i = 0; i < intervals.size(); i++) {
-        if (left > intervals[i].second) {
-            tmp.push_back(intervals[i]);
-            pos++;
-        } else if (right < intervals[i].first) {
-            tmp.push_back(intervals[i]);
-        } else {
-            left = min(intervals[i].first, left);
-            right = max(intervals[i].second, right);
+=== "C++ vector"
+
+    ```C++
+    void addRange(int left, int right) {
+        vector<pair<int, int>> tmp;
+        int pos = 0;
+        for (int i = 0; i < intervals.size(); i++) {
+            if (left > intervals[i].second) {
+                tmp.push_back(intervals[i]);
+                pos++;
+            } else if (right < intervals[i].first) {
+                tmp.push_back(intervals[i]);
+            } else {
+                left = min(intervals[i].first, left);
+                right = max(intervals[i].second, right);
+            }
+        }
+
+        tmp.insert(tmp.begin() + pos, {left, right});
+        swap(intervals, tmp);
+    }
+    ```
+
+=== "C++ map"
+
+    ```C++
+    void addRange(int left, int right) {
+        auto l = m.upper_bound(left);
+        auto r = m.upper_bound(right);
+        // rule out the case that l overlap with previous
+        if (l != m.begin()) {
+            if((--l)->second < left) {
+                ++l;
+            }
+        }
+
+        // sure left is non-overlap, check the right
+        if (l != r) {
+            int lmin = min(l->first, left);
+            int rmax = max(right, (--r)->second);
+            m.erase(l, ++r); // remove iterator
+            m[lmin] = rmax;
+        } else { // both no overlap
+            m[left] = right;
         }
     }
-
-    tmp.insert(tmp.begin() + pos, {left, right});
-    swap(intervals, tmp);
-}
-```
-
-```C++ tab="C++ map"
-void addRange(int left, int right) {
-    auto l = m.upper_bound(left);
-    auto r = m.upper_bound(right);
-    // rule out the case that l overlap with previous
-    if (l != m.begin()) {
-        if((--l)->second < left) {
-            ++l;
-        }
-    }
-
-    // sure left is non-overlap, check the right
-    if (l != r) {
-        int lmin = min(l->first, left);
-        int rmax = max(right, (--r)->second);
-        m.erase(l, ++r); // remove iterator
-        m[lmin] = rmax;
-    } else { // both no overlap
-        m[left] = right;
-    }
-}
-```
+    ```
 
 ### queryInterval
 
@@ -76,88 +80,96 @@ void addRange(int left, int right) {
   have two different implementation.
 * The key to do the query is how to search the position, we use `upper_bound`.
 
-```C++ tab="C++ vector"
-bool queryRange(int left, int right) {
-    int n = invals.size(), l = 0, r = n;
-    while (l < r) {
-        int m = l + (r - l) / 2;
-        if (invals[m].first <= left) {
-            l = m + 1;
-        } else {
-            r = m;
+=== "C++ vector"
+
+    ```C++
+    bool queryRange(int left, int right) {
+        int n = invals.size(), l = 0, r = n;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (invals[m].first <= left) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
         }
+
+        if (l == 0 || invals[--l].second < right) {
+            return false;
+        }
+
+        return true;
     }
+    ```
 
-    if (l == 0 || invals[--l].second < right) {
-        return false;
+=== "C++ map"
+
+    ```C++
+    bool queryRange(int left, int right) {
+        auto l = m.upper_bound(left);
+
+        if (l == m.begin() || (--l)->second < right) {
+            return false;
+        }
+
+        return true;
     }
-
-    return true;
-}
-```
-
-```C++ tab="C++ map"
-bool queryRange(int left, int right) {
-    auto l = m.upper_bound(left);
-
-    if (l == m.begin() || (--l)->second < right) {
-        return false;
-    }
-
-    return true;
-}
-```
+    ```
 
 ### deleteInterval
 
-```C++ tab="C++ vector"
-void removeRange(int left, int right) {
-    int n = invals.size();
-    vector<pair<int, int>> tmp;
-    for (int i = 0; i < n; i++) {
-        if (invals[i].second <= left || invals[i].first >= right)
-            tmp.push_back(invals[i]);
-        else {
-            if (invals[i].first < left)  tmp.push_back({invals[i].first, left});
-            if (invals[i].second > right) tmp.push_back({right, invals[i].second});
+=== "C++ vector"
+
+    ```C++
+    void removeRange(int left, int right) {
+        int n = invals.size();
+        vector<pair<int, int>> tmp;
+        for (int i = 0; i < n; i++) {
+            if (invals[i].second <= left || invals[i].first >= right)
+                tmp.push_back(invals[i]);
+            else {
+                if (invals[i].first < left)  tmp.push_back({invals[i].first, left});
+                if (invals[i].second > right) tmp.push_back({right, invals[i].second});
+            }
+        }
+
+        swap(invals, tmp);
+    }
+    ```
+
+=== "C++ map"
+
+    ```C++
+    void removeRange(int left, int right) {
+        auto l = m.upper_bound(left);
+        auto r = m.upper_bound(right);
+
+        if (l != m.begin()) {
+            --l;
+            if(l->second < left) {
+                ++l;
+            }
+        }
+
+        // nothing need to be removed
+        if (l == r) {
+            return;
+        }
+
+        int l1 = min(left, l->first);
+        int r1 = max(right, (--r)->second);
+
+        m.erase(l, ++r);
+
+        if (l1 != left) {
+            m[l1] = left;
+        }
+
+        if (r1 != right) {
+            m[right] = r1;
         }
     }
-
-    swap(invals, tmp);
-}
-```
-
-```C++ tab="C++ map"
-void removeRange(int left, int right) {
-    auto l = m.upper_bound(left);
-    auto r = m.upper_bound(right);
-
-    if (l != m.begin()) {
-        --l;
-        if(l->second < left) {
-            ++l;
-        }
-    }
-
-    // nothing need to be removed
-    if (l == r) {
-        return;
-    }
-
-    int l1 = min(left, l->first);
-    int r1 = max(right, (--r)->second);
-
-    m.erase(l, ++r);
-
-    if (l1 != left) {
-        m[l1] = left;
-    }
-
-    if (r1 != right) {
-        m[right] = r1;
-    }
-}
-```
+    ```
 
 ## Problems
 
@@ -171,7 +183,7 @@ void removeRange(int left, int right) {
 !!! Note
     You cannot use index to refer to the neighboring elements. because the vector is being modified.
 
-```C++ tab=""
+```C++
 class Solution {
 public:
     vector<Interval> merge(vector<Interval>& intervals) {
@@ -206,56 +218,60 @@ public:
     2. Insert the new interval to the vector.
     3. Finally check the special cases: insert at the begin, insert at the end.
 
-```C++ tab="One pass I"
-class Solution {
-public:
-    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
-        int n = intervals.size();
-        vector<Interval> res;
-        int insertPos = 0;
+=== "One pass I"
 
-        for (int i = 0; i < n; ++i) {
-            if (newInterval.start > intervals[i].end) { // start no overlap
-                res.push_back(intervals[i]);
-                insertPos++;
-            } else if (newInterval.end < intervals[i].start) { // end no overlap.
-                res.push_back(intervals[i]);
-            } else { // overlap happens.
-                newInterval.start = min(newInterval.start, intervals[i].start);
-                newInterval.end = max(newInterval.end, intervals[i].end);
+    ```C++
+    class Solution {
+    public:
+        vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+            int n = intervals.size();
+            vector<Interval> res;
+            int insertPos = 0;
+
+            for (int i = 0; i < n; ++i) {
+                if (newInterval.start > intervals[i].end) { // start no overlap
+                    res.push_back(intervals[i]);
+                    insertPos++;
+                } else if (newInterval.end < intervals[i].start) { // end no overlap.
+                    res.push_back(intervals[i]);
+                } else { // overlap happens.
+                    newInterval.start = min(newInterval.start, intervals[i].start);
+                    newInterval.end = max(newInterval.end, intervals[i].end);
+                }
             }
+
+            res.insert(res.begin() + insertPos, newInterval);
+
+            return res;
         }
+    };
+    ```
 
-        res.insert(res.begin() + insertPos, newInterval);
+=== "One pass II"
 
-        return res;
-    }
-};
-```
+    ```C++
+    class Solution {
+    public:
+        vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+            int n = intervals.size();
+            vector<Interval> res;
 
-```C++ tab="One pass II"
-class Solution {
-public:
-    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
-        int n = intervals.size();
-        vector<Interval> res;
-
-        for (int i = 0; i <= n; ++i) {
-            if (i == n || newInterval.end < intervals[i].start) { // end no overlap.
-                res.push_back(newInterval);
-                while (i < n) res.push_back(intervals[i++]); // i will be after n
-            } else if (newInterval.start > intervals[i].end) { // start no overlap
-                res.push_back(intervals[i]);
-            } else { // overlap happens.
-                newInterval.start = min(newInterval.start, intervals[i].start);
-                newInterval.end = max(newInterval.end, intervals[i].end);
+            for (int i = 0; i <= n; ++i) {
+                if (i == n || newInterval.end < intervals[i].start) { // end no overlap.
+                    res.push_back(newInterval);
+                    while (i < n) res.push_back(intervals[i++]); // i will be after n
+                } else if (newInterval.start > intervals[i].end) { // start no overlap
+                    res.push_back(intervals[i]);
+                } else { // overlap happens.
+                    newInterval.start = min(newInterval.start, intervals[i].start);
+                    newInterval.end = max(newInterval.end, intervals[i].end);
+                }
             }
-        }
 
-        return res;
-    }
-};
-```
+            return res;
+        }
+    };
+    ```
 
 ### Number of Airplanes in the Sky
 
@@ -286,7 +302,7 @@ Solution 2 Sweep line
 2. Notice you cannot use container like `set` or `map` because it may have
    duplicate intervals. You need to use vectors and then sort them.
 
-```c++
+```C++
 class Solution {
 public:
     int countOfAirplanes(vector<Interval> &airplanes) {
@@ -313,61 +329,65 @@ public:
 
 Solution 1 Greedy algorithm
 
-```C++ tab="C++, sort by start"
-class Solution {
-public:
-    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
-        int n = intervals.size();
-        int res = 0;
+=== "C++, sort by start"
 
-        sort(intervals.begin(), intervals.end(),
-             [](const vector<int>& a, const vector<int>& b){
-                 return a[0] < b[0];
-             });
+    ```C++
+    class Solution {
+    public:
+        int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+            int n = intervals.size();
+            int res = 0;
 
-        int left = 0;
-        for (int i = 1; i < n; i++) {
-            if (intervals[left][1] > intervals[i][0]) {
-                if (intervals[left][1] > intervals[i][1]) {
+            sort(intervals.begin(), intervals.end(),
+                [](const vector<int>& a, const vector<int>& b){
+                    return a[0] < b[0];
+                });
+
+            int left = 0;
+            for (int i = 1; i < n; i++) {
+                if (intervals[left][1] > intervals[i][0]) {
+                    if (intervals[left][1] > intervals[i][1]) {
+                        left = i;
+                    }
+                    res++;
+                } else {
                     left = i;
                 }
-                res++;
-            } else {
-                left = i;
             }
+
+            return res;
         }
+    };
+    ```
 
-        return res;
-    }
-};
-```
+=== "C++, sort by end"
 
-```C++ tab="C++, sort by end"
-class Solution {
-public:
-    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
-        int n = intervals.size();
-        int res = 0;
+    ```C++
+    class Solution {
+    public:
+        int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+            int n = intervals.size();
+            int res = 0;
 
-        sort(intervals.begin(), intervals.end(),
-             [](const vector<int>& a, const vector<int>& b){
-                 return a[1] < b[1];
-             });
+            sort(intervals.begin(), intervals.end(),
+                [](const vector<int>& a, const vector<int>& b){
+                    return a[1] < b[1];
+                });
 
-        int left = 0;
-        int end = intervals[0][1];
-        for (int i = 1; i < n; i++) {
-            if (interval[i][0] < end) {
-                res++;
-            } else {
-                end = intervals[i][1]; // no need to remove, update the new end
+            int left = 0;
+            int end = intervals[0][1];
+            for (int i = 1; i < n; i++) {
+                if (interval[i][0] < end) {
+                    res++;
+                } else {
+                    end = intervals[i][1]; // no need to remove, update the new end
+                }
             }
-        }
 
-        return res
+            return res
+        }
     }
-}
-```
+    ```
 
 ### 452. Minimum Number of Arrows to Burst Balloons
 
@@ -390,7 +410,7 @@ Solution 1 Sweep line, split the start and end, put them into a vector.
    pair::second. This make the dup end value goes before the start value so that
    we will not got over count the rooms.
 
-```C++ tab=
+```C++
 /** special case:
 2___5 <---- this 5 come first than the start 5
     5___9
@@ -418,41 +438,43 @@ public:
 };
 ```
 
-```C++ tab="lamda sorting"
-class Solution {
-public:
-    int minMeetingRooms(vector<vector<int>>& intervals) {
-        int n = intervals.size();
-        if (n == 0) return 0;
+=== "lamda sorting"
 
-        vector<vector<int>> points;
-        for (auto &interval: intervals) {
-            points.push_back({interval[0], 1});
-            points.push_back({interval[1], -1});
-        }
-        sort(points.begin(), points.end(), [](vector<int> &a, vector<int> &b){
-            if (a[0] == b[0]) {
-                return a[1] < b[1];
-            } else {
-                return a[0] < b[0];
+    ```C++
+    class Solution {
+    public:
+        int minMeetingRooms(vector<vector<int>>& intervals) {
+            int n = intervals.size();
+            if (n == 0) return 0;
+
+            vector<vector<int>> points;
+            for (auto &interval: intervals) {
+                points.push_back({interval[0], 1});
+                points.push_back({interval[1], -1});
             }
-        });
+            sort(points.begin(), points.end(), [](vector<int> &a, vector<int> &b){
+                if (a[0] == b[0]) {
+                    return a[1] < b[1];
+                } else {
+                    return a[0] < b[0];
+                }
+            });
 
-        int res = 0;
-        int rooms = 0;
-        for (auto &p : points) {
-            rooms += p[1];
-            res = max(res, rooms);
+            int res = 0;
+            int rooms = 0;
+            for (auto &p : points) {
+                rooms += p[1];
+                res = max(res, rooms);
+            }
+
+            return res;
         }
-
-        return res;
-    }
-};
-```
+    };
+    ```
 
 Solution 2
 
-```C++ tab=
+```C++
 class Solution {
 public:
     int minMeetingRooms(vector<Interval>& intervals) {
@@ -490,21 +512,21 @@ public:
 
 === "Python interval"
 
-```python
-class Solution:
-    def findLongestChain(self, pairs: List[List[int]]) -> int:
-        n = len(pairs)
-        pairs.sort(key=lambda x: x[1]) # sort by end
-        prev = pairs[0][1]
+    ```python
+    class Solution:
+        def findLongestChain(self, pairs: List[List[int]]) -> int:
+            n = len(pairs)
+            pairs.sort(key=lambda x: x[1]) # sort by end
+            prev = pairs[0][1]
 
-        count = 1
-        for p in pairs:
-            if p[0] > prev:
-                count += 1
-                prev = p[1]
+            count = 1
+            for p in pairs:
+                if p[0] > prev:
+                    count += 1
+                    prev = p[1]
 
-        return count
-```
+            return count
+    ```
 
 ### 729. My Calendar I
 
@@ -512,7 +534,7 @@ Solution 1 Check intervals (vector) overlapping
 
 1. Consider the 3 different overlapping cases. Can be summarized using `max(start1, start2) < min(end1, end2)`.
 
-```C++ tab=
+```C++
 class MyCalendar {
     vector<pair<int, int>> calendar;
 public:
@@ -534,7 +556,7 @@ public:
 
 Solution 2 Using map to optimize to O(logn)
 
-```C++ tab=
+```C++
 class MyCalendar {
     map<int, int> calendar;
 public:
@@ -564,7 +586,7 @@ Solution 1 reuse object and keep a copy of the intervals in it
   so we get the overlap as a new interval and try to book the `MyCalendar`
   project which keep the same intervals.
 
-```C++ tab=
+```C++
 class MyCalendar {
     vector<pair<int, int>> calendar;
 public:
@@ -877,7 +899,7 @@ private:
 
 Solution 1 using map
 
-```C++ tab=
+```C++
 class Solution {
 public:
     vector<int> findRightInterval(vector<Interval>& intervals) {
@@ -908,7 +930,7 @@ Solution 1 Greedy
 
 1. Iterate through the intervals, remove the one with larger end.
 
-```C++ tab=
+```C++
 class Solution {
 public:
     int eraseOverlapIntervals(vector<Interval>& intervals) {
@@ -1064,84 +1086,88 @@ Solution 1
   many code to handle the coner cases.
 * Another trick is factor out the logic to generate the final result in to a funciton.
 
-```C++ "C++ succient solution"
-class Solution {
-public:
-    vector<string> findMissingRanges(vector<int>& nums, int lower, int upper) {
-        int n = nums.size();
-        vector<string> res;
-        long prev = 0;
-        long curr = 0;
+=== "C++ succient solution"
 
-        prev = (long)lower - 1;
-        for (int i = 0; i < n; i++) {
-            curr = nums[i];
-            //curr = i == n ? (long)upper + 1 : nums[i];
-            if (curr - prev > 1) {
-                res.push_back(getRange(prev + 1, curr - 1));
+    ```C++
+    class Solution {
+    public:
+        vector<string> findMissingRanges(vector<int>& nums, int lower, int upper) {
+            int n = nums.size();
+            vector<string> res;
+            long prev = 0;
+            long curr = 0;
+
+            prev = (long)lower - 1;
+            for (int i = 0; i < n; i++) {
+                curr = nums[i];
+                //curr = i == n ? (long)upper + 1 : nums[i];
+                if (curr - prev > 1) {
+                    res.push_back(getRange(prev + 1, curr - 1));
+                }
+
+                prev = curr;
             }
-
-            prev = curr;
-        }
-        /* the case can be included in the above case by changing line 10 and 11 */
-        if (upper > prev) {
-            res.push_back(getRange(prev + 1, upper));
-        }
-
-        return res;
-    }
-
-    string getRange(int a, int b) {
-        return a == b ? to_string(a) : to_string(a) + "->" + to_string(b);
-    }
-};
-```
-
-```C++ tab="C++ lengthy solution"
-class Solution {
-public:
-    vector<string> findMissingRanges(vector<int>& nums, int lower, int upper) {
-        vector<string> res;
-
-        if (nums.size() == 0) {
-            if (lower == upper)
-                res.push_back(to_string(lower));
-            else
-                res.push_back(to_string(lower) + "->" + to_string(upper));
+            /* the case can be included in the above case by changing line 10 and 11 */
+            if (upper > prev) {
+                res.push_back(getRange(prev + 1, upper));
+            }
 
             return res;
         }
 
-        long s = nums[0];
-        if (lower < s - 1) {
-            res.push_back(to_string(lower) + "->" + to_string(s - 1));
-        } else if (lower < s) {
-            res.push_back(to_string(lower));
+        string getRange(int a, int b) {
+            return a == b ? to_string(a) : to_string(a) + "->" + to_string(b);
         }
+    };
+    ```
 
-        for (int i = 0; i < nums.size() - 1; i++) {
-            long a = nums[i];
-            long b = nums[i + 1];
-            if (a == b - 1) {
-                continue;
-            } else if (a == b - 2) {
-                res.push_back(to_string(a + 1));
-            } else if (a < b - 2) {
-                res.push_back(to_string(a + 1) + "->" + to_string(b - 1));
+=== "C++ lengthy solution"
+
+    ```c++
+    class Solution {
+    public:
+        vector<string> findMissingRanges(vector<int>& nums, int lower, int upper) {
+            vector<string> res;
+
+            if (nums.size() == 0) {
+                if (lower == upper)
+                    res.push_back(to_string(lower));
+                else
+                    res.push_back(to_string(lower) + "->" + to_string(upper));
+
+                return res;
             }
-        }
 
-        long e = nums[nums.size() - 1];
-        if (e < upper - 1) {
-            res.push_back(to_string(e + 1) + "->" + to_string(upper));
-        } else if (e < upper) {
-            res.push_back(to_string(upper));
-        }
+            long s = nums[0];
+            if (lower < s - 1) {
+                res.push_back(to_string(lower) + "->" + to_string(s - 1));
+            } else if (lower < s) {
+                res.push_back(to_string(lower));
+            }
 
-        return res;
-    }
-};
-```
+            for (int i = 0; i < nums.size() - 1; i++) {
+                long a = nums[i];
+                long b = nums[i + 1];
+                if (a == b - 1) {
+                    continue;
+                } else if (a == b - 2) {
+                    res.push_back(to_string(a + 1));
+                } else if (a < b - 2) {
+                    res.push_back(to_string(a + 1) + "->" + to_string(b - 1));
+                }
+            }
+
+            long e = nums[nums.size() - 1];
+            if (e < upper - 1) {
+                res.push_back(to_string(e + 1) + "->" + to_string(upper));
+            } else if (e < upper) {
+                res.push_back(to_string(upper));
+            }
+
+            return res;
+        }
+    };
+    ```
 
 ### 228. Summary Ranges
 
@@ -1149,7 +1175,7 @@ public:
   greater that another. `[-2147483648,-2147483647,2147483647]`
 * Another thing is that `to_string()` can also change long and float number to string.
 
-```C++ tab=
+```C++
 class Solution {
 public:
     vector<string> summaryRanges(vector<int>& nums) {
