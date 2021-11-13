@@ -136,6 +136,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://ruihan.org/leetcode/design/notes/</loc>
+         <lastmod>2021-11-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://ruihan.org/leetcode/dynamic-programming/notes/</loc>
          <lastmod>2021-11-13</lastmod>
          <changefreq>daily</changefreq>
@@ -182,6 +187,11 @@
     </url>
     <url>
          <loc>https://ruihan.org/leetcode/sliding-window/notes/</loc>
+         <lastmod>2021-11-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://ruihan.org/leetcode/sort/notes/</loc>
          <lastmod>2021-11-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
