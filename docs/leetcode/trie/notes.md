@@ -11,78 +11,80 @@
 
 ## Trie APIs
 
-```C++ tab="C++ Trie APIs"
-class Node {
-public:
-    bool isEnd;
-    int val;
-    vector<Node*> next;
+=== "C++ Trie APIs"
 
-    Node () {
-        isEnd = false;
-        val = INT_MIN;
-        next = vector<Node*>(256, nullptr);
-    }
-};
+    ```C++
+    class Node {
+    public:
+        bool isEnd;
+        int val;
+        vector<Node*> next;
 
-class Trie {
-public:
-    Node* root;
-    const int NUM_CHARS = 256;
+        Node () {
+            isEnd = false;
+            val = INT_MIN;
+            next = vector<Node*>(256, nullptr);
+        }
+    };
 
-    // recursive helper function to get all the keys with a common prefix
-    void collectByPrefix(Node* node, string curr, vector<string>& keys);
+    class Trie {
+    public:
+        Node* root;
+        const int NUM_CHARS = 256;
 
-    // recursive helper function to get all the keys that match a pattern
-    void collectByPattern(Node* node, string curr, string pattern, vector<string>& keys);
+        // recursive helper function to get all the keys with a common prefix
+        void collectByPrefix(Node* node, string curr, vector<string>& keys);
 
-    // recursive helper function to search the longest word in the trie that match target
-    int search(Node* node, string target, int d, int length);
+        // recursive helper function to get all the keys that match a pattern
+        void collectByPattern(Node* node, string curr, string pattern, vector<string>& keys);
 
-    // recursive helper function to detele a key and return the trie root
-    Node* deleteKey(Node* node, string key, int d);
+        // recursive helper function to search the longest word in the trie that match target
+        int search(Node* node, string target, int d, int length);
 
-    Trie () {
-        root = new Node();
-    }
+        // recursive helper function to detele a key and return the trie root
+        Node* deleteKey(Node* node, string key, int d);
 
-    ~Trie () {
-        destroy(root);
-    }
+        Trie () {
+            root = new Node();
+        }
 
-    Node* getRoot() { return root; }
+        ~Trie () {
+            destroy(root);
+        }
 
-    // delete and destroy a trie
-    void destroy(Node* root);
+        Node* getRoot() { return root; }
 
-    // insert a word iteratively
-    void insert(string word, int val);
+        // delete and destroy a trie
+        void destroy(Node* root);
 
-    // insert a word recursively
-    Node* insert(Node* node, string word, int val, int d);
+        // insert a word iteratively
+        void insert(string word, int val);
 
-    // find the symbol value interatively, can return node by change the signature 
-    int search(string word);
+        // insert a word recursively
+        Node* insert(Node* node, string word, int val, int d);
 
-    // find the symbol value recursively, can return node by change the signature
-    int search(Node* node, string word, int d);
+        // find the symbol value interatively, can return node by change the signature
+        int search(string word);
 
-    // exists a key start with a prefix
-    bool existsKeyStartsWith(string prefix);
+        // find the symbol value recursively, can return node by change the signature
+        int search(Node* node, string word, int d);
 
-    // get all the keys have a common prefix
-    vector<string> keyStartWith(string prefix);
+        // exists a key start with a prefix
+        bool existsKeyStartsWith(string prefix);
 
-    // get all the keys that match a pattern (support wildcard '.') 
-    vector<string> keysThatMatch(string pattern);
+        // get all the keys have a common prefix
+        vector<string> keyStartWith(string prefix);
 
-    // get the longest key that matches the prefix of the target
-    string keyWithLongestMatch(string target);
+        // get all the keys that match a pattern (support wildcard '.')
+        vector<string> keysThatMatch(string pattern);
 
-    // delete a key
-    void deleteKey(string key);
-};
-```
+        // get the longest key that matches the prefix of the target
+        string keyWithLongestMatch(string target);
+
+        // delete a key
+        void deleteKey(string key);
+    };
+    ```
 
 !!! Note
     The implementation can be found at [here](./src/trie.cc)
