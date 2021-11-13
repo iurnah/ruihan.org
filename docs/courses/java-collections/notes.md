@@ -907,4 +907,3 @@ List<String> unmodifiableList = Collections.unmodifiableList(list);
 // synchronized, not efficient to use in practice
 List<String> unmodifiableList = Collections.synchronizedList(list);
 ```
-

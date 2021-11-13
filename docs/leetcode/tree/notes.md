@@ -86,139 +86,187 @@ class Solution:
 
 === "Python solution 1"
 
-```Python
-class Solution:
-    def __init__(self):
-        self.res = 0
-        self.total = 0
+    ```Python
+    class Solution:
+        def __init__(self):
+            self.res = 0
+            self.total = 0
 
-    def maxProduct(self, root: Optional[TreeNode]) -> int:
-        def dfs(node):
-            if not node: return 0
-            left, right = dfs(node.left), dfs(node.right)
-            self.res = max(self.res, left * (self.total - left), right * (self.total - right))
-            return left + right + node.val
+        def maxProduct(self, root: Optional[TreeNode]) -> int:
+            def dfs(node):
+                if not node: return 0
+                left, right = dfs(node.left), dfs(node.right)
+                self.res = max(self.res, left * (self.total - left), right * (self.total - right))
+                return left + right + node.val
 
-        self.total = dfs(root)
-        dfs(root)
-        return self.res % (10**9 + 7)
-```
+            self.total = dfs(root)
+            dfs(root)
+            return self.res % (10**9 + 7)
+    ```
 
 === "Python solution 2"
 
-```Python
-class Solution:
-    def maxProduct(self, root: Optional[TreeNode]) -> int:
-        vals=[]
+    ```Python
+    class Solution:
+        def maxProduct(self, root: Optional[TreeNode]) -> int:
+            vals=[]
 
-        def dfs(node):
-            if not node: return 0
-            left, right = dfs(node.left), dfs(node.right)
-            vals.append(left + right + node.val)
-            return left + right + node.val
+            def dfs(node):
+                if not node: return 0
+                left, right = dfs(node.left), dfs(node.right)
+                vals.append(left + right + node.val)
+                return left + right + node.val
 
-        total = dfs(root)
+            total = dfs(root)
 
-        return max(val * (total - val) for val in vals) % (10**9 + 7)
-```
+            return max(val * (total - val) for val in vals) % (10**9 + 7)
+    ```
 
 ## Preorder traversal
 
-### Binary Tree Preorder Traversal
+### Morris traversal (preorder)
 
-```C++ tab="Morris traversal (preorder)" hl_lines="30"
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-class Solution {
-public:
-    vector<int> preorderTraversal(TreeNode* root) {
-        TreeNode* curr = root;
-        TreeNode* prev = nullptr;
-        vector<int> res;
+Preorder Morris traversal use constant space (tow local variables `pred`, `curr`)
+to walk through the binary tree from the left most node to the right most node.
+It mainly relies on modifying the `pred->right` pointer to point to the `curr`.
+This is the key to allow `curr` to traverse the right after finish the left subtree.
 
-        while (curr != nullptr) {
-            if (curr->left == nullptr) {
-                res.push_back(curr->val);
+The implementation idea as following: (current node start from root)
+
+1. If the left subtree doesn't exist, output curr node, and update the `curr`: `curr = curr->right`.
+2. If the left subtree exists, we find the maximum node in left subtree (the predecessor of `curr`),
+   based on the right value (NULL or possibly being modified to point to ancestor root) of the predecessor we do following:
+      1. If the right value of predecessor is `NULL`, connect this right value: `pred->right = curr;`, and update the `curr`: `curr = curr->left;`
+      2. If the right value of predecessor is `curr`, output `curr`, recover right value to `NULL`, and update the `curr`: `curr = curr->right;`
+3. repeat the 1, 2 steps until `curr == NULL`
+
+```c++
+void inorderMorrisTraversal(TreeNode *root) {
+    TreeNode *curr = root, *pred = NULL;
+    while (curr != NULL) {
+        if (curr->left == NULL) {        /* 1. */
+            printf("%d ", curr->val);
+            curr = curr->right;
+        } else {
+            /* find predecessor */
+            pred = curr->left;
+            while (pred->right != NULL && pred->right != curr)
+                pred = pred->right;
+
+            if (pred->right == NULL) {   /* 2.1 */
+                pred->right = curr;
+                printf("%d ", curr->val);  // only difference from inorder traversal
+                curr = curr->left;
+            } else {                     /* 2.2 */
+                pred->right = NULL;
                 curr = curr->right;
-            } else {
-                prev = curr->left;
-                while (prev->right != nullptr && prev->right != curr)
-                    prev = prev->right;
-
-                if (prev->right == nullptr) {
-
-                    res.push_back(curr->val);
-
-                    prev->right = curr;
-                    curr = curr->left;
-                } else {
-                    prev->right = nullptr;
-                    curr = curr->right;
-                }
             }
         }
-
-        return res;
     }
-};
+}
 ```
 
-```C++ tab="Iterative using stack"
-class Solution {
-public:
-    vector<int> preorderTraversal(TreeNode* root) {
-        vector<int> res;
-        if (root == nullptr) return res;
+### Binary Tree Preorder Traversal
 
-        stack<TreeNode*> s;
-        s.push(root);
+=== "Morris traversal (preorder)"
 
-        while (!s.empty()) {
-            TreeNode* node = s.top(); s.pop();
-            res.push_back(node->val);
+    ```C++  hl_lines="30"
+    /**
+    * Definition for a binary tree node.
+    * struct TreeNode {
+    *     int val;
+    *     TreeNode *left;
+    *     TreeNode *right;
+    *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+    * };
+    */
+    class Solution {
+    public:
+        vector<int> preorderTraversal(TreeNode* root) {
+            TreeNode* curr = root;
+            TreeNode* prev = nullptr;
+            vector<int> res;
 
-            if (node->right) // push right first
-                s.push(node->right);
+            while (curr != nullptr) {
+                if (curr->left == nullptr) {
+                    res.push_back(curr->val);
+                    curr = curr->right;
+                } else {
+                    prev = curr->left;
+                    while (prev->right != nullptr && prev->right != curr)
+                        prev = prev->right;
 
-            if (node->left)
-                s.push(node->left);
+                    if (prev->right == nullptr) {
+
+                        res.push_back(curr->val);
+
+                        prev->right = curr;
+                        curr = curr->left;
+                    } else {
+                        prev->right = nullptr;
+                        curr = curr->right;
+                    }
+                }
+            }
+
+            return res;
+        }
+    };
+    ```
+
+=== "Iterative using stack"
+
+    ```C++
+    class Solution {
+    public:
+        vector<int> preorderTraversal(TreeNode* root) {
+            vector<int> res;
+            if (root == nullptr) return res;
+
+            stack<TreeNode*> s;
+            s.push(root);
+
+            while (!s.empty()) {
+                TreeNode* node = s.top(); s.pop();
+                res.push_back(node->val);
+
+                if (node->right) // push right first
+                    s.push(node->right);
+
+                if (node->left)
+                    s.push(node->left);
+            }
+
+            return res;
+        }
+    };
+    ```
+
+=== "Recursive"
+
+    ```C++
+    class Solution {
+    public:
+        vector<int> preorderTraversal(TreeNode *root) {
+            vector<int> res;
+            if (root == NULL) return res;
+
+            helper(root, res);
+            return res;
         }
 
-        return res;
-    }
-};
-```
+        void helper(TreeNode *root, vector<int> &res){
+            if (root == NULL) return;
 
-```C++ tab="Recursive"
-class Solution {
-public:
-    vector<int> preorderTraversal(TreeNode *root) {
-        vector<int> res;
-        if (root == NULL) return res;
+            res.push_back(root->val);
+            helper(root->left, res);
+            helper(root->right, res);
 
-        helper(root, res);
-        return res;
-    }
-
-    void helper(TreeNode *root, vector<int> &res){
-        if (root == NULL) return;
-
-        res.push_back(root->val);
-        helper(root->left, res);
-        helper(root->right, res);
-
-    }
-};
-```
+        }
+    };
+    ```
 
 ### Verify Preorder Sequence in Binary Search Tree
 
@@ -226,103 +274,151 @@ public:
 
 ## Inorder traversal
 
-### Binary Tree Inorder Traversal
+### Morris traversal (inorder)
 
-```C++ tab="Morris traversal inorder"
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-class Solution {
-public:
-    vector<int> inorderTraversal(TreeNode *root) {
-        TreeNode* curr = root;
-        TreeNode* prev = nullptr;
-        vector<int> res;
+Inorder Morris traversal use constant space (tow local variables `pred`, `curr`) to
+walk through the binary tree from the left most node to the right most node.
+It mainly relies on modifying the `pred->right` pointer to point to the `curr`.
+This is the key to allow `curr` to traverse the root after finish the left subtree.
 
-        while (curr != nullptr) {
-            if (curr->left == nullptr) {
-                res.push_back(curr->val);
-                curr = curr->right;
-            } else {
-                prev = curr->left;
-                while (prev->right != nullptr && prev->right != curr)
-                    prev = prev->right;
+The implementation idea as following: (current node start from root):
 
-                if (prev->right == nullptr) {
-                    prev->right = curr;
-                    curr = curr->left;
-                } else {
-                    prev->right = nullptr;
-                    res.push_back(curr->val);
-                    curr = curr->right;
-                }
-            }
-        }
+1. If the left subtree doesn't exist, output curr node, and update `curr`: `curr = curr->right;`
+2. If the left subtree exists, we find the maximum node in left subtree (the predecessor of `curr`),
+   based on the right value (`NULL` or possibly being modified to point to ancestor root) of the predecessor we do following:
+   1. If the right value of predecessor is `NULL`, connect this right value: `pred->right = curr;`, and update `curr`: `curr = curr->left;`
+   2. If the right value of predecessor is `curr`, output `curr`, recover right value to `NULL`, and update `curr`: `curr = curr->right;`
+3. repeat the 1, 2 steps until `curr == NULL`
 
-        return res;
-    }
-};
-```
+```c++
+void inorderMorrisTraversal(TreeNode *root) {
+    TreeNode *curr = root, *pred = NULL;
+    while (curr != NULL) {
+        if (curr->left == NULL) {        /* 1. */
+            printf("%d ", curr->val);
+            curr = curr->right;
+        } else {
+            /* find predecessor */
+            pred = curr->left;
+            while (pred->right != NULL && pred->right != curr)
+                pred = pred->right;
 
-```C++ tab="Iterative using a stack"
-class Solution {
-public:
-    vector<int> inorderTraversal(TreeNode* root) {
-        vector<int> res;
-        if (root == nullptr)
-            return res;
-        stack<TreeNode *> s;
-        TreeNode* curr = root;
-
-        while (!s.empty() || curr) {
-            if (curr) {
-                s.push_back(curr);
+            if (pred->right == NULL) {   /* 2.1 */
+                pred->right = curr;
                 curr = curr->left;
-            } else {
-                curr = s.top();
-                s.pop();
-                res.push_back(curr->val);
+            } else {                     /* 2.2 */
+                pred->right = NULL;
+                printf("%d ", curr->val);
                 curr = curr->right;
             }
         }
-
-        return res;
     }
 }
 ```
 
-```C++ tab="Recursive"
-class Solution {
-public:
-    vector<int> inorderTraversal(TreeNode *root) {
-        // write your code here
-        vector<int> res;
-        if (root == NULL) return res;
+### Binary Tree Inorder Traversal
 
-        helper(root, res);
+=== "Morris traversal inorder"
 
-        return res;
+    ```C++
+    /**
+    * Definition for a binary tree node.
+    * struct TreeNode {
+    *     int val;
+    *     TreeNode *left;
+    *     TreeNode *right;
+    *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+    * };
+    */
+    class Solution {
+    public:
+        vector<int> inorderTraversal(TreeNode *root) {
+            TreeNode* curr = root;
+            TreeNode* prev = nullptr;
+            vector<int> res;
+
+            while (curr != nullptr) {
+                if (curr->left == nullptr) {
+                    res.push_back(curr->val);
+                    curr = curr->right;
+                } else {
+                    prev = curr->left;
+                    while (prev->right != nullptr && prev->right != curr)
+                        prev = prev->right;
+
+                    if (prev->right == nullptr) {
+                        prev->right = curr;
+                        curr = curr->left;
+                    } else {
+                        prev->right = nullptr;
+                        res.push_back(curr->val);
+                        curr = curr->right;
+                    }
+                }
+            }
+
+            return res;
+        }
+    };
+    ```
+
+=== "Iterative using a stack"
+
+    ```C++
+    class Solution {
+    public:
+        vector<int> inorderTraversal(TreeNode* root) {
+            vector<int> res;
+            if (root == nullptr)
+                return res;
+            stack<TreeNode *> s;
+            TreeNode* curr = root;
+
+            while (!s.empty() || curr) {
+                if (curr) {
+                    s.push_back(curr);
+                    curr = curr->left;
+                } else {
+                    curr = s.top();
+                    s.pop();
+                    res.push_back(curr->val);
+                    curr = curr->right;
+                }
+            }
+
+            return res;
+        }
     }
+    ```
 
-    void helper(TreeNode *root, vector<int>& res) {
-        if (root == NULL) {
-            return;
+=== "Recursive"
+
+    ```C++
+    class Solution {
+    public:
+        vector<int> inorderTraversal(TreeNode *root) {
+            // write your code here
+            vector<int> res;
+            if (root == NULL) return res;
+
+            helper(root, res);
+
+            return res;
         }
 
-        helper(root->left, res);
-        res.push_back(root->val);
-        helper(root->right, res);
-    }
-};
-```
+        void helper(TreeNode *root, vector<int>& res) {
+            if (root == NULL) {
+                return;
+            }
+
+            helper(root->left, res);
+            res.push_back(root->val);
+            helper(root->right, res);
+        }
+    };
+    ```
 
 ### Recover Binary Search Tree
 
@@ -336,134 +432,196 @@ public:
 
 ## Postorder traversal
 
+Morris traversal for preorder and postorder [cnblog post](http://www.cnblogs.com/AnnieKim/archive/2013/06/15/MorrisTraversal.html) reference.
+
 ### Binary Tree Postorder Traversal
 
-```C++ tab="iterative using 2 stacks"
-/**
- * Definition of TreeNode:
- * class TreeNode {
- * public:
- *     int val;
- *     TreeNode *left, *right;
- *     TreeNode(int val) {
- *         this->val = val;
- *         this->left = this->right = NULL;
- *     }
- * }
- */
-class Solution {
+=== "iterative using 2 stacks"
+
+    ```c++
     /**
-     * @param root: The root of binary tree.
-     * @return: Postorder in vector which contains node values.
-     */
-public:
-    vector<int> postorderTraversal(TreeNode *root) {
-        vector<int> res;
-        if (root == NULL) return res;
-        stack<TreeNode *> s;
-        stack<TreeNode *> output;
+    * Definition of TreeNode:
+    * class TreeNode {
+    * public:
+    *     int val;
+    *     TreeNode *left, *right;
+    *     TreeNode(int val) {
+    *         this->val = val;
+    *         this->left = this->right = NULL;
+    *     }
+    * }
+    */
+    class Solution {
+        /**
+        * @param root: The root of binary tree.
+        * @return: Postorder in vector which contains node values.
+        */
+    public:
+        vector<int> postorderTraversal(TreeNode *root) {
+            vector<int> res;
+            if (root == NULL) return res;
+            stack<TreeNode *> s;
+            stack<TreeNode *> output;
 
-        s.push(root);
-        while (!s.empty()) {
-            TreeNode *cur = s.top();
-            output.push(cur);
-            s.pop();
-
-            /* push left first */
-            if (cur->left) {
-                s.push(cur->left);
-            }
-
-            /* push right second */
-            if (cur->right) {
-                s.push(cur->right);
-            }
-        }
-
-        /* populate the result */
-        while (!output.empty()) {
-            res.push_back(output.top()->val);
-            output.pop();
-        }
-
-        return res;
-    }
-};
-```
-
-```C++ tab="Recursive solution"
-class Solution {
-public:
-    vector<int> inorderTraversal(TreeNode *root) {
-        // write your code here
-        vector<int> res;
-        if (root == NULL) return res;
-
-        helper(root, res);
-
-        return res;
-    }
-
-    void helper(TreeNode *root, vector<int>& res) {
-        if (root == NULL) {
-            return;
-        }
-
-        helper(root->left, res);
-        helper(root->right, res);
-        res.push_back(root->val);
-    }
-};
-```
-
-```C++ tab="Morris like traversal ussing a stack"
-class Solution {
-public:
-    vector<int> postorderTraversal(TreeNode *root) {
-        vector<int> res;
-
-        if (root == nullptr) return res;
-
-        stack<TreeNode *> s;
-        TreeNode* prev = nullptr;
-
-        s.push(root);
-        while (!s.empty()) {
-            TreeNode* curr = s.top();
-
-            if (!prev || prev->right == curr || prev->left == curr) {
-                if (curr->left) {
-                    s.push(curr->left);
-                } else if (curr->right) {
-                    s.push(curr->right);
-                } else {
-                    res.push_back(curr->val);
-                    s.pop();
-                }
-            } else if (curr->left == prev) {
-                if (curr->right) {
-                    s.push(curr->right);
-                } else {
-                    res.push_back(curr->val);
-                    s.pop();
-                }
-            } else if (curr->right == prev) {
-                res.push_back(curr->val);
+            s.push(root);
+            while (!s.empty()) {
+                TreeNode *cur = s.top();
+                output.push(cur);
                 s.pop();
+
+                /* push left first */
+                if (cur->left) {
+                    s.push(cur->left);
+                }
+
+                /* push right second */
+                if (cur->right) {
+                    s.push(cur->right);
+                }
             }
 
-            prev = curr;
+            /* populate the result */
+            while (!output.empty()) {
+                res.push_back(output.top()->val);
+                output.pop();
+            }
+
+            return res;
         }
-    }
-};
-```
+    };
+    ```
+
+=== "Recursive solution"
+
+    ```C++
+    class Solution {
+    public:
+        vector<int> inorderTraversal(TreeNode *root) {
+            // write your code here
+            vector<int> res;
+            if (root == NULL) return res;
+
+            helper(root, res);
+
+            return res;
+        }
+
+        void helper(TreeNode *root, vector<int>& res) {
+            if (root == NULL) {
+                return;
+            }
+
+            helper(root->left, res);
+            helper(root->right, res);
+            res.push_back(root->val);
+        }
+    };
+    ```
+
+=== "Morris like traversal ussing a stack"
+
+    ```C++
+    class Solution {
+    public:
+        vector<int> postorderTraversal(TreeNode *root) {
+            vector<int> res;
+
+            if (root == nullptr) return res;
+
+            stack<TreeNode *> s;
+            TreeNode* prev = nullptr;
+
+            s.push(root);
+            while (!s.empty()) {
+                TreeNode* curr = s.top();
+
+                if (!prev || prev->right == curr || prev->left == curr) {
+                    if (curr->left) {
+                        s.push(curr->left);
+                    } else if (curr->right) {
+                        s.push(curr->right);
+                    } else {
+                        res.push_back(curr->val);
+                        s.pop();
+                    }
+                } else if (curr->left == prev) {
+                    if (curr->right) {
+                        s.push(curr->right);
+                    } else {
+                        res.push_back(curr->val);
+                        s.pop();
+                    }
+                } else if (curr->right == prev) {
+                    res.push_back(curr->val);
+                    s.pop();
+                }
+
+                prev = curr;
+            }
+        }
+    };
+    ```
 
 ### Find Duplicate Subtrees
 
 ## Level order traversal
 
+### Binary Tree Level Order Traversal
+
+### Binary Tree Zigzag Level Order Traversal
+
+### Invert Binary Tree
+
+### Binary Tree Right Side View
+
+### Serialize and Deserialize Binary Tree
+
+### Populating Next Right Pointers in Each Node
+
+### Populating Next Right Pointers in Each Node II
+
 ## Binary tree vertical order traversal
 
 ## Tree serialize and deserialize
 
+### Serialize and Deserialize BST
+
+### Serialize and Deserialize Binary Tree
+
+### Construct String from Binary Tree
+
+### Construct Binary Tree from String
+
+### Construct Binary Tree from Preorder and Inorder Traversal
+
+### Construct Binary Tree from Inorder and Postorder Traversal
+
+### Recover Binary Search Tree
+
+### Flatten Binary Tree to Linked List
+
+### Convert Sorted Array to Binary Search Tree
+
+### Convert Sorted List to Binary Search Tree
+
+!!! note
+    __Serialization__
+    Tree serialization requires two ingredients: 1) tree traversal. 2) delimiter.
+    All of four order traversal methods can be used to serialize a tree. For BST,
+    the delimiter isn't needed. However, the deserialization should use the BST
+    property to verify whether a node is a valid child or should be a sibling node.
+
+!!! note
+    __Deserialization__
+    Deserialization prefer recursion. The key to implement it is to include the
+    index to the serialized data as a recursive parameter and advance it after
+    deserialized the current value inside the body. For BST, the recursive function
+    should also include the minVal and maxVal in the parameter list.
+
 ## Tree node manipulate problems
+
+### Insert a Node in Binary Search Tree*
+
+### Remove Node in Binary Search Tree*
+
+### Delete Node in a BST

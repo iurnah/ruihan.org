@@ -1,5 +1,33 @@
 # Math and Geometry
 
+## Integer overflow and numeric limits
+
+* On the fly detection: When parsing a string to integer, we check the current
+  passed result res against the value INT_MAX / 10. ([String to Integer (atoi)]() and [Reverse Integer]())
+
+  ```c++
+  if (res > INT_MAX / 10 || (res == INT_MAX / 10 && str[i] - '0' > 7)) {
+    /* process overflow cases */
+  }
+  // or
+  if ((res > INT_MAX / 10 && x != 0) || (res < INT_MIN / 10 && x != 0)) {
+    /* process overflow cases */
+  }
+  ```
+
+## Solve by "median"
+
+### [Minimum Moves to Equal Array Elements]()
+### [Minimum Moves to Equal Array Elements II]()
+### [Best Meeting Point]()
+
+## Prime, GCD, LCM, Euclidean algorithm
+
+### [Count Primes]()
+### [Ugly Number]()
+### [Ugly Number II]()
+### [Super Ugly Number]()
+
 ## Cartesian plane
 
 ## Problems

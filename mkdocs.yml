@@ -67,6 +67,7 @@ nav:
     - Binary Indexed Tree: leetcode/binary-indexed-tree/notes.md
     - Breadth-First Search (BFS): leetcode/breadth-first-search/notes.md
     - Depth-First Search (DFS): leetcode/depth-first-search/notes.md
+    - Design Problems: leetcode/design/notes.md
     - Dynamic Programming: leetcode/dynamic-programming/notes.md
     - Graph: leetcode/graph/notes.md
     - Hash: leetcode/hash/notes.md

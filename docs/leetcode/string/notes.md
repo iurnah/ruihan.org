@@ -9,7 +9,7 @@
 To keep loop invariance, you have to be really clear about the different type of
 chars in the string that may affect the complexity of the loop. The following
 problems can be tricky to implement when you keep the wrong loop invariance or
-have identified the wrong if condition or while condition.
+have identified the wrong `if` condition or `while` condition.
 
 ### 157. Read N Characters Given Read4
 
@@ -116,7 +116,7 @@ public:
 
             for (int i = 0; i < n; i++) {
                 if (isdigit(s[i])) {
-                    cnt = cnt * 10 + s[i] - '0';  
+                    cnt = cnt * 10 + s[i] - '0';
                 } else if (s[i] == '[') {
                     stk_cnt.push(cnt);
                     stk_str.push(tmp_str);
@@ -181,6 +181,51 @@ public:
     ```
 
 ### 388. Longest Absolute File Path
+
+* Use level to count the depth of the path. `res` variable to store the global
+  longest path.
+* Use special char `'\n'` to start (init level = 0) the count of the level and
+  char `'\t'` to count the "level" of the directory.
+* Use hash to record the lenght of each level of parent directory, once we reach
+  that level, we can look up the directory path length from the hash.
+
+```c++
+class Solution {
+public:
+    int lengthLongestPath(string input) {
+        int n = input.length();
+        unordered_map<int, int> map;
+        int res = 0;
+        int level = 0;
+
+        map[0] = 0;/* 1. should initialize hash map. */
+        for (int i = 0; i < n; ++i) {
+            int start = i;
+
+            /* Skipping alphabets chars */
+            while (i < n && input[i] != '\n' && input[i] != '\t')
+                ++i;
+
+            /* Directory or file name */
+            if (i == n || input[i] == '\n') {
+                string name = input.substr(start, i - start);
+                if (name.find('.') == string::npos) {
+                    level++;
+                    map[level] = map[level - 1] + name.length() + 1;
+                } else {
+                    res = max(res, map[level] + (int)name.length());
+                }
+                /* level start from zero every time we start a new line */
+                level = 0;
+            } else { /* when we have '\t', level increase */
+                level++;
+            }
+        }
+
+        return res;
+    }
+};
+```
 
 ### 1233. Remove Sub-Folders from the Filesystem
 
@@ -498,3 +543,81 @@ public:
     }
 };
 ```
+
+### Minimum Window Substring
+
+### Substring with Concatenation of All Words
+
+### Max Consecutive Ones II
+
+### Longest Substring with At Least K Repeating Characters
+
+### Longest Repeating Character Replacement
+
+### Find All Anagrams in a String
+
+## Word Abbreviation
+
+### Unique Word Abbreviation
+
+### Encode String with Shortest Length
+
+### Generalized Abbreviation
+
+### Valid Word Abbreviation
+
+### Minimum Unique Word Abbreviation
+
+### Word Abbreviation
+
+### Encode and Decode Strings
+
+## Palindrome
+
+## Manacher's Algorithm
+
+## Valid parenthesis
+
+### Valid Parentheses
+
+### Generate Parentheses
+
+### Longest Valid Parentheses
+
+### Different Ways to Add Parentheses
+
+### Remove Invalid Parentheses
+
+### Valid Parenthesis String
+
+### Ternary Expression Parser
+
+### Construct Binary Tree from String
+
+### Construct String from Binary Tree
+
+## Parse/generate recursive data
+
+Also see [Nested list iteration] in stack category.
+
+### Mini Parser
+
+### Ternary Expression Parser
+
+### Flatten Nested List Iterator
+
+### Construct Binary Tree from String
+
+### Construct String from Binary Tree
+
+### Remove Comments
+
+### Integer to English Words
+
+### Scramble String
+
+The recursive method is always preferred than the iterative method using a stack in solve those problems.
+
+## KMP
+
+## Rabin–Karp algorithm
