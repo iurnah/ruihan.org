@@ -27,3 +27,9 @@
 ## Systems and Security
 
 * [ ] [6.828 Operating System Engineering](./6.828-os/notes.md)
+
+## Communication and Leadership
+
+* [ ] [Business Writing Colorado](./leadership-courses/business-writing-colorado.md)
+* [ ] [Interpersonal Communication for Engineering Leaders](./leadership-courses/interpersonal-communication-rice.md)
+* [x] [Interpersonal Communication](./leadership-courses/interpersonal-communication.md)
