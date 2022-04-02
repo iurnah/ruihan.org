@@ -3,6 +3,7 @@
 ## Week 1
 
 * Be the windowpane, __clarity above all__
+* Appearance matters, design your document
 * Waste No Time
 * Don't sound smart, be smart
 * Own your ideas (be the authority)
@@ -28,7 +29,16 @@
 
 * Orgnize or die
 * Great writers are great revisers
+* Scaffold you need
+  * The roadmap: say what you're going to say
+  * Say it: the signposted boday paragraph
+  * conclusion: Say what you just said
+* one idea per paragrah
+* every paragraph should start with a strong topic sentence
 
 ## Week 3
+
+* signpost
+*
 
 ## Week 4
