@@ -574,7 +574,7 @@ public:
             if (map.count(sum) != 0) {
                 res[0] = map[sum] + 1;
                 res[1] = i;
-                break;  
+                break;
             }
 
             map[sum] = i;
@@ -803,7 +803,7 @@ public:
   The ideas is to keep counting the remainder, once we have seen the same
   remainder in the map, the new index and all the found indexes can be used to
   retrive one solution. The count keep in the map show how many of those can be.
-  
+
 === "One pass solution"
 
 ```c++
@@ -1422,7 +1422,7 @@ Binary Search solution
     * Init: f[0][n] = INT_MAX;
     *       f[0][0] = 0;
     * NB: notice a special case: [1, 2147483247], 2
-    *     the sum will overflow in the state update, You use a double type  
+    *     the sum will overflow in the state update, You use a double type
     */
     class Solution {
     public:
@@ -1510,12 +1510,12 @@ Binary Search solution
         int splitArray(vector<int>& nums, int m) {
             int l = *max_element(nums.begin(), nums.end());
             int r = accumulate(nums.begin(), nums.end(), 0);
-            
+
             while (l < r) {
                 int mid = l + (r - l) / 2;
                 int s = 0;
                 int c = 0;
-                
+
                 // count the possible cuts
                 for (int n : nums) {
                     if ((s += n) > mid) {
@@ -1525,7 +1525,7 @@ Binary Search solution
                         }
                     }
                 }
-                
+
                 if (c > m - 1) {
                     l = mid + 1;
                 } else {
@@ -1534,7 +1534,7 @@ Binary Search solution
                     r = mid;
                 }
             }
-            
+
             return l;
         }
     };
@@ -2613,6 +2613,55 @@ public:
 ### 3Sum Closest
 
 ### 3Sum Smaller
+
+### 923 3Sum With Multiplicity
+
+Solution 1: use a hash table to look up, similar to the classic 2 Sum problem
+Solution 2: use math trick. From the duplicate case, you realize they can be a
+nCk problem. 3 cases:
+
+1. choose three same values `i == j == k`.
+2. choose two same values `i == j && j != k`.
+3. choose three distinct values `i < j & j < k`. notice here it can be others
+    such as `i < j & i < k`, ..., at least three numbers are not the same.
+
+=== "Python $O(n^2)$"
+
+    ```python
+    class Solution:
+        def threeSumMulti(self, arr: List[int], target: int) -> int:
+            res = 0
+            MOD = 10**9 + 7
+            cnt = collections.Counter()
+
+            for i, m in enumerate(arr):
+                res = (res + cnt[target - m]) % MOD
+                for n in arr[:i]:
+                    cnt[m + n] += 1
+
+            return res
+    ```
+
+== "Python $O(n * m)$"
+
+```python
+class Solution:
+    def threeSumMulti(self, arr: List[int], target: int) -> int:
+        res = 0
+        MOD = 10**9 + 7
+        c = collections.Counter(arr)
+
+        for i, j in itertools.combinations_with_replacement(c, 2):
+            k = target - i - j
+            if i == j == k:
+                res += c[i] * (c[i] - 1) * (c[i] - 2) // 6
+            elif i == j != k:
+                res += c[i] * (c[i] - 1) // 2 * c[k]
+            elif i < k and j < k:
+                res += c[i] * c[j] * c[k]
+
+        return res % MOD
+```
 
 ### 4Sum
 

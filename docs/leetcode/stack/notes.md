@@ -6,25 +6,27 @@
 
 * It can be monotonic __increase__ or __decreasing__ based on application.
 * The data structure is used to trade off space for time (to achieve O(N) complexity).
-* The iteration can be forward and backward, there is no essential diference, but
+* The iteration can be forward and backward, there is no essential difference, but
   can change the way to think of the problem.
 * The core is to maintain the invariant and do the work at the right __moment__.
     * The invariant is to keep the element ordered in the stack in strict
-      increasing/descreasing order.
+      increasing/decreasing order.
     * The work is done at either during the element is popped or after popped.
     * From the [Next Greater Element I] and [Next Greater Element II], we can see
-      that no matter the forward or backword iteration, the stack values are strictly
+      that no matter the forward or backward iteration, the stack values are strictly
       decreasing.
     * __check whether you need to push the index or the value.__ You can put both
       if needed.
-* To simplify the code, we can use sentinel values to eliminate redundent codes.
+* To simplify the code, we can use sentinel values to eliminate redundant codes.
+  Specifically, you can avoid checking null of the stack and directly access the
+  stack top value.
 
 ### monotonic stack cheat sheet
 
-1. You can iterate the array both forward or backword, forward iteration is simpler.
-2. You can push the index to the stack or simly push the array value. Usually, when
+1. You can iterate the array both forward or backward, forward iteration is simpler.
+2. You can push the index to the stack or simply push the array value. Usually, when
    we need to meet index range constrain, we have to push the index to the stack.
-3. Be careful about the comparasion between the current value and the stack top,
+3. Be careful about the comparison between the current value and the stack top,
    Make sure choose the correct operators ($>$ or $>=$, $<$ or $<=$).
 4. Sometimes you need to look more than the stack top, for example [Trapping Rain Water](#42.-trapping-rain-water).
 
@@ -405,6 +407,23 @@ public:
   all `nums2` elements and store them in a map, then lookup the elements in
   `num1` from the map.
 
+=== "Python monotonic stack"
+
+    ```python
+    class Solution:
+        def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
+            stk = []
+            d = {x: -1 for x in nums2}
+
+            for num in nums2:
+                while stk and stk[-1] < num:
+                    d[stk.pop()] = num
+
+                stk.append(num)
+
+            return [d[i] for i in nums1]
+    ```
+
 === "C++ monotonic stack forward"
 
     ```c++
@@ -553,39 +572,28 @@ public:
     };
     ```
 
-### 901. Online Stock Span
-
-* Solution 1 Monotonic stack
-
-1. Iterate left to right, keep the current result together with the element in
-   the stack (pop each element meet the constrain off the stack)
-2. The stack have strict decreasing values
-
-    ```c++
-    class StockSpanner {
-        stack<pair<int, int>> s;
-        int count = 0;
-    public:
-        StockSpanner() {
-        }
-
-        int next(int price) {
-
-            count = 1;
-
-            while (!s.empty() && s.top().first <= price) {
-                count += s.top().second;
-                s.pop();
-            }
-
-            s.push({price, count});
-
-            return count;
-        }
-    };
-    ```
-
 ### 739. Daily Temperatures
+
+Solution 1: Use monotonic stack, index are pushed to the stack for calculate distance
+
+=== "Python monotonic stack"
+
+    ```python
+    class Solution:
+        def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+            n = len(temperatures)
+            stk = []
+            res = [0] * n
+
+            for i, t in enumerate(temperatures):
+                while stk and temperatures[stk[-1]] < t:
+                    res[stk[-1]] = i - stk[-1]
+                    stk.pop()
+
+                stk.append(i)
+
+            return res
+    ```
 
 === "C++ monotonic stack"
 
@@ -607,6 +615,62 @@ public:
             }
 
             return res;
+        }
+    };
+    ```
+
+### 901. Online Stock Span
+
+Solution 1 Monotonic stack
+
+1. Iterate left to right, keep the current result together with the element in
+   the stack (pop each element meet the constrain off the stack)
+2. The stack have strict decreasing values
+
+=== "C++ monotonic stack"
+
+    ```python
+    class StockSpanner:
+
+        def __init__(self):
+            self.stk = []
+
+        def next(self, price: int) -> int:
+            res = 1
+            while self.stk and self.stk[-1][0] <= price:
+                res += self.stk.pop()[1]
+
+            self.stk.append((price, res))
+
+            return res
+
+    # Your StockSpanner object will be instantiated and called as such:
+    # obj = StockSpanner()
+    # param_1 = obj.next(price)
+    ```
+
+=== "C++ monotonic stack"
+
+    ```c++
+    class StockSpanner {
+        stack<pair<int, int>> s;
+        int count = 0;
+    public:
+        StockSpanner() {
+        }
+
+        int next(int price) {
+
+            count = 1;
+
+            while (!s.empty() && s.top().first <= price) {
+                count += s.top().second;
+                s.pop();
+            }
+
+            s.push({price, count});
+
+            return count;
         }
     };
     ```
@@ -865,4 +929,64 @@ Solution I Monotonic stack
             return ans;
         }
     };
+    ```
+
+### 2104. Sum of Subarray Ranges
+
+Solution 1: Brute force
+Solution 2: Monotonic stack
+
+1. using a sentinel to simplify the code (reducing null checks)
+2. use the appropriate values for the sentinel based on the goal
+
+=== "Python monotonic stack"
+
+    ```python
+    class Solution:
+        def subArrayRanges(self, nums: List[int]) -> int:
+            res = 0
+            stk = [] # push index to this stack
+            inf = float('inf')
+            A = [-inf] + nums + [-inf]
+            # count the number of subarray include the minimum (A[j])
+            # range is max - min, we aggregate min as negative numbers
+            for i, n in enumerate(A):
+                while stk and A[stk[-1]] > n:
+                    j = stk.pop()
+                    k = stk[-1]
+                    res -= A[j] * (j - k) * (i - j)
+
+                stk.append(i)
+
+            stk.clear()
+            A = [inf] + nums + [inf]
+
+            # count the number of subarray include the maximum (A[j])
+            for i, n in enumerate(A):
+                while stk and A[stk[-1]] < n:
+                    j = stk.pop()
+                    k = stk[-1]
+                    res += A[j] * (j - k) * (i - j)
+
+                stk.append(i)
+
+            return res
+    ```
+
+=== "Python brute force"
+
+    ```python
+    class Solution:
+        def subArrayRanges(self, nums: List[int]) -> int:
+            res = 0
+            n = len(nums)
+
+            for i in range(n):
+                mx, mn = nums[i], nums[i]
+                for j in range(n)[i:]:
+                    mx = max(mx, nums[j])
+                    mn = min(mn, nums[j])
+                    res += mx - mn
+
+            return res
     ```

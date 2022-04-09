@@ -167,7 +167,7 @@ the following methods,
 
 ## Priority Queue
 
-### Merge k Sorted Lists
+### 23 Merge k Sorted Lists
 
 Solution 1 Priority queue
 
@@ -268,9 +268,9 @@ public:
 };
 ```
 
-### Minimum Unique Word Abbreviation
+### 411 Minimum Unique Word Abbreviation
 
-### Smallest Range Covering Elements from K Lists
+### 632 Smallest Range Covering Elements from K Lists
 
 Solution 1 Priority queue
 
@@ -320,7 +320,7 @@ public:
 };
 ```
 
-### Kth Largest Element in an Array
+### 215 Kth Largest Element in an Array
 
 Solution 1 priority queue
 
@@ -409,7 +409,7 @@ public:
 };
 ```
 
-### The Skyline Problem
+### 218 The Skyline Problem
 
 Solution 1 priority queue maximum heap
 
@@ -487,7 +487,7 @@ public:
 };
 ```
 
-#### Sliding Window Median
+### 480 Sliding Window Median
 
 Solution 1 heap + hash (simulated)
 
@@ -688,9 +688,27 @@ public:
     };
     ```
 
+### 1046. Last Stone Weight
+
+Solution 1 Using the heap property to keep tracking the top two stones and keep
+smashing them.
+
+    ```python
+    class Solution:
+        def lastStoneWeight(self, stones: List[int]) -> int:
+
+            pq = [-s for s in stones]
+            heapq.heapify(pq)
+
+            while len(pq) > 1:
+                heappush(pq, heappop(pq) - heappop(pq))
+
+            return -pq[0]
+    ```
+
 ## Use priority queue to rearrange tasks (characters, string, etc.)
 
-### Rearrange String k Distance Apart
+### 358 Rearrange String k Distance Apart
 
 Solution 1 Greedy + Priority Queue
 
@@ -737,7 +755,7 @@ public:
 };
 ```
 
-### Task Scheduler
+### 621 Task Scheduler
 
 Solution 1 Greedy + Priority Queue
 
@@ -790,7 +808,7 @@ public:
 };
 ```
 
-### Reorganize String
+### 767 Reorganize String
 
 Solution 1 Greedy + Priority Queue
 
