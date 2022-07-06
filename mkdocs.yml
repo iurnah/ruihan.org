@@ -40,6 +40,7 @@ nav:
     - Index: books/index.md
     - Accelerated C++: books/accelerated-cpp/notes.md
     - Mining Massive Datasets: books/mining-massive-datasets/notes.md
+    - Designing Data-Intensive Applications: books/designing-data-intensive-applications/notes.md
   - Courses:
     - Index: courses/index.md
     - Machine Learning (Coursera): courses/machine-learning-coursera/notes.md
@@ -104,9 +105,9 @@ nav:
     - Design Crawler: system-design/problems/crawler/notes.md
     - Design TinyUrl: system-design/problems/tinyurl/notes.md
     - Design Twitter: system-design/problems/twitter/notes.md
-    - Deisgn Scheduler: system-design/problems/scheduler/notes.md
+    - Design Scheduler: system-design/problems/scheduler/notes.md
     - Design Ticketmaster: system-design/problems/ticketmaster/notes.md
-    - Design Messager: system-design/problems/messager/notes.md
+    - Design Messenger: system-design/problems/messager/notes.md
     - Design Payment System: system-design/problems/payment/notes.md
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
