@@ -534,6 +534,25 @@ public:
 
 ### Subarray Product Less Than K
 
+* Solution 1: Two pointers solution.
+
+```python
+class Solution:
+    def numSubarrayProductLessThanK(self, nums: List[int], k: int) -> int:
+        left = 0
+        prod = 1
+        res = 0
+        for i in range(len(nums)):
+            prod *= nums[i]
+            while left <= i and prod >= k:
+                prod //= nums[left]
+                left += 1
+
+            res += i - left + 1
+
+        return res
+```
+
 ### Subarray Sum*
 
 ```text
@@ -548,83 +567,87 @@ Example
 Given [-3, 1, 2, -3, 4], return [0, 2] or [1, 3].
 ```
 
-Hash solution
+#### Hash solution
 
 use a hash table to keep the prefix sum. Once we see another prefix sum that
 exists in the hash table, we discovered the subarray that sums to zero. However,
 pay attention to the indexing, because it requires to return the original array's index.
 
-```c++
-class Solution {
-public:
-    /**
-     * @param nums: A list of integers
-     * @return: A list of integers includes the index of the first number
-     *          and the index of the last number
-     */
-    vector<int> subarraySum(vector<int> nums){
-        int n = nums.size();
-        vector<int> res(2, 0);
-        int sum = 0;
-        unordered_map<int, int> map;
-
-        map[0] = -1; //important
-        for (int i = 0; i < n; i++) {
-            sum += nums[i];
-            if (map.count(sum) != 0) {
-                res[0] = map[sum] + 1;
-                res[1] = i;
-                break;
-            }
-
-            map[sum] = i;
-        }
-
-        return res;
-    }
-};
-// test cases
-//    [-1, 2, 3, -3] A
-//  [0,-1, 1, 4,  1] sum
-//         i      j
-```
-
 !!! note
     Pay attention to the initial value and initializethe `map[0] = -1`; This can
     be validated with an edge case. The time complexity is O(n)
 
-Prefix sum solution
+#### Prefix sum solution
 
 Calculate the prefix sum first and then use the prefix sum to find the subarray.
 This solution is $O(n^2)$
 
-```c++
-class Solution {
-public:
-    vector<int> subarraySum(vector<int> nums){
-        int n = nums.size();
-        vector<int> res(2, 0);
-        vector<int> sum(n + 1, 0);
-        sum[0] = 0;
+=== "C++ Hash"
 
-        for (int i = 1; i <= n; i++) {
-            sum[i] = sum[i - 1] + nums[i - 1];
-        }
+    ```c++
+    class Solution {
+    public:
+        /**
+        * @param nums: A list of integers
+        * @return: A list of integers includes the index of the first number
+        *          and the index of the last number
+        */
+        vector<int> subarraySum(vector<int> nums){
+            int n = nums.size();
+            vector<int> res(2, 0);
+            int sum = 0;
+            unordered_map<int, int> map;
 
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j <= n; j++) {
-                if (j > 1 && sum[j] - sum[i] == 0) {
-                    res[0] = i;
-                    res[1] = j - 1;
+            map[0] = -1; //important
+            for (int i = 0; i < n; i++) {
+                sum += nums[i];
+                if (map.count(sum) != 0) {
+                    res[0] = map[sum] + 1;
+                    res[1] = i;
                     break;
                 }
-            }
-        }
 
-        return res;
-    }
-};
-```
+                map[sum] = i;
+            }
+
+            return res;
+        }
+    };
+    // test cases
+    //    [-1, 2, 3, -3] A
+    //  [0,-1, 1, 4,  1] sum
+    //         i      j
+    ```
+
+=== "C++ prefix sum"
+
+    ```c++
+    class Solution {
+    public:
+        vector<int> subarraySum(vector<int> nums){
+            int n = nums.size();
+            vector<int> res(2, 0);
+            vector<int> sum(n + 1, 0);
+            sum[0] = 0;
+
+            for (int i = 1; i <= n; i++) {
+                sum[i] = sum[i - 1] + nums[i - 1];
+            }
+
+            for (int i = 0; i < n; i++) {
+                for (int j = i; j <= n; j++) {
+                    if (j > 1 && sum[j] - sum[i] == 0) {
+                        res[0] = i;
+                        res[1] = j - 1;
+                        break;
+                    }
+                }
+            }
+
+            return res;
+        }
+    };
+    ```
 
 ### Minimum Size Subarray Sum
 
@@ -806,69 +829,69 @@ public:
 
 === "One pass solution"
 
-```c++
-class Solution {
-public:
-    int subarraysDivByK(vector<int>& A, int K) {
-        int n = A.size();
-        if (n == 0 || K == 0) {
-            return 0;
-        }
-
-        int preSum = 0;
-        unordered_map<int, int> mp;
-        mp[0] = 1;
-        int count = 0;
-
-        for (int i = 0; i < n; i++) {
-            preSum += A[i];
-
-            int reminder = preSum % K;
-            // deal with negative values
-            if (reminder < 0)
-                reminder += K;
-
-            if (mp.find(reminder) != mp.end()) {
-                count += mp[reminder];
+    ```c++
+    class Solution {
+    public:
+        int subarraysDivByK(vector<int>& A, int K) {
+            int n = A.size();
+            if (n == 0 || K == 0) {
+                return 0;
             }
 
-            mp[reminder] += 1;
+            int preSum = 0;
+            unordered_map<int, int> mp;
+            mp[0] = 1;
+            int count = 0;
+
+            for (int i = 0; i < n; i++) {
+                preSum += A[i];
+
+                int reminder = preSum % K;
+                // deal with negative values
+                if (reminder < 0)
+                    reminder += K;
+
+                if (mp.find(reminder) != mp.end()) {
+                    count += mp[reminder];
+                }
+
+                mp[reminder] += 1;
+            }
+
+            return count;
         }
+    };
+    ```
 
-        return count;
-    }
-};
-```
+=== "Naive solution O(n^2)"
 
-==="Naive solution O(n^2)"
+    ```c++
+    class Solution {
+    public:
+        int subarraysDivByK(vector<int>& A, int K) {
+            int n = A.size();
+            if (n == 0 || K == 0) {
+                return 0;
+            }
 
-```C++
-class Solution {
-public:
-    int subarraysDivByK(vector<int>& A, int K) {
-        int n = A.size();
-        if (n == 0 || K == 0) {
-            return 0;
-        }
-
-        vector<long> preSum(n + 1, 0);
-        preSum[0] = 0;
-        for (int i = 0; i < n; i++) {
-            preSum[i + 1] = preSum[i] + A[i];
-        }
-        int cnt = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j <= n; j++) {
-                if ((preSum[j] - preSum[i]) % K == 0) {
-                    cnt++;
+            vector<long> preSum(n + 1, 0);
+            preSum[0] = 0;
+            for (int i = 0; i < n; i++) {
+                preSum[i + 1] = preSum[i] + A[i];
+            }
+            int cnt = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = i + 1; j <= n; j++) {
+                    if ((preSum[j] - preSum[i]) % K == 0) {
+                        cnt++;
+                    }
                 }
             }
-        }
 
-        return cnt;
-    }
-};
-```
+            return cnt;
+        }
+    };
+    ```
 
 ### Max Sum of Subarry No Larger Than K*
 
