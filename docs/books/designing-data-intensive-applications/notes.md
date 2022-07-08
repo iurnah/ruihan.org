@@ -32,3 +32,16 @@ __Concepts:__
 ### Scalability
 
 ### Maintainability
+
+## Chapter 6 Partitioning
+
+### Partition of key-value data
+
+* Key range partitioning
+* Key hash partitioning
+* Skewed workload and relieving hot spot
+
+### Partitioning and secondary index
+
+* secondary index by document: the secondary index only contains local partition.
+* secondary index by term: the secondary index is global.
